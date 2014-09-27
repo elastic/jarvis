@@ -8,8 +8,9 @@ module Lita
       require "lita-jls/util"
       include LitaJLS::Util
 
-      route /^merge(?<dry>\?)? (?:(?<user>[A-Za-z0-9_-]+)\/)?(?<project>[A-Za-z0-9_-]+)#(?<pr>\d+) (?<branchspec>.*)$/, :merge,
-        :help => { "merge project#pr branch1 [branch2 ...]" => "merges a PR into one or more branches. To see if a merge is successful, use 'merge? project#pr branch1 [branch2 ...]" }
+      #route /^merge(?<dry>\?)? (?:(?<user>[A-Za-z0-9_-]+)\/)?(?<project>[A-Za-z0-9_-]+)#(?<pr>\d+) (?<branchspec>.*)$/, :merge,
+      route /^merge(?<dry>\?)? (?<pr_url>[^ ]+) (?<branchspec>.*)$/, :merge,
+        :help => { "merge https://github.com/ORG/PROJECT/pull/NUMBER branch1 [branch2 ...]" => "merges a PR into one or more branches. To see if a merge is successful, use 'merge? project#pr branch1 [branch2 ...]" }
 
       REMOTE = "origin"
       URLBASE = "https://github.com/"
@@ -27,9 +28,18 @@ module Lita
 
       def merge(msg)
         FileUtils.mkdir_p(workdir) unless File.directory?(workdir)
-        user = msg.match_data["user"] || "elasticsearch"
-        project = msg.match_data["project"]
-        pr = msg.match_data["pr"]
+        #user = msg.match_data["user"] || "elasticsearch"
+        #project = msg.match_data["project"]
+        #pr = msg.match_data["pr"]
+        require "uri"
+        pull = msg.match_data["pr_url"]
+        pull_path = URI.parse(pull).path
+        _, user, project, _, pr = pull_path.split("/")
+
+        if user.nil? || project.nil? || pr.nil? || pull !~ /^https:\/\/github.com\//
+          raise "Invalid URL. Expected something like: https://github.com/elasticsearch/snacktime/pull/12345"
+        end
+
         branchspec = msg.match_data["branchspec"]
         dry_run = msg.match_data["dry"]
         p :dry? => dry_run

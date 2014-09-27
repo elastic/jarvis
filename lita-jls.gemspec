@@ -19,6 +19,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "cabin", ">= 0"
   spec.add_runtime_dependency "faraday", ">= 0"
 
+  # For access to Github's api
+  spec.add_runtime_dependency "octokit", ">= 0"
+
   # For parsing github's .patch files (mbox format)
   spec.add_runtime_dependency "mbox", ">= 0"
 

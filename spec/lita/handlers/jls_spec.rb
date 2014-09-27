@@ -7,11 +7,11 @@ require "fileutils"
 describe Lita::Handlers::Jls, :lita_handler => true do
   it do
     messages = [
-      "merge foo#123 bar",
-      "merge user/foo#123 bar",
-      "merge elasticsearch/fancypants#123 bar",
-      "merge some-test/another-thing#123 bar",
-      "merge? some-test/another-thing#123 bar",
+      "merge https://github.com/foo/bar/pull/123 bar",
+      "merge https://github.com/user/foo/pull/123 bar 1.x master",
+      "merge https://github.com/elasticsearch/fancypants/pull/123 bar",
+      "merge https://github.com/some-test/another-thing/pull/123 bar baz fizz",
+      "merge? https://github.com/some-test/another-thing/pull/123 bar fancy-pants",
     ]
     messages.each do |m|
       routes(m).to(:merge)
@@ -20,7 +20,7 @@ describe Lita::Handlers::Jls, :lita_handler => true do
 
   context "#merge", :network => true do
     it "should reply successfully if the merge works" do
-      send_message("merge? jordansissel/this-is-only-a-test#1 master")
+      send_message("merge? https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
       insist { replies.last } == "(success) Merging was successful jordansissel/this-is-only-a-test#1 into: master.\n(but I did not push it)"
     end
 
