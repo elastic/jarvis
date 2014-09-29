@@ -1,6 +1,7 @@
 require "cabin"
 require "tmpdir"
 require "fileutils"
+require "insist"
 
 module Lita
   module Handlers
@@ -11,6 +12,7 @@ module Lita
       #route /^merge(?<dry>\?)? (?:(?<user>[A-Za-z0-9_-]+)\/)?(?<project>[A-Za-z0-9_-]+)#(?<pr>\d+) (?<branchspec>.*)$/, :merge,
       route /^merge(?<dry>\?)? (?<pr_url>[^ ]+) (?<branchspec>.*)$/, :merge,
         :help => { "merge https://github.com/ORG/PROJECT/pull/NUMBER branch1 [branch2 ...]" => "merges a PR into one or more branches. To see if a merge is successful, use 'merge? project#pr branch1 [branch2 ...]" }
+      route /^\(tableflip\)$/, :tableflip, :command => true, :help => { "(tableflip)" => "Fix whatever just broke. Probably git is going funky, so I will purge my local git junk" }
 
       REMOTE = "origin"
       URLBASE = "https://github.com/"
@@ -49,9 +51,14 @@ module Lita
         git_url = url
         pr_url = File.join(url, "pull", "#{pr}.patch")
         gitpath = gitdir(project)
+        branches = branchspec.split(/\s+/)
 
         logger.info("Cloning git repo", :url => git_url, :gitpath => gitpath)
         repo = clone_at(git_url, gitpath)
+
+        git(gitpath, "am", "--abort") if File.directory?(".git/rebase-apply")
+        git(gitpath, "reset", "--hard", "#{REMOTE}/master")
+        git(gitpath, "clean", "-f")
 
         # TODO(sissel): Fetch the PR patch
         logger.info("Fetching PR patch", :url => pr_url)
@@ -66,24 +73,21 @@ module Lita
         patch = response.body
 
         # For each branch, try to merge
-        branches = branchspec.split(/\s+/)
         repo = Rugged::Repository.new(gitpath)
         branches.each do |branch|
           begin
+            logger.info("Switching branches", :branch => branch, :repo => gitpath)
             #repo.checkout(branch)
-            Dir.chdir(gitpath) do
-              logger.info("Switching branches", :branch => branch, :repo => gitpath)
-              #repo.checkout(branch)
-              system!("git", "checkout", branch)
-              #repo.reset("#{REMOTE}/#{branch}", :mixed)
-              system!("git", "reset", "#{REMOTE}/#{branch}")
-              apply_patch(repo, patch) do |commit|
-                # Append the PR number to commit message
+            git(gitpath, "checkout", branch)
+            git(gitpath, "pull", "--ff-only")
+            #repo.reset("#{REMOTE}/#{branch}", :mixed)
+            git(gitpath, "reset", "#{REMOTE}/#{branch}")
+            apply_patch(repo, patch) do |commit|
+              # Append the PR number to commit message
 
-                # Use "Fixes #XYZ" to make the PR get closed upon commit.
-                # https://help.github.com/articles/closing-issues-via-commit-messages
-                commit[:message] += "\nFixes ##{pr}"
-              end
+              # Use "Fixes #XYZ" to make the PR get closed upon commit.
+              # https://help.github.com/articles/closing-issues-via-commit-messages
+              commit[:message] += "\nFixes ##{pr}"
             end
           rescue => e
             msg.reply("Failed attempting to merge #{user}/#{project}##{pr}: #{e}")
@@ -95,21 +99,29 @@ module Lita
         if dry_run
           msg.reply("(success) Merging was successful #{user}/#{project}##{pr} into: #{branchspec}.\n(but I did not push it)")
         else
-          Dir.chdir(gitpath) { system!("git", "push", REMOTE, *branches) }
-          #system!("git", "push", REMOTE, *branches.map { |b| "refs/heads/#{b}" })
+          msg.reply("(success) #{user}/#{project}##{pr} merged into: #{branchspec}")
+          git(gitpath, "push", REMOTE, *branches)
 
-          # Update PR labels
           labels = branches.reject { |b| b == "master" }
-          github_client.add_labels_to_an_issue("#{user}/#{project}", pr.to_i, labels)
-          msg.reply("Labels added to PR ##{pr}: #{labels.join(", ")}")
+          github_issue_label("#{user}/#{project}", pr.to_i, labels)
         end
       rescue => e
         msg.reply("Error: #{e.inspect}")
         raise
       end # def merge
+
+      def tableflip(msg)
+        begin
+          dir = workdir("gitbase")
+          insist { dir } =~ /\/lita-jls/ # Just in case, before we go purging things...
+          FileUtils.rm_r(dir)
+          msg.reply("git (tableflip) (success)")
+        rescue => e
+          msg.reply("Git (tableflip) (huh): #{e}")
+          raise e
+        end
+      end
     end # class Jls
-
-
 
     Lita.register_handler(Jls)
   end

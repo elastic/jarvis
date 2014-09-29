@@ -35,12 +35,12 @@ module LitaJLS
       logger.info("Cloning to cache", :url => url, :cache => cache)
       begin
         #Rugged::Repository.clone_at(url, cache)
-        system!("git", "clone", url, cache)
+        git(".", "clone", url, cache)
       rescue => e
         logger.debug("clone_at failed, trying to open repo instead", :cache => cache, :error => e)
         #require "pry"; binding.pry
         # Verify some kind of git works here
-        Dir.chdir(cache) { system!("git", "log", "-n0") }
+        git(cache, "log", "-n0")
         #Rugged::Repository.new(cache)
       end
       remote = "origin"
@@ -48,7 +48,7 @@ module LitaJLS
       # Update from remote if already cloned
       logger.debug("Fetching a remote", :cache => cache, :remote => remote)
       #cacherepo.fetch(remote)
-      Dir.chdir(cache) { system!("git", "fetch", remote) }
+      git(cache, "fetch", remote)
 
       # Clone from cache.
       # This allows us to have multiple local working/clones and just keep
@@ -58,25 +58,22 @@ module LitaJLS
       logger.info("Cloning from cache", :cache => cache, :gitpath => gitpath)
       begin
         #Rugged::Repository.clone_at(cache, gitpath)
-        system!("git", "clone", cache, gitpath)
+        git(".", "clone", cache, gitpath)
       rescue => e
         logger.info(e)
         logger.debug("clone_at from cache failed, trying to open repo instead", :repo => gitpath, :cache => cache)
         #Rugged::Repository.new(gitpath)
-        #system!("git", "init", 
       end
-      Dir.chdir(gitpath) do
-        system!("git", "remote", "set-url", remote, url)
-        #repository.remotes.delete(remote)
-        #repository.remotes.create(remote, url)
-        # I can't figure out how to do auth with Rugged, so let's set the push target to be ssh
-        # so at least we can `git push` via cli.
-        # TODO(sissel): Figure out how to do auth in Rugged. Related: https://github.com/libgit2/rugged/issues/422
-        uri = URI.parse(url)
-        push_url = "git@github.com:#{uri.path}.git"
-        system!("git", "remote", "set-url", "--push", remote, push_url)
-        system!("git", "fetch")
-      end
+      git(gitpath, "remote", "set-url", remote, url)
+      #repository.remotes.delete(remote)
+      #repository.remotes.create(remote, url)
+      # I can't figure out how to do auth with Rugged, so let's set the push target to be ssh
+      # so at least we can `git push` via cli.
+      # TODO(sissel): Figure out how to do auth in Rugged. Related: https://github.com/libgit2/rugged/issues/422
+      uri = URI.parse(url)
+      push_url = "git@github.com:#{uri.path}.git"
+      git(gitpath, "remote", "set-url", "--push", remote, push_url)
+      git(gitpath, "fetch")
 
       # TODO(sissel): pull --ff-only?
       gitpath
@@ -84,7 +81,7 @@ module LitaJLS
 
     def gitdir(project)
       if !@gitdir
-        @gitdir = File.join(workdir, "gitbase")
+        @gitdir = workdir("gitbase")
         FileUtils.mkdir_p(@gitdir) unless File.directory?(@gitdir) 
         logger.debug("Git dir", :path => @gitdir)
       end
@@ -93,11 +90,15 @@ module LitaJLS
       path
     end # def gitdir
 
-    def workdir
+    def workdir(path=nil)
       return @workdir if @workdir
       @workdir = File.join(Dir.tmpdir, "lita-jls")
       Dir.mkdir(@workdir) unless File.directory?(@workdir)
-      @workdir
+      if path.nil?
+        @workdir
+      else
+        File.join(@workdir, path)
+      end
     end # def workdir
 
     def apply_patch(repo, patch_body, &block)
@@ -121,6 +122,7 @@ module LitaJLS
         raise "Unable to parse name and email from '#{mail.headers["from"]}'. Cannot continue"
       end
       time = Time.parse(mail.headers["date"])
+      #File.write("/tmp/x", patch)
 
       # Take the email subject but strip [PATCH] or [PATCH N/M] out.
       subject = mail.headers["subject"].gsub(/^\[PATCH[^\]]*\] /, "")
@@ -131,26 +133,24 @@ module LitaJLS
         raise "Empty commit message (no subject or description). Refusing to continue."
       end
 
-      patch = mail.content.first.content.gsub(/^(?:.*\n)?---\n.*?\n\n/m, "")
-      patch += "\n" if patch[-1,1] != "\n"
-
-      # Combine subject + description for the full commit message
-      message = "#{subject}\n\n#{description}"
+      #patch = mail.content.first.content.gsub(/^(?:.*\n)?---\n.*?\n\n/m, "")
+      #patch += "\n" if patch[-1,1] != "\n"
+      # Patch must have a trailing newline.
+      patch = [mail.headers, mail.content, ""].join("\n")
+      #require "pry";binding.pry
 
       # Apply the code change to the git index
       Dir.chdir(File.dirname(repo.path)) do
-        cmd = ["git", "apply", "--index"]
+        cmd = ["git", "am"]
         IO.popen(cmd, "w+") do |io|
           io.write(patch)
           io.close_write
-          io.each_line do |line|
-            puts "git apply> #{line}"
-          end
+          logger.pipe(io => :debug)
         end
         status = $?
         if !status.success?
-          logger.warn("Git apply failed", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
-          raise "Git apply failed: #{cmd.join(" ")}"
+          logger.warn("Git am failed", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
+          raise "Git am failed: #{cmd.join(" ")}"
         end
         logger.info("Git apply successful!", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
       end
@@ -159,14 +159,18 @@ module LitaJLS
       # it gets the newest index.
 
       # Commit this patch
-      index = repo.index
+      #index = repo.index
 
       # Because we did `git apply` via CLI, we'll need Rugged to reload the index data from disk.
-      index.reload
-      tree = index.write_tree(repo)
+      #index.reload
+      #tree = index.write_tree(repo)
+
+      # Combine subject + description for the full commit message
+      message = "#{subject}\n\n#{description}"
+
       commit_settings = { 
-        :author => { :email => email, :name => name, :time => time },
-        :committer => { :email => "jls@semicomplete.com", :name => "Jordan Sissel", :time => Time.now },
+        #:author => { :email => email, :name => name, :time => time },
+        #:committer => { :email => "jls@semicomplete.com", :name => "Jordan Sissel", :time => Time.now },
         :message => message
       }
 
@@ -174,17 +178,30 @@ module LitaJLS
       block.call(commit_settings)
 
       # Update HEAD to point to our new commit
-      commit_settings.merge!(
-        :update_ref => "HEAD",
-        :parents => [repo.head.target],
-        :tree => tree
-      )
-      Rugged::Commit.create(repo, commit_settings)
+      #commit_settings.merge!(
+        #:update_ref => "HEAD",
+        #:parents => [repo.head.target],
+        #:tree => tree
+      #)
+      #Rugged::Commit.create(repo, commit_settings)
+
+      Dir.chdir(File.dirname(repo.path)) do
+        cmd = ["git", "commit", "--amend", "-F-"]
+        IO.popen(cmd, "w+") do |io|
+          io.write(commit_settings[:message])
+          io.close_write
+          logger.pipe(io => :debug)
+        end
+      end
+
     end # def apply_commit
 
     def system!(*args)
       logger.debug("Running command", :args => args)
-      system(*args)
+      # TODO(sissel): use Open4
+      IO.popen(args, "r") do |io|
+        logger.pipe(io => :debug)
+      end
       status = $?
       return if status.success?
       raise "Command failed; #{args.inspect}"
@@ -199,5 +216,15 @@ module LitaJLS
         client.auto_paginate = true
       end
     end # def client
+
+    def github_issue_label(project, issue, labels)
+      github_client.add_labels_to_an_issue(project, issue, labels)
+    end # def github_issue_label
+
+    def git(gitdir, *args)
+      Dir.chdir(gitdir) do
+        system!("git", *args)
+      end
+    end
   end # module Util
 end # module LitaJLS

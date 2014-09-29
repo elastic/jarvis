@@ -18,13 +18,50 @@ describe Lita::Handlers::Jls, :lita_handler => true do
     end
   end
 
+  it "routes `(tableflip)` to :tableflip" do
+    routes_command("(tableflip)").to :tableflip
+  end
+
   context "#merge", :network => true do
-    it "should reply successfully if the merge works" do
-      send_message("merge? https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
-      insist { replies.last } == "(success) Merging was successful jordansissel/this-is-only-a-test#1 into: master.\n(but I did not push it)"
+    before do
+      original_git = subject.method(:git)
+      allow(subject).to receive(:git).with(any_args) do |gitdir, *args|
+        # Ignore any 'git push' attempts
+        if args[0] == "push" # git("push", ...)
+          nil
+        else
+          original_git.call(gitdir, *args)
+        end
+      end
     end
 
-    it "should properly handle long commit messages"
+    it "should reply successfully if the merge works" do
+      allow(subject).to receive(:github_issue_label) { nil }
+      expect(subject).to receive(:github_issue_label).with("jordansissel/this-is-only-a-test", 1, [])
+
+      send_message("merge https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
+      insist { replies.last } == "(success) jordansissel/this-is-only-a-test#1 merged into: master"
+    end
+
+    it "should properly handle long commit messages" do
+      send_message("merge https://github.com/jordansissel/this-is-only-a-test/pull/4 master")
+      insist { replies.last } == "(success) jordansissel/this-is-only-a-test#4 merged into: master"
+
+      repodir = subject.instance_eval { gitdir("this-is-only-a-test") }
+      Dir.chdir(repodir) do
+        log = `git log --format="%B" -n 1 HEAD`.chomp
+        insist { log } == "One two three four five six seven eight.
+
+Nine ten eleven.
+
+Twelve?
+* Thirteen
+* Fourteen
+
+Fixes #4
+"
+      end
+    end
   end
 end
 
@@ -38,7 +75,7 @@ module Fixture
     include LitaJLS::Util
     public(:gitdir, :clone_at)
 
-    def workdir
+    def workdir(*args)
       return @workdir if @workdir
       @workdir = Stud::Temporary.directory("lita-jls-testing")
     end
@@ -92,6 +129,13 @@ describe LitaJLS::Util do
       insist { File }.directory?(repo)
       insist { File }.directory?(File.join(repo, ".git"))
       reject { Rugged::Repository.new(repo) }.nil?
+    end
+  end
+
+  context "#github_issue_label" do
+    let(:issue) do
+      expect(subject.github_client).to receive(:add_labels_to_an_issue).with("#{user}/#{project}", pr.to_i, labels)
+      github_issue_label("jordansissel/this-is-only-a-test", 1, [ "one", "two", "three" ])
     end
   end
 
