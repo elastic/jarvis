@@ -4,6 +4,8 @@ require "fileutils"
 require "uri"
 require "faraday" # for cla check
 require "json" # for cla check
+#
+# TODO(sissel): This code needs some suuuper serious refactoring and testing improvements.
 
 module LitaJLS 
   module Logger
@@ -22,8 +24,9 @@ module LitaJLS
 
     private
 
+    # This method requires @cla_uri being set before it'll work.
     def cla?(repository, pr)
-      raise "No cla_uri set. Cannot check CLA signature." unless @cla_uri
+      raise "No @cla_uri set. Cannot check CLA signature." unless @cla_uri
       #response = Faraday.get(@cla_uri, :repository => repository, :number => pr)
       uri = URI.parse(@cla_uri)
       conn = Faraday.new(:url => "#{uri.scheme}://#{uri.host}")
@@ -55,14 +58,10 @@ module LitaJLS
       cache = File.join(cachebase, File.basename(gitpath))
       logger.info("Cloning to cache", :url => url, :cache => cache)
       begin
-        #Rugged::Repository.clone_at(url, cache)
         git(".", "clone", url, cache)
       rescue => e
         logger.debug("clone_at failed, trying to open repo instead", :cache => cache, :error => e)
-        #require "pry"; binding.pry
-        # Verify some kind of git works here
-        git(cache, "log", "-n0")
-        #Rugged::Repository.new(cache)
+        git(cache, "log", "-n0") # Verify some kind of git works here
       end
       remote = "origin"
       
@@ -78,19 +77,13 @@ module LitaJLS
       # github or gitlab.
       logger.info("Cloning from cache", :cache => cache, :gitpath => gitpath)
       begin
-        #Rugged::Repository.clone_at(cache, gitpath)
         git(".", "clone", cache, gitpath)
       rescue => e
         logger.info(e)
         logger.debug("clone_at from cache failed, trying to open repo instead", :repo => gitpath, :cache => cache)
-        #Rugged::Repository.new(gitpath)
       end
       git(gitpath, "remote", "set-url", remote, url)
-      #repository.remotes.delete(remote)
-      #repository.remotes.create(remote, url)
-      # I can't figure out how to do auth with Rugged, so let's set the push target to be ssh
-      # so at least we can `git push` via cli.
-      # TODO(sissel): Figure out how to do auth in Rugged. Related: https://github.com/libgit2/rugged/issues/422
+
       uri = URI.parse(url)
       push_url = "git@github.com:#{uri.path}.git"
       git(gitpath, "remote", "set-url", "--push", remote, push_url)
@@ -158,11 +151,10 @@ module LitaJLS
       #patch += "\n" if patch[-1,1] != "\n"
       # Patch must have a trailing newline.
       patch = [mail.headers, mail.content, ""].join("\n")
-      #require "pry";binding.pry
 
       # Apply the code change to the git index
       Dir.chdir(File.dirname(repo.path)) do
-        cmd = ["git", "am"]
+        cmd = ["git", "am", "--3way"]
         File.write("/tmp/patch", patch)
         IO.popen(cmd, "w+") do |io|
           io.write(patch)
@@ -178,20 +170,11 @@ module LitaJLS
         logger.info("Git am successful!", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
       end
 
-      # Because we changed git outside of Rugged::Repository, we'll want to reload it so 
-      # it gets the newest index.
-
-      # Commit this patch
-      #index = repo.index
-
-      # Because we did `git apply` via CLI, we'll need Rugged to reload the index data from disk.
-      #index.reload
-      #tree = index.write_tree(repo)
-
       # Combine subject + description for the full commit message
       message = "#{subject}\n\n#{description}"
 
       commit_settings = { 
+        # TODO(sissel): override the committer with whoever
         #:author => { :email => email, :name => name, :time => time },
         #:committer => { :email => "jls@semicomplete.com", :name => "Jordan Sissel", :time => Time.now },
         :message => message
@@ -199,14 +182,6 @@ module LitaJLS
 
       # Allow any modifications to the commit object itself.
       block.call(commit_settings)
-
-      # Update HEAD to point to our new commit
-      #commit_settings.merge!(
-        #:update_ref => "HEAD",
-        #:parents => [repo.head.target],
-        #:tree => tree
-      #)
-      #Rugged::Commit.create(repo, commit_settings)
 
       Dir.chdir(File.dirname(repo.path)) do
         cmd = ["git", "commit", "--amend", "-F-"]

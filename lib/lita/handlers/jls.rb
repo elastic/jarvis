@@ -4,6 +4,10 @@ require "fileutils"
 require "insist"
 require "uri"
 
+# TODO(sissel): This code needs some suuuper serious refactoring and testing improvements.
+# TODO(sissel): Remove any usage of Rugged. This library requires compile-time
+# settings of libgit2 and that's an annoying battle.
+
 module Lita
   module Handlers
     class Jls < Handler
@@ -26,11 +30,6 @@ module Lita
       URLBASE = "https://github.com/"
 
       on :loaded, :setup
-      on :connected, :connected
-
-      def connected(*args)
-        p "OK"
-      end
 
       def self.default_config(config)
         config.default_organization = nil
@@ -49,7 +48,7 @@ module Lita
         cla?("#{user}/#{project}", pr)
         msg.reply("#{user}/#{project}##{pr} CLA OK (freddie)")
       rescue => e
-        msg.reply(e)
+        msg.reply("cla check error: #{e}")
       end
 
       def merge(msg)
@@ -102,7 +101,6 @@ module Lita
         branches.each do |branch|
           begin
             logger.info("Switching branches", :branch => branch, :repo => gitpath)
-            #repo.checkout(branch)
             git(gitpath, "checkout", branch)
             git(gitpath, "reset", "--hard", "#{REMOTE}/#{branch}")
             git(gitpath, "pull", "--ff-only")
