@@ -1,4 +1,3 @@
-require "rugged"
 require "cabin"
 require "fileutils"
 require "uri"
@@ -67,7 +66,6 @@ module LitaJLS
       
       # Update from remote if already cloned
       logger.debug("Fetching a remote", :cache => cache, :remote => remote)
-      #cacherepo.fetch(remote)
       git(cache, "fetch", remote)
 
       # Clone from cache.
@@ -153,7 +151,7 @@ module LitaJLS
       patch = [mail.headers, mail.content, ""].join("\n")
 
       # Apply the code change to the git index
-      Dir.chdir(File.dirname(repo.path)) do
+      Dir.chdir(repo) do
         cmd = ["git", "am", "--3way"]
         File.write("/tmp/patch", patch)
         IO.popen(cmd, "w+") do |io|
@@ -164,7 +162,7 @@ module LitaJLS
         status = $?
         if !status.success?
           logger.warn("Git am failed", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
-          git(File.dirname(repo.path), "am", "--abort")
+          git(repo, "am", "--abort")
           raise "Git am failed: #{cmd.join(" ")}"
         end
         logger.info("Git am successful!", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
@@ -183,7 +181,7 @@ module LitaJLS
       # Allow any modifications to the commit object itself.
       block.call(commit_settings)
 
-      Dir.chdir(File.dirname(repo.path)) do
+      Dir.chdir(repo) do
         cmd = ["git", "commit", "--amend", "-F-"]
         IO.popen(cmd, "w+") do |io|
           io.write(commit_settings[:message])

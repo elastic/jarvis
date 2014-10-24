@@ -1,7 +1,6 @@
 require "spec_helper"
 require "insist"
 require "stud/temporary"
-require "rugged"
 require "fileutils"
 
 describe Lita::Handlers::Jls, :lita_handler => true do
@@ -117,7 +116,6 @@ describe LitaJLS::Util do
 
     before do
       insist { url } =~ /lita-jls-testing/ # just in case.
-      Rugged::Repository.init_at(url)
     end
 
     after do
@@ -128,7 +126,6 @@ describe LitaJLS::Util do
       subject.clone_at(url, repo)
       insist { File }.directory?(repo)
       insist { File }.directory?(File.join(repo, ".git"))
-      reject { Rugged::Repository.new(repo) }.nil?
     end
   end
 

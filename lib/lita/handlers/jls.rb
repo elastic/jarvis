@@ -26,6 +26,9 @@ module Lita
         :command => true,
         :help => { "(tableflip)" => "Fix whatever just broke. Probably git is going funky, so I will purge my local git junk" }
 
+      route /^ping/, :ping, :command => true
+
+
       REMOTE = "origin"
       URLBASE = "https://github.com/"
 
@@ -33,6 +36,10 @@ module Lita
 
       def self.default_config(config)
         config.default_organization = nil
+      end
+
+      def ping(msg)
+        msg.reply("(chompy)")
       end
 
       def setup(*args)
@@ -97,7 +104,7 @@ module Lita
         patch = response.body
 
         # For each branch, try to merge
-        repo = Rugged::Repository.new(gitpath)
+        repo = gitpath
         branches.each do |branch|
           begin
             logger.info("Switching branches", :branch => branch, :repo => gitpath)
