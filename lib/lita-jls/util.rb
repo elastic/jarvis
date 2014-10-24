@@ -2,6 +2,8 @@ require "rugged"
 require "cabin"
 require "fileutils"
 require "uri"
+require "faraday" # for cla check
+require "json" # for cla check
 
 module LitaJLS 
   module Logger
@@ -16,7 +18,26 @@ module LitaJLS
   module Util
     include Logger
 
+    CLANotSigned = Class.new(StandardError)
+
     private
+
+    def cla?(repository, pr)
+      raise "No cla_uri set. Cannot check CLA signature." unless @cla_uri
+      #response = Faraday.get(@cla_uri, :repository => repository, :number => pr)
+      uri = URI.parse(@cla_uri)
+      conn = Faraday.new(:url => "#{uri.scheme}://#{uri.host}")
+      conn.basic_auth(uri.user, uri.password)
+      response = conn.get(uri.path, :repository => repository, :number => pr)
+      check = JSON.parse(response.body)
+      # TODO(sissel): json exception? .get exception?
+
+      # {"status":"error","status_human":"Error","message":"Not all commit authors have signed the CLA.","commits":[{"sha":"cf72556a","subject":"Read timeout for ftw requests","nickname":"nabam","email":"lev@spotify.com","name":"Lev Popov"}]}
+      if check["status"] == "error"
+        raise CLANotSigned, check["message"]
+      end
+      true
+    end # cla?
 
     # Clone a git url into a local path.
     #
@@ -91,7 +112,7 @@ module LitaJLS
     end # def gitdir
 
     def workdir(path=nil)
-      return @workdir if @workdir
+      return File.join(@workdir, path) if @workdir
       @workdir = File.join(Dir.tmpdir, "lita-jls")
       Dir.mkdir(@workdir) unless File.directory?(@workdir)
       if path.nil?
@@ -142,6 +163,7 @@ module LitaJLS
       # Apply the code change to the git index
       Dir.chdir(File.dirname(repo.path)) do
         cmd = ["git", "am"]
+        File.write("/tmp/patch", patch)
         IO.popen(cmd, "w+") do |io|
           io.write(patch)
           io.close_write
@@ -150,9 +172,10 @@ module LitaJLS
         status = $?
         if !status.success?
           logger.warn("Git am failed", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
+          git(File.dirname(repo.path), "am", "--abort")
           raise "Git am failed: #{cmd.join(" ")}"
         end
-        logger.info("Git apply successful!", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
+        logger.info("Git am successful!", :code => status.exitstatus, :command => cmd, :pwd => Dir.pwd)
       end
 
       # Because we changed git outside of Rugged::Repository, we'll want to reload it so 

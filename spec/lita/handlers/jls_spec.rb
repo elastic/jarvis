@@ -14,7 +14,7 @@ describe Lita::Handlers::Jls, :lita_handler => true do
       "merge? https://github.com/some-test/another-thing/pull/123 bar fancy-pants",
     ]
     messages.each do |m|
-      routes(m).to(:merge)
+      routes_command(m).to(:merge)
     end
   end
 
@@ -39,12 +39,12 @@ describe Lita::Handlers::Jls, :lita_handler => true do
       allow(subject).to receive(:github_issue_label) { nil }
       expect(subject).to receive(:github_issue_label).with("jordansissel/this-is-only-a-test", 1, [])
 
-      send_message("merge https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
+      send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
       insist { replies.last } == "(success) jordansissel/this-is-only-a-test#1 merged into: master"
     end
 
     it "should properly handle long commit messages" do
-      send_message("merge https://github.com/jordansissel/this-is-only-a-test/pull/4 master")
+      send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/4 master")
       insist { replies.last } == "(success) jordansissel/this-is-only-a-test#4 merged into: master"
 
       repodir = subject.instance_eval { gitdir("this-is-only-a-test") }
@@ -136,6 +136,15 @@ describe LitaJLS::Util do
     let(:issue) do
       expect(subject.github_client).to receive(:add_labels_to_an_issue).with("#{user}/#{project}", pr.to_i, labels)
       github_issue_label("jordansissel/this-is-only-a-test", 1, [ "one", "two", "three" ])
+    end
+  end
+
+  context "#workdir" do
+    it "should return the same value on multiple invocations" do
+      expected = subject.workdir("foo")
+      5.times do
+        insist { subject.workdir("foo") } == expected
+      end
     end
   end
 

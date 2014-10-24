@@ -23,6 +23,8 @@ Gem::Specification.new do |spec|
 
   # For access to Github's api
   spec.add_runtime_dependency "octokit", ">= 0"
+  # For netrc support in octokit
+  spec.add_runtime_dependency "netrc"
 
   # For parsing github's .patch files (mbox format)
   spec.add_runtime_dependency "mbox", ">= 0"
