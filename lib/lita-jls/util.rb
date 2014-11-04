@@ -222,6 +222,8 @@ module LitaJLS
 
     def github_issue_label(project, issue, labels)
       github_client.add_labels_to_an_issue(project, issue, labels)
+    rescue => e
+      raise e.class, "Failed adding label '#{labels}' to issue #{issue} on #{project}: #{e}"
     end # def github_issue_label
 
     def git(gitdir, *args)
