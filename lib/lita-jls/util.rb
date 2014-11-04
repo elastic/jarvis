@@ -26,7 +26,6 @@ module LitaJLS
     # This method requires @cla_uri being set before it'll work.
     def cla?(repository, pr)
       raise "No @cla_uri set. Cannot check CLA signature." unless @cla_uri
-      #response = Faraday.get(@cla_uri, :repository => repository, :number => pr)
       uri = URI.parse(@cla_uri)
       conn = Faraday.new(:url => "#{uri.scheme}://#{uri.host}")
       conn.basic_auth(uri.user, uri.password)
@@ -34,10 +33,18 @@ module LitaJLS
       check = JSON.parse(response.body)
       # TODO(sissel): json exception? .get exception?
 
-      # {"status":"error","status_human":"Error","message":"Not all commit authors have signed the CLA.","commits":[{"sha":"cf72556a","subject":"Read timeout for ftw requests","nickname":"nabam","email":"lev@spotify.com","name":"Lev Popov"}]}
       if check["status"] == "error"
-        raise CLANotSigned, check["message"]
+        # The CLA checker doesn't know about Elasticsearch employees,
+        # so let's work around that problem.
+        github = Faraday.new(:url => "https://api.github.com")
+        response = github.get("/repos/#{repository}/pulls/#{pr}")
+        pr_data = JSON.parse(response.body)
+        logstash_team = [ "electrical", "jordansissel", "ph", "colinsurprenant", "jsvd", "untergeek", "talevy", "kurtado" ]
+        if !logstash_team.include?(pr_data["user"]["login"])
+          raise CLANotSigned, check["message"]
+        end
       end
+
       true
     end # cla?
 
