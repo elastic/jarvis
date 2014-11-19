@@ -39,14 +39,27 @@ module LitaJLS
         github = Faraday.new(:url => "https://api.github.com")
         response = github.get("/repos/#{repository}/pulls/#{pr}")
         pr_data = JSON.parse(response.body)
-        logstash_team = [ "electrical", "jordansissel", "ph", "colinsurprenant", "jsvd", "untergeek", "talevy", "kurtado", "suyograo" ]
-        if !logstash_team.include?(pr_data["user"]["login"])
+
+        if !logstash_team?(pr_data["user"]["login"])
           raise CLANotSigned, check["message"]
         end
       end
 
       true
     end # cla?
+
+    def logstash_team?(user)
+      ["electrical",
+       "jordansissel",
+       "ph",
+       "colinsurprenant",
+       "jsvd",
+       "untergeek",
+       "talevy",
+       "kurtado",
+       "suyograo",
+       "purbon"].include?(user)
+    end
 
     # Clone a git url into a local path.
     #
