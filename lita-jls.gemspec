@@ -26,6 +26,8 @@ Gem::Specification.new do |spec|
   # For parsing github's .patch files (mbox format)
   spec.add_runtime_dependency "mbox", ">= 0"
   spec.add_runtime_dependency "insist"
+  spec.add_runtime_dependency 'gems', '~> 0.8.3'
+  spec.add_runtime_dependency 'semverly', '~> 1.0.0'
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
@@ -34,4 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "coveralls"
+  spec.add_development_dependency "vcr"
+  spec.add_development_dependency "webmock"
 end

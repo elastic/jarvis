@@ -3,6 +3,10 @@ require "tmpdir"
 require "fileutils"
 require "insist"
 require "uri"
+require "lita-jls/bot_builder"
+require "lita-jls/repository"
+require "lita-jls/github_url_parser"
+require "lita-jls/util"
 
 # TODO(sissel): This code needs some suuuper serious refactoring and testing improvements.
 # TODO(sissel): Remove any usage of Rugged. This library requires compile-time
@@ -11,7 +15,6 @@ require "uri"
 module Lita
   module Handlers
     class Jls < Handler
-      require "lita-jls/util"
       include LitaJLS::Util
 
       route /^merge(?<dry>\?)? (?<pr_url>[^ ]+) (?<branchspec>.*)$/, :merge,
@@ -28,15 +31,44 @@ module Lita
 
       route /^ping/, :ping, :command => true
 
+      route /^publish\s(?<git_url>[^ ]+)$/, :publish,
+        :command => true,
+        :restrict_to => :logstash,
+        :help => { 'publish https://github.com/ORG/project' => 'Install dependencies, Run test, build gem, publish and compare version on rubygems' }
 
       REMOTE = "origin"
       URLBASE = "https://github.com/"
+
+      RUBY_VERSION = "jruby-1.7.16"
 
       on :loaded, :setup
 
       def self.default_config(config)
         config.default_organization = nil
       end
+
+      def publish(msg)
+        git_url = msg.match_data["git_url"]
+
+        logger.info('publish', :url => git_url)
+
+        github_parser = LitaJLS::GithubUrlParser.parse(git_url, :link => :repository)
+        github_parser.validate!
+
+        repository = LitaJLS::Repository.new(github_parser)
+        repository.clone
+        repository.switch_branch('master')
+
+        builder = LitaJLS::BotBuilder.new(repository.git_path, { :ruby_version => RUBY_VERSION })
+
+        msg.reply("publishing (allthethings) for project: #{builder.project_name} branch: master")
+
+        reporter = LitaJLS::Reporter::HipChat.new(builder.build)
+        reporter.format(msg)
+      rescue => e
+        msg.reply("(stare) Error: #{e.inspect}")
+        raise
+      end # def publish
 
       def ping(msg)
         msg.reply("(chompy)")
@@ -140,6 +172,8 @@ module Lita
       end # def merge
 
       def tableflip(msg)
+        logger.debug("(fliptable), remove the git directory")
+
         begin
           dir = workdir("gitbase")
           insist { dir } =~ /\/lita-jls/ # Just in case, before we go purging things...
