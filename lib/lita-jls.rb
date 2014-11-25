@@ -5,3 +5,4 @@ Lita.load_locales Dir[File.expand_path(
 )]
 
 require "lita/handlers/jls"
+require "lita-jls/github_url_parser"

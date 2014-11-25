@@ -1,0 +1,100 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://rubygems.org/api/v1/versions/logstash-output-s3.yaml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Gems 0.8.3
+      - Ruby
+      Authorization:
+      - 953b0543ac7ee8528d2a14f263615e33
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - '30'
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Wed, 26 Nov 2014 23:17:39 GMT
+      Content-Type:
+      - text/yaml
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      Etag:
+      - '"7341898c9b8c18bb4a2f72cafa13f98e"'
+      Last-Modified:
+      - Thu, 06 Nov 2014 09:33:38 GMT
+      Content-Disposition:
+      - attachment
+      Content-Transfer-Encoding:
+      - binary
+      Cache-Control:
+      - private
+      X-Content-Type-Options:
+      - nosniff
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      - IE=Edge,chrome=1
+      Set-Cookie:
+      - remember_token=; path=/; expires=Thu, 26-Nov-2015 23:17:39 GMT; secure
+      X-Request-Id:
+      - 89aaa625142ce8439f1a5315d97a08e9
+      X-Runtime:
+      - '0.012141'
+      X-Rack-Cache:
+      - miss
+    body:
+      encoding: UTF-8
+      string: |
+        ---
+        - authors: Elasticsearch
+          built_at: '2014-11-19T00:00:00Z'
+          description: This gem is a logstash plugin required to be installed on top of the
+            Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is
+            not a stand-alone program
+          downloads_count: 201
+          number: 0.1.1
+          summary: This plugin was created for store the logstash's events into Amazon Simple
+            Storage Service (Amazon S3)
+          platform: ruby
+          ruby_version: '>= 0'
+          prerelease: false
+          licenses:
+          - Apache License (2.0)
+          requirements: []
+        - authors: Elasticsearch
+          built_at: '2014-11-06T00:00:00Z'
+          description: This plugin was created for store the logstash's events into Amazon
+            Simple Storage Service (Amazon S3)
+          downloads_count: 173
+          number: 0.1.0
+          summary: This plugin was created for store the logstash's events into Amazon Simple
+            Storage Service (Amazon S3)
+          platform: ruby
+          ruby_version: '>= 0'
+          prerelease: false
+          licenses:
+          - Apache License (2.0)
+          requirements: []
+    http_version: 
+  recorded_at: Wed, 26 Nov 2014 23:17:39 GMT
+recorded_with: VCR 2.9.3

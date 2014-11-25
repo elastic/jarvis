@@ -13,12 +13,17 @@ describe Lita::Handlers::Jls, :lita_handler => true do
       "merge? https://github.com/some-test/another-thing/pull/123 bar fancy-pants",
     ]
     messages.each do |m|
-      routes_command(m).to(:merge)
+      is_expected.to route_command(m).to(:merge)
     end
   end
 
   it "routes `(tableflip)` to :tableflip" do
-    routes_command("(tableflip)").to :tableflip
+    is_expected.to route_command("(tableflip)").to(:tableflip)
+    
+  end
+
+  it "routes `publish` to :publish" do
+    is_expected.to route_command("publish https://github.com/foo/bar").with_authorization_for(:logstash).to(:publish)
   end
 
   context "#merge", :network => true do
@@ -144,5 +149,4 @@ describe LitaJLS::Util do
       end
     end
   end
-
 end

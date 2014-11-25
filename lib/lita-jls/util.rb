@@ -58,7 +58,7 @@ module LitaJLS
        "talevy",
        "kurtado",
        "suyograo",
-       "purbon"].include?(user)
+       "purbon"].include?(user.downcase)
     end
 
     # Clone a git url into a local path.
@@ -72,9 +72,9 @@ module LitaJLS
 
       # Cache a remote git url so that we can clone it more quickly in the
       # future.
-      cachebase = gitdir(File.join("_"))
-      Dir.mkdir(cachebase) unless File.directory?(cachebase)
-      cache = File.join(cachebase, File.basename(gitpath))
+      cache = File.join(gitdir(File.join("_")), File.basename(gitpath))
+      FileUtils.mkdir_p(cache) unless File.directory?(cache)
+
       logger.info("Cloning to cache", :url => url, :cache => cache)
       begin
         git(".", "clone", url, cache)
@@ -245,4 +245,5 @@ module LitaJLS
       end
     end
   end # module Util
+
 end # module LitaJLS
