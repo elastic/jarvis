@@ -48,8 +48,7 @@ describe LitaJLS::BotBuilder do
     # version in a version.rb and require it in the gemspec.
     # the problem with that is Gem::Specification will execute the ruby file
     # require the version rb in the current 
-    it 'read the version.rb if the project have one' do
-    end
+    it 'read the version.rb if the project have one'
   end
 
   describe "#execute_command" do
