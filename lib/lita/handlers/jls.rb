@@ -172,7 +172,7 @@ module Lita
       end # def merge
 
       def tableflip(msg)
-        logger.debug("tableflip, remove the git directory")
+        logger.debug("(fliptable), remove the git directory")
 
         begin
           dir = workdir("gitbase")
