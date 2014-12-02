@@ -199,7 +199,7 @@ module LitaJLS
           elsif local_version == rubygems_version
             logger.debug("Same version on rubygems", :local_version => local_version, :rubygems_version => rubygems_version)
 
-            messages << report_error("Local version and rubygems version are the same (#{rubygems_version}), see http://rubygems.org/gems/#{project_name}")
+            messages << report_error("Local version and rubygems version are the same (#{local_version}|#{rubygems_version}), see http://rubygems.org/gems/#{project_name}")
           else
             logger.debug("Start the build process")
 

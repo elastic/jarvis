@@ -93,10 +93,13 @@ describe LitaJLS::BotBuilder do
 
   describe "#build", :network => true do
     let!(:test_opsbots_path) { File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-opsbots')) }
+    let(:tasks_order) {
+      ['bundle install',
+       'bundle exec rake vendor',
+        'bundle exec rspec']
+    }
     let(:bot) do
-      LitaJLS::BotBuilder.new(test_opsbots_path, config.merge({ :tasks_order => ['bundle install',
-                                                                                 'bundle exec rake vendor',
-                                                                                 'bundle exec rspec'] }))
+      LitaJLS::BotBuilder.new(test_opsbots_path, config.merge({ :tasks_order => tasks_order }))
     end
 
     before do
@@ -105,16 +108,20 @@ describe LitaJLS::BotBuilder do
       end
     end
 
-    it 'should build the project if the gem local version is higher than the remote' do
+    it 'should build the project if the local version of the gem is higher than the remote' do
       allow(bot).to receive(:local_version).and_return(SemVer.new(0, 0, 2))
-      allow(bot).to receive(:rubygems_version).and_return(SemVer.new(0, 0, 1))
+      allow(bot).to receive(:rubygems_version).and_return(SemVer.new(0, 0, 1), SemVer.new(0, 0, 1), SemVer.new(0, 0, 2))
 
       results = bot.build
 
+      expect(results[0].message).to match(/#{tasks_order[0]}/)
       expect(results[0].status).to eq(:ok)
+      expect(results[1].message).to match(/#{tasks_order[1]}/)
       expect(results[1].status).to eq(:ok)
+      expect(results[2].message).to match(/#{tasks_order[2]}/)
       expect(results[2].status).to eq(:ok)
-      expect(results[3].status).to eq(:error) # We are doing two calls on rubygems one at the begining and one at the end
+      expect(results[3].message).to match(/^version on rubygems match local version/)
+      expect(results[3].status).to eq(:ok)
     end
 
     it 'doesnt publish if the gem is the same version locally and on rubygems' do
