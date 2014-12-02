@@ -234,7 +234,8 @@ module LitaJLS
     end # def client
 
     def github_issue_label(project, issue, labels)
-      github_client.add_labels_to_an_issue(project, issue, labels)
+      logger.debug('Adding label to a specific issue', :project => project, :issue => issue, :labels => labels)
+      github_client.add_labels_to_an_issue(project, issue, labels) unless labels.empty?
     rescue => e
       raise e.class, "Failed adding label '#{labels}' to issue #{issue} on #{project}: #{e}"
     end # def github_issue_label

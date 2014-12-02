@@ -29,6 +29,9 @@ describe Lita::Handlers::Jls, :lita_handler => true do
   context "#merge", :network => true do
     before do
       original_git = subject.method(:git)
+
+      allow(subject.config).to receive(:cla_uri).and_return(ENV["ELASTICSEARCH_CLA_URL"] || "http://test.local/verify/pull_request" )
+
       allow(subject).to receive(:git).with(any_args) do |gitdir, *args|
         # Ignore any 'git push' attempts
         if args[0] == "push" # git("push", ...)
@@ -40,21 +43,24 @@ describe Lita::Handlers::Jls, :lita_handler => true do
     end
 
     it "should reply successfully if the merge works" do
-      allow(subject).to receive(:github_issue_label) { nil }
-      expect(subject).to receive(:github_issue_label).with("jordansissel/this-is-only-a-test", 1, [])
+      VCR.use_cassette("successful_clacheck") do
+        allow(subject).to receive(:github_issue_label) { nil }
+        expect(subject).to receive(:github_issue_label).with("jordansissel/this-is-only-a-test", 1, [])
 
-      send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
-      insist { replies.last } == "(success) jordansissel/this-is-only-a-test#1 merged into: master"
+        send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
+        insist { replies.last } == "(success) jordansissel/this-is-only-a-test#1 merged into: master"
+      end
     end
 
     it "should properly handle long commit messages" do
-      send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/4 master")
-      insist { replies.last } == "(success) jordansissel/this-is-only-a-test#4 merged into: master"
+      VCR.use_cassette("successful_clacheck_long_commit") do
+        send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/4 master")
+        insist { replies.last } == "(success) jordansissel/this-is-only-a-test#4 merged into: master"
 
-      repodir = subject.instance_eval { gitdir("this-is-only-a-test") }
-      Dir.chdir(repodir) do
-        log = `git log --format="%B" -n 1 HEAD`.chomp
-        insist { log } == "One two three four five six seven eight.
+        repodir = subject.instance_eval { gitdir("this-is-only-a-test") }
+        Dir.chdir(repodir) do
+          log = `git log --format="%B" -n 1 HEAD`.chomp
+          insist { log } == "One two three four five six seven eight.
 
 Nine ten eleven.
 
@@ -64,6 +70,7 @@ Twelve?
 
 Fixes #4
 "
+        end
       end
     end
   end
@@ -77,7 +84,7 @@ end
 module Fixture
   class Util
     include LitaJLS::Util
-    public(:gitdir, :clone_at)
+    public(:gitdir, :clone_at, :github_issue_label)
 
     def workdir(*args)
       return @workdir if @workdir
@@ -116,20 +123,20 @@ describe LitaJLS::Util do
   end
 
   context "#clone_at" do
-    let(:url) { Stud::Temporary.directory("lita-jls-testing") }
-    let(:repo) { "example" }
+    let(:url) { 'https://github.com/jordansissel/this-is-only-a-test' }
+    let(:repo) { Stud::Temporary.directory('lita-jls-testing') }
 
     before do
-      insist { url } =~ /lita-jls-testing/ # just in case.
+      insist { repo } =~ /lita-jls-testing/ # just in case.
     end
 
     after do
-      FileUtils.rm_rf(url)
+      FileUtils.rm_rf(repo)
     end
 
     it "should clone" do
       subject.clone_at(url, repo)
-      insist { File }.directory?(repo)
+      expect(File.directory?(repo)).to eq(true)
       insist { File }.directory?(File.join(repo, ".git"))
     end
   end
@@ -138,6 +145,10 @@ describe LitaJLS::Util do
     let(:issue) do
       expect(subject.github_client).to receive(:add_labels_to_an_issue).with("#{user}/#{project}", pr.to_i, labels)
       github_issue_label("jordansissel/this-is-only-a-test", 1, [ "one", "two", "three" ])
+    end
+
+    it 'should not raise and exception if the label is an empty list' do
+      expect { subject.github_issue_label("jordansissel/this-is-only-a-test", 1, []) }.not_to raise_error
     end
   end
 

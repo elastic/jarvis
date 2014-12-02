@@ -47,14 +47,14 @@ describe LitaJLS::BotBuilder do
     # Default way of creating gem with bundler is to define the
     # version in a version.rb and require it in the gemspec.
     # the problem with that is Gem::Specification will execute the ruby file
-    # require the version rb in the current 
+    # it require the version rb in the current 
     it 'read the version.rb if the project have one'
   end
 
   describe "#execute_command" do
     it 'return a failing status if the command cannot be run' do
       bot = LitaJLS::BotBuilder.new(bad_project)
-      expect(bot.run_successfully?(bot.execute_command('sh -e exit 1'))).to eq(false)
+      expect(bot.run_successfully?(bot.execute_command("sh -c 'exit 1'"))).to eq(false)
     end
 
     it 'return sucessful status if the command run correctly' do
@@ -126,8 +126,8 @@ describe LitaJLS::BotBuilder do
     it 'doesnt build if the project doesnt have a gemspec' do
       Stud::Temporary.directory do |tmp_dir|
         bot = LitaJLS::BotBuilder.new(tmp_dir, config.merge({ :tasks_order => ['bundle install',
-                                                                                                          'bundle exec rake vendor',
-                                                                                                          'bundle exec rspec'] }))
+                                                                               'bundle exec rake vendor',
+                                                                               'bundle exec rspec'] }))
 
         results = bot.build
         expect(results.size).to eq(1)

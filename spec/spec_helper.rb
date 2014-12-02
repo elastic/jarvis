@@ -14,6 +14,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 SimpleCov.start { add_filter "/spec/" }
 
 VCR.configure do |config|
-  config.cassette_library_dir = 'fixtures/vcr_casettes'
+  config.cassette_library_dir = File.join(File.dirname(__FILE__), 'fixtures', 'vcr_cassettes')
   config.hook_into :webmock
+  # config.debug_logger = true
 end
