@@ -8,6 +8,7 @@ describe LitaJLS::BotBuilder do
   let(:config) { { :ruby_version => 'jruby-1.7.16' } }
   let(:logstash_gem_fixture) { File.join(File.dirname(__FILE__), '..', 'fixtures') }
   let(:bad_project) { File.join(File.dirname(__FILE__), '..', 'fixtures', 'bad_project') }
+  let(:project_with_version_file) { File.join(File.dirname(__FILE__), '..', 'fixtures', 'project_with_version_file') } 
 
   it 'returns true if the project is a gem' do
     expect(subject.is_gem?).to eq(true)
@@ -48,7 +49,10 @@ describe LitaJLS::BotBuilder do
     # version in a version.rb and require it in the gemspec.
     # the problem with that is Gem::Specification will execute the ruby file
     # it require the version rb in the current 
-    it 'read the version.rb if the project have one'
+    it 'read the version.rb if the project have one' do
+      bot = LitaJLS::BotBuilder.new(project_with_version_file)
+      expect(bot.local_version.to_s).to eq('0.0.2')
+    end
   end
 
   describe "#execute_command" do
