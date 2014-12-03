@@ -104,7 +104,7 @@ describe LitaJLS::BotBuilder do
 
     before do
       if File.directory?(test_opsbots_path)
-        system("git --work-tree=#{test_opsbots_path} --git-dir=#{File.join(test_opsbots_path, '.git')} pull --ff-only origin master")
+        system("cd #{test_opsbots_path}; git pull origin master "
       else
         system("git clone git@github.com:ph/test-opsbots.git #{test_opsbots_path}")
       end
