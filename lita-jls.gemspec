@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-jls"
-  spec.version       = "0.0.1"
+  spec.version       = "0.0.10"
   spec.authors       = ["Jordan Sissel"]
   spec.email         = ["jls@semicomplete.com"]
   spec.description   = %q{Some stuff for the lita.io bot}
