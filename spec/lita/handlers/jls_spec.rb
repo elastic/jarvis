@@ -19,11 +19,33 @@ describe Lita::Handlers::Jls, :lita_handler => true do
 
   it "routes `(tableflip)` to :tableflip" do
     is_expected.to route_command("(tableflip)").to(:tableflip)
-    
   end
 
   it "routes `publish` to :publish" do
     is_expected.to route_command("publish https://github.com/foo/bar").with_authorization_for(:logstash).to(:publish)
+  end
+
+  it "routes `why computer so bad` to :pop_exception" do
+    is_expected.to route_command("why computer so bad?").to(:pop_exception)
+    is_expected.to route_command("why computers so bad?").to(:pop_exception)
+  end
+
+  context "when dealing with exceptions", :network => true do
+    let(:bad_exception) { double("exception", :backtrace => 'line X', :message => '0 != 1', :exception => 'not working') }
+
+    it 'should pop the exception saved to redis' do
+      subject.push_exception(bad_exception)
+      send_command("Why computers so bad?")
+
+      expect(replies[1]).to match(/^exception: #{bad_exception.exception}/)
+      expect(replies[2]).to match(/^message: #{bad_exception.message}/)
+      expect(replies[3]).to match(/^backtrace: #{bad_exception.backtrace}/)
+    end
+
+    it 'doesnt return an exception if the list is empty' do
+      send_command("Why computers so bad?")
+      expect(replies[1]).to match(/No exception saved/)
+    end
   end
 
   context "#merge", :network => true do
