@@ -71,7 +71,7 @@ module LitaJLS
       # and require the file in the gemspec. 
       # Ruby will cache this require and not reload it again in a long running
       # process like the bot.
-      cmd = "/usr/bin/env ruby -e \"require 'json'; spec = Gem::Specification.load('#{find_gemspec}'); results = { :name => spec.name, :version => spec.version }.to_json;puts results\""
+      cmd = "ruby -e \"require 'json'; spec = Gem::Specification.load('#{find_gemspec}'); results = { :name => spec.name, :version => spec.version }.to_json;puts results\""
       results = execute_command_with_ruby(cmd)
 
       if run_successfully?(results)
