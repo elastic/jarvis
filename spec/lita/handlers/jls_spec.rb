@@ -46,6 +46,14 @@ describe Lita::Handlers::Jls, :lita_handler => true do
       send_command("Why computers so bad?")
       expect(replies[1]).to match(/No exception saved/)
     end
+
+    it 'permits to add context keys to the exception' do
+      project = 'elasticsearch/jarvis'
+      subject.push_exception(bad_exception, :project => project)
+
+      send_command("Why computers so bad?")
+      expect(replies.last).to match(/^project: #{project}/)
+    end
   end
 
   context "#merge", :network => true do
