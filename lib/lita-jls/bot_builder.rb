@@ -89,7 +89,7 @@ module LitaJLS
         gemspec = Struct.new(:name, :version) 
         return gemspec.new(name, version)
       else
-        raise results.strderr
+        raise results.stderr
       end
     end
 
@@ -110,7 +110,7 @@ module LitaJLS
       if run_successfully?(task_result)
         report_ok(task_result.cmd, task_result.stdout)
       else
-        report_error(task_result.cmd, task_result.stdout, task_result.strderr)
+        report_error(task_result.cmd, task_result.stdout, task_result.stderr)
       end
     end
 
@@ -176,10 +176,10 @@ module LitaJLS
 
     def execute_command(cmd, environment_variables = {})
       logger.debug("Running command", :cmd => cmd, :path => current_path)
-      Open3.popen3(environment_variables, cmd, :chdir => current_path) do |input, stdout, strderr, thr|
+      Open3.popen3(environment_variables, cmd, :chdir => current_path) do |input, stdout, stderr, thr|
         return OpenStruct.new(:stdout => stdout.read,
                               :status => thr.value,
-                              :strderr => strderr.read,
+                              :stderr => stderr.read,
                               :cmd => cmd)
       end
     end
