@@ -36,8 +36,13 @@ module Lita
         :restrict_to => :logstash,
         :help => { 'publish https://github.com/ORG/project' => 'Install dependencies, Run test, build gem, publish and compare version on rubygems' }
 
+      route /^why computer(s?) so bad\?/i, :pop_exception,
+        :command => true,
+        :help => { 'why computers so bad?' => 'return the last exception from redis' }
+
       REMOTE = "origin"
       URLBASE = "https://github.com/"
+      LIMIT_EXCEPTIONS_HISTORY = 20
 
       RUBY_VERSION = "jruby-1.7.16"
 
@@ -45,6 +50,39 @@ module Lita
 
       def self.default_config(config)
         config.default_organization = nil
+      end
+
+      def pop_exception(msg)
+        public_response = ['Commencing automated assembly. Estimated completion time is five hours.',
+                           'That is the only way, sir.',
+                           'Sir, please may I request just a few hours to calibrate.' ]
+
+        e = @redis.lpop(:exception)
+
+        msg.reply(public_response.sample)
+
+        logger.debug("pop exception", :exception => e)
+
+        if e
+          e = JSON.parse(e) 
+
+          msg.reply_privately("exception: #{e["exception"]}")
+          msg.reply_privately("message: #{e["message"]}")
+          msg.reply_privately("backtrace: #{Array(e["backtrace"]).join("\n")}")
+        else
+          msg.reply_privately("No exception saved.")
+        end
+      end
+
+      def push_exception(e)
+        error = {
+          "backtrace" => e.backtrace,
+          "message" => e.message,
+          "exception" => e.exception
+        }
+
+        @redis.lpush(:exception, error.to_json)
+        @redis.ltrim(:exception, 0, LIMIT_EXCEPTIONS_HISTORY)
       end
 
       def publish(msg)
@@ -66,6 +104,7 @@ module Lita
         reporter = LitaJLS::Reporter::HipChat.new(builder.build)
         reporter.format(msg)
       rescue => e
+        push_exception(e)
         msg.reply("(stare) Error: #{e.inspect}")
         raise
       end # def publish
@@ -77,6 +116,8 @@ module Lita
       def setup(*args)
         ENV["PAGER"] = "cat"
         @@logger_subscription ||= logger.subscribe(STDOUT)
+
+        @redis ||= Redis::Namespace.new("opsbot", redis: Lita.redis)
       end
 
       def cla(msg)
@@ -88,6 +129,7 @@ module Lita
         msg.reply("#{user}/#{project}##{pr} CLA OK (freddie)")
       rescue => e
         msg.reply("cla check error: #{e}")
+        push_exception(e)
       end
 
       def merge(msg)
@@ -108,6 +150,7 @@ module Lita
           cla?("#{user}/#{project}", pr)
         rescue => e
           msg.reply("(firstworldproblems) cla check failed for #{user}/#{project}##{pr}.\n #{e}")
+          push_exception(e)
           return
         end
 
@@ -151,6 +194,7 @@ module Lita
               commit[:message] += "\nFixes ##{pr}"
             end
           rescue => e
+            push_exception(e)
             msg.reply("(jackie) Failed attempting to merge #{user}/#{project}##{pr} into #{branch}: #{e}")
             raise
           end
@@ -167,6 +211,7 @@ module Lita
           github_issue_label("#{user}/#{project}", pr.to_i, labels)
         end
       rescue => e
+        push_exception(e)
         msg.reply("(stare) Error: #{e.inspect}")
         raise
       end # def merge
@@ -180,6 +225,7 @@ module Lita
           FileUtils.rm_r(dir) if File.directory?(dir)
           msg.reply("Git: (tableflip) (success)")
         rescue => e
+          push_exception(e)
           msg.reply("Git: (tableflip) (huh): #{e}")
           raise e
         end
