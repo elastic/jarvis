@@ -66,6 +66,11 @@ module Lita
         if e
           e = JSON.parse(e) 
 
+          msg.reply_privately("exception: #{e.delete('exception')}")
+          msg.reply_privately("message: #{e.delete('message')}")
+          msg.reply_privately("backtrace: #{e.delete('backtrace')}")
+
+          # Print the remaining context
           e.each do |key, value|
             msg.reply_privately("#{key}: #{value}")
           end
