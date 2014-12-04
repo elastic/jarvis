@@ -3,32 +3,42 @@ require 'rubygems'
 require 'open3'
 require 'gems'
 require 'semverly'
-require 'json'
 
 module LitaJLS
   module Reporter
     class HipChat
-      def initialize(build_messages)
-        @build_messages = build_messages
+      def initialize(build_results)
+        @build_results = build_results
       end
 
       def format(message)
         formatted_message = []
 
-        @build_messages.each do |build_message|
-          if build_message.status == :ok
-            formatted_message << " - (success) #{build_message.message}"
+        @build_results.each do |build_result|
+          if build_result.status == :ok
+            formatted_message << " - (success) #{build_result.message}"
           else
-            if build_message.full_message
-              formatted_message << " - (stare) #{build_message.message} \nstacktrace: #{build_message.error || build_message.full_message}"
+            if build_result.full_message
+              formatted_message << " - (stare) #{build_result.message} \nstacktrace: #{build_result.error || build_result.full_message}"
             else
-              formatted_message << " - (stare) #{build_message.message}"
+              formatted_message << " - (stare) #{build_result.message}"
             end
           end
         end
 
         message.reply(formatted_message.join("\n"))
       end
+    end
+  end
+
+  class BuildResult
+    attr_reader :status, :full_message, :error, :message
+
+    def initialize(options = {})
+      @status = options[:status]
+      @full_message = options[:full_message]
+      @error = options[:error]
+      @message = options[:message]
     end
   end
 
@@ -71,11 +81,13 @@ module LitaJLS
       # and require the file in the gemspec. 
       # Ruby will cache this require and not reload it again in a long running
       # process like the bot.
-      cmd = "ruby -e \"require 'json'; spec = Gem::Specification.load('#{find_gemspec}'); results = { :name => spec.name, :version => spec.version }.to_json;puts results\""
+      cmd = "ruby -e \"spec = Gem::Specification.load('#{find_gemspec}'); puts [spec.name, spec.version].join(',')\""
       results = execute_command_with_ruby(cmd)
 
       if run_successfully?(results)
-        return OpenStruct.new(JSON.parse(results.stdout))
+        name, version = results.stdout.strip.split(',')
+        gemspec = Struct.new(:name, :version) 
+        return gemspec.new(name, version)
       else
         raise results.strderr
       end
@@ -107,11 +119,11 @@ module LitaJLS
     end
 
     def report_error(message, full_message = nil, error = nil)
-     OpenStruct.new(:status => :error, :message => message, :full_message => full_message, :error => error)
+     BuildResult.new(:status => :error, :message => message, :full_message => full_message, :error => error)
     end
 
     def report_ok(message, full_message = nil)
-     OpenStruct.new(:status => :ok, :message => message, :full_message => full_message)
+     BuildResult.new(:status => :ok, :message => message, :full_message => full_message)
     end
 
     def fetch_last_released_version(name)

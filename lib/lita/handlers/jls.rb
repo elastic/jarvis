@@ -66,20 +66,20 @@ module Lita
         if e
           e = JSON.parse(e) 
 
-          msg.reply_privately("exception: #{e["exception"]}")
-          msg.reply_privately("message: #{e["message"]}")
-          msg.reply_privately("backtrace: #{Array(e["backtrace"]).join("\n")}")
+          e.each do |key, value|
+            msg.reply_privately("#{key}: #{value}")
+          end
         else
           msg.reply_privately("No exception saved.")
         end
       end
 
-      def push_exception(e)
+      def push_exception(e, context = {})
         error = {
-          "backtrace" => e.backtrace,
+          "exception" => e.exception,
           "message" => e.message,
-          "exception" => e.exception
-        }
+          "backtrace" => e.backtrace,
+        }.merge(context)
 
         @redis.lpush(:exception, error.to_json)
         @redis.ltrim(:exception, 0, LIMIT_EXCEPTIONS_HISTORY)
@@ -104,7 +104,7 @@ module Lita
         reporter = LitaJLS::Reporter::HipChat.new(builder.build)
         reporter.format(msg)
       rescue => e
-        push_exception(e)
+        push_exception(e, :project => "#{github_parser.user}/#{github_parser.project}")
         msg.reply("(stare) Error: #{e.inspect}")
         raise
       end # def publish
@@ -129,7 +129,7 @@ module Lita
         msg.reply("#{user}/#{project}##{pr} CLA OK (freddie)")
       rescue => e
         msg.reply("cla check error: #{e}")
-        push_exception(e)
+        push_exception(e, :project => "#{user}/#{project}", :pr => pr)
       end
 
       def merge(msg)
@@ -150,7 +150,7 @@ module Lita
           cla?("#{user}/#{project}", pr)
         rescue => e
           msg.reply("(firstworldproblems) cla check failed for #{user}/#{project}##{pr}.\n #{e}")
-          push_exception(e)
+          push_exception(e, :project => "#{user}/#{project}", :pr => pr)
           return
         end
 
@@ -194,7 +194,7 @@ module Lita
               commit[:message] += "\nFixes ##{pr}"
             end
           rescue => e
-            push_exception(e)
+            push_exception(e, :project => "#{user}/#{project}", :pr => pr, :branch => branch)
             msg.reply("(jackie) Failed attempting to merge #{user}/#{project}##{pr} into #{branch}: #{e}")
             raise
           end
@@ -211,7 +211,7 @@ module Lita
           github_issue_label("#{user}/#{project}", pr.to_i, labels)
         end
       rescue => e
-        push_exception(e)
+        push_exception(e, :project => "#{user}/#{project}", :pr => pr, :branch => branches)
         msg.reply("(stare) Error: #{e.inspect}")
         raise
       end # def merge
