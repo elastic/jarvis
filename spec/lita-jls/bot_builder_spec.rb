@@ -148,5 +148,11 @@ describe LitaJLS::BotBuilder do
         expect(results[0].message).to match(/doesn't have a gemspec$/)
       end
     end
+
+    it 'should read the specification file' do
+      repository = File.expand_path('spec/fixtures/logstash-codec-edn')
+      bot = LitaJLS::BotBuilder.new(repository)
+      expect(bot.gem_specification.version).to eq('0.1.3')
+    end
   end
 end

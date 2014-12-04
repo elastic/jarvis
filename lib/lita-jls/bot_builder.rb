@@ -69,12 +69,16 @@ module LitaJLS
       # HACK: if you are using the `real` bundler way of creating gem
       # You have to create a version.rb file containing the version number
       # and require the file in the gemspec. 
-      # Ruby will cache this require and not reload it again in a load running
-      # process like the hipchat bot.
-      cmd = "ruby -e \"require 'json'; spec = Gem::Specification.load('#{find_gemspec}'); results = { :name => spec.name, :version => spec.version }.to_json;puts results\""
-      results = JSON.parse(execute_command_with_ruby(cmd).stdout)
+      # Ruby will cache this require and not reload it again in a long running
+      # process like the bot.
+      cmd = "/usr/bin/env ruby -e \"require 'json'; spec = Gem::Specification.load('#{find_gemspec}'); results = { :name => spec.name, :version => spec.version }.to_json;puts results\""
+      results = execute_command_with_ruby(cmd)
 
-      return OpenStruct.new(results)
+      if run_successfully?(results)
+        return OpenStruct.new(JSON.parse(results.stdout))
+      else
+        raise results.strderr
+      end
     end
 
     def publishable?
