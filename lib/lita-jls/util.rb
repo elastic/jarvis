@@ -240,6 +240,14 @@ module LitaJLS
       raise e.class, "Failed adding label '#{labels}' to issue #{issue} on #{project}: #{e}"
     end # def github_issue_label
 
+    def github_issue_comment(project, issue, comment)
+      logger.debug('Adding a comment to an given issue', :project => project, :issue => issue, :comment => comment)
+      github_client.add_comment(project, issue, comment) unless comment.empty?
+    rescue => e
+      raise e.class, "Failed adding a comment #{comment} to issue #{issue} on #{project}: #{e}"
+
+    end # def github_issue_comment
+
     def git(gitdir, *args)
       Dir.chdir(gitdir) do
         system!("git", *args)
