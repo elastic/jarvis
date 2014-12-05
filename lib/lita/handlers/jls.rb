@@ -166,6 +166,7 @@ module Lita
           labels = branches.reject { |b| b == "master" }
           github_issue_label("#{user}/#{project}", pr.to_i, labels)
         end
+        github_issue_comment("#{user}/#{project}", pr.to_i, "Merged sucessfully into #{branchspec}!")
       rescue => e
         msg.reply("(stare) Error: #{e.inspect}")
         raise
