@@ -36,9 +36,9 @@ module Lita
         :restrict_to => :logstash,
         :help => { 'publish https://github.com/ORG/project' => 'Install dependencies, Run test, build gem, publish and compare version on rubygems' }
 
-      route /^why computer(s?) so bad\?/i, :pop_exception,
+      route /^(why computer(s?) so bad\?|explain)/i, :pop_exception,
         :command => true,
-        :help => { 'why computers so bad?' => 'return the last exception from redis' }
+        :help => { 'explain or why computers so bad?' => 'return the last exception from redis' }
 
       REMOTE = "origin"
       URLBASE = "https://github.com/"
