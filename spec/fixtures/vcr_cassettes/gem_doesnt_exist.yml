@@ -14,8 +14,6 @@ http_interactions:
       User-Agent:
       - Gems 0.8.3
       - Ruby
-      Authorization:
-      - 953b0543ac7ee8528d2a14f263615e33
       Connection:
       - keep-alive
       Keep-Alive:
@@ -30,7 +28,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 02 Dec 2014 14:56:21 GMT
+      - Tue, 16 Dec 2014 16:12:51 GMT
       Content-Type:
       - application/x-yaml; charset=utf-8
       Transfer-Encoding:
@@ -45,17 +43,15 @@ http_interactions:
       - IE=Edge,chrome=1
       Cache-Control:
       - no-cache, private
-      Set-Cookie:
-      - remember_token=; path=/; expires=Wed, 02-Dec-2015 14:56:21 GMT; secure
       X-Request-Id:
-      - 782b7237bf1635785132a70d10a39323
+      - 11452fa565f746c1633fc8f219167984
       X-Runtime:
-      - '0.004458'
+      - '0.005424'
       X-Rack-Cache:
       - miss
     body:
       encoding: UTF-8
       string: This rubygem could not be found.
     http_version: 
-  recorded_at: Tue, 02 Dec 2014 14:56:21 GMT
+  recorded_at: Tue, 16 Dec 2014 16:12:51 GMT
 recorded_with: VCR 2.9.3
