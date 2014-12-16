@@ -34,15 +34,7 @@ module LitaJLS
       # TODO(sissel): json exception? .get exception?
 
       if check["status"] == "error"
-        # The CLA checker doesn't know about Elasticsearch employees,
-        # so let's work around that problem.
-        github = Faraday.new(:url => "https://api.github.com")
-        response = github.get("/repos/#{repository}/pulls/#{pr}")
-        pr_data = JSON.parse(response.body)
-
-        if !logstash_team?(pr_data["user"]["login"])
-          raise CLANotSigned, check["message"]
-        end
+        raise CLANotSigned, check["message"]
       end
 
       true
@@ -79,6 +71,7 @@ module LitaJLS
       begin
         git(".", "clone", url, cache)
       rescue => e
+        puts "!cache: #{cache}"
         logger.debug("clone_at failed, trying to open repo instead", :cache => cache, :error => e)
         git(cache, "log", "-n0") # Verify some kind of git works here
       end

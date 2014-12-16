@@ -60,8 +60,8 @@ describe Lita::Handlers::Jls, :lita_handler => true do
     before do
       original_git = subject.method(:git)
 
-      allow(subject.config).to receive(:cla_uri).and_return(ENV["ELASTICSEARCH_CLA_URL"] || "http://test.local/verify/pull_request" )
-
+      allow(subject.config).to receive(:cla_uri).and_return(ENV['ELASTICSEARCH_CLA_URL'])
+      # allow(subject.config).to receive(:cla_uri).and_return('http://<CREDENTIALS>@<HOST>/verify/pull_request')
       allow(subject).to receive(:git).with(any_args) do |gitdir, *args|
         # Ignore any 'git push' attempts
         if args[0] == "push" # git("push", ...)
@@ -73,8 +73,10 @@ describe Lita::Handlers::Jls, :lita_handler => true do
     end
 
     it "should reply successfully if the merge works" do
-      VCR.use_cassette("successful_clacheck") do
+      VCR.use_cassette("successful_clacheck", :tags => [:internal]) do
         allow(subject).to receive(:github_issue_label) { nil }
+        allow(subject).to receive(:github_issue_comment) { nil }
+
         expect(subject).to receive(:github_issue_label).with("jordansissel/this-is-only-a-test", 1, [])
 
         send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/1 master")
@@ -83,7 +85,8 @@ describe Lita::Handlers::Jls, :lita_handler => true do
     end
 
     it "should properly handle long commit messages" do
-      VCR.use_cassette("successful_clacheck_long_commit") do
+      VCR.use_cassette("successful_clacheck_long_commit", :tags => [:internal]) do
+        allow(subject).to receive(:github_issue_comment) { nil }
         send_command("merge https://github.com/jordansissel/this-is-only-a-test/pull/4 master")
         insist { replies.last } == "(success) jordansissel/this-is-only-a-test#4 merged into: master"
 

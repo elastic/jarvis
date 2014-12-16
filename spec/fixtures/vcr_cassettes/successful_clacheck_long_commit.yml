@@ -21,11 +21,11 @@ http_interactions:
       Server:
       - nginx/1.4.6 (Ubuntu)
       Date:
-      - Tue, 02 Dec 2014 15:01:19 GMT
+      - Tue, 16 Dec 2014 16:18:16 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '261'
+      - '128'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -36,15 +36,13 @@ http_interactions:
       - nosniff
     body:
       encoding: UTF-8
-      string: '{"status":"error","status_human":"Error","message":"Not all commit
-        authors have signed the CLA.","commits":[{"sha":"6aa67f48","subject":"One
-        two three four five six seven eight.","nickname":"jordansissel","email":"jls@semicomplete.com","name":"Jordan
-        Sissel"}]}'
+      string: '{"status":"success","status_human":"Success","message":"All commit
+        authors have signed the CLA or are members of Elasticsearch"}'
     http_version: 
-  recorded_at: Tue, 02 Dec 2014 14:56:58 GMT
+  recorded_at: Tue, 16 Dec 2014 16:13:18 GMT
 - request:
     method: get
-    uri: https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4
+    uri: https://test.local/jordansissel/this-is-only-a-test/pull/4.patch
     body:
       encoding: US-ASCII
       string: ''
@@ -63,82 +61,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Tue, 02 Dec 2014 14:56:58 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Status:
-      - 200 OK
-      X-Ratelimit-Limit:
-      - '60'
-      X-Ratelimit-Remaining:
-      - '56'
-      X-Ratelimit-Reset:
-      - '1417535080'
-      Cache-Control:
-      - public, max-age=60, s-maxage=60
-      Last-Modified:
-      - Tue, 02 Dec 2014 12:10:03 GMT
-      Etag:
-      - '"83e128a2027d04c2087337731a6cec70"'
-      Vary:
-      - Accept
-      - Accept-Encoding
-      X-Github-Media-Type:
-      - github.v3
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Frame-Options:
-      - deny
-      Content-Security-Policy:
-      - default-src 'none'
-      Access-Control-Allow-Credentials:
-      - 'true'
-      Access-Control-Expose-Headers:
-      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
-        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-      Access-Control-Allow-Origin:
-      - "*"
-      X-Github-Request-Id:
-      - 60178CA6:15D4:2FF4973:547DD33A
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubdomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Served-By:
-      - 065b43cd9674091fec48a221b420fbb3
-    body:
-      encoding: UTF-8
-      string: '{"url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4","id":21885986,"html_url":"https://github.com/jordansissel/this-is-only-a-test/pull/4","diff_url":"https://github.com/jordansissel/this-is-only-a-test/pull/4.diff","patch_url":"https://github.com/jordansissel/this-is-only-a-test/pull/4.patch","issue_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/4","number":4,"state":"open","locked":false,"title":"One
-        two three four five six seven eight.","user":{"login":"jordansissel","id":131818,"avatar_url":"https://avatars.githubusercontent.com/u/131818?v=3","gravatar_id":"","url":"https://api.github.com/users/jordansissel","html_url":"https://github.com/jordansissel","followers_url":"https://api.github.com/users/jordansissel/followers","following_url":"https://api.github.com/users/jordansissel/following{/other_user}","gists_url":"https://api.github.com/users/jordansissel/gists{/gist_id}","starred_url":"https://api.github.com/users/jordansissel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/jordansissel/subscriptions","organizations_url":"https://api.github.com/users/jordansissel/orgs","repos_url":"https://api.github.com/users/jordansissel/repos","events_url":"https://api.github.com/users/jordansissel/events{/privacy}","received_events_url":"https://api.github.com/users/jordansissel/received_events","type":"User","site_admin":false},"body":"Nine
-        ten eleven.\r\n\r\nTwelve?\r\n* Thirteen\r\n* Fourteen","created_at":"2014-09-27T05:00:30Z","updated_at":"2014-09-29T22:15:04Z","closed_at":null,"merged_at":null,"merge_commit_sha":"5610d79a6219e24fc83af7efc4380498140b29be","assignee":null,"milestone":null,"commits_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4/commits","review_comments_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4/comments","review_comment_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/comments/{number}","comments_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/4/comments","statuses_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/statuses/6aa67f489306e0ea28d1b47421006278b2ca08ec","head":{"label":"jordansissel:long","ref":"long","sha":"6aa67f489306e0ea28d1b47421006278b2ca08ec","user":{"login":"jordansissel","id":131818,"avatar_url":"https://avatars.githubusercontent.com/u/131818?v=3","gravatar_id":"","url":"https://api.github.com/users/jordansissel","html_url":"https://github.com/jordansissel","followers_url":"https://api.github.com/users/jordansissel/followers","following_url":"https://api.github.com/users/jordansissel/following{/other_user}","gists_url":"https://api.github.com/users/jordansissel/gists{/gist_id}","starred_url":"https://api.github.com/users/jordansissel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/jordansissel/subscriptions","organizations_url":"https://api.github.com/users/jordansissel/orgs","repos_url":"https://api.github.com/users/jordansissel/repos","events_url":"https://api.github.com/users/jordansissel/events{/privacy}","received_events_url":"https://api.github.com/users/jordansissel/received_events","type":"User","site_admin":false},"repo":{"id":24477778,"name":"this-is-only-a-test","full_name":"jordansissel/this-is-only-a-test","owner":{"login":"jordansissel","id":131818,"avatar_url":"https://avatars.githubusercontent.com/u/131818?v=3","gravatar_id":"","url":"https://api.github.com/users/jordansissel","html_url":"https://github.com/jordansissel","followers_url":"https://api.github.com/users/jordansissel/followers","following_url":"https://api.github.com/users/jordansissel/following{/other_user}","gists_url":"https://api.github.com/users/jordansissel/gists{/gist_id}","starred_url":"https://api.github.com/users/jordansissel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/jordansissel/subscriptions","organizations_url":"https://api.github.com/users/jordansissel/orgs","repos_url":"https://api.github.com/users/jordansissel/repos","events_url":"https://api.github.com/users/jordansissel/events{/privacy}","received_events_url":"https://api.github.com/users/jordansissel/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/jordansissel/this-is-only-a-test","description":"This
-        is only a test. I promise!","fork":false,"url":"https://api.github.com/repos/jordansissel/this-is-only-a-test","forks_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/forks","keys_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/keys{/key_id}","collaborators_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/teams","hooks_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/hooks","issue_events_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/events{/number}","events_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/events","assignees_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/assignees{/user}","branches_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/branches{/branch}","tags_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/tags","blobs_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/refs{/sha}","trees_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/trees{/sha}","statuses_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/statuses/{sha}","languages_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/languages","stargazers_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/stargazers","contributors_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/contributors","subscribers_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/subscribers","subscription_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/subscription","commits_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/commits{/sha}","git_commits_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/commits{/sha}","comments_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/comments{/number}","issue_comment_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/comments/{number}","contents_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/contents/{+path}","compare_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/compare/{base}...{head}","merges_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/merges","archive_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/downloads","issues_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues{/number}","pulls_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls{/number}","milestones_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/milestones{/number}","notifications_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/labels{/name}","releases_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/releases{/id}","created_at":"2014-09-25T22:38:00Z","updated_at":"2014-09-27T04:08:59Z","pushed_at":"2014-09-27T05:26:36Z","git_url":"git://github.com/jordansissel/this-is-only-a-test.git","ssh_url":"git@github.com:jordansissel/this-is-only-a-test.git","clone_url":"https://github.com/jordansissel/this-is-only-a-test.git","svn_url":"https://github.com/jordansissel/this-is-only-a-test","homepage":"","size":232,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":0,"mirror_url":null,"open_issues_count":4,"forks":0,"open_issues":4,"watchers":0,"default_branch":"master"}},"base":{"label":"jordansissel:master","ref":"master","sha":"1a2be1160aa1a6bbb984ef7b60fd02882b341bf2","user":{"login":"jordansissel","id":131818,"avatar_url":"https://avatars.githubusercontent.com/u/131818?v=3","gravatar_id":"","url":"https://api.github.com/users/jordansissel","html_url":"https://github.com/jordansissel","followers_url":"https://api.github.com/users/jordansissel/followers","following_url":"https://api.github.com/users/jordansissel/following{/other_user}","gists_url":"https://api.github.com/users/jordansissel/gists{/gist_id}","starred_url":"https://api.github.com/users/jordansissel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/jordansissel/subscriptions","organizations_url":"https://api.github.com/users/jordansissel/orgs","repos_url":"https://api.github.com/users/jordansissel/repos","events_url":"https://api.github.com/users/jordansissel/events{/privacy}","received_events_url":"https://api.github.com/users/jordansissel/received_events","type":"User","site_admin":false},"repo":{"id":24477778,"name":"this-is-only-a-test","full_name":"jordansissel/this-is-only-a-test","owner":{"login":"jordansissel","id":131818,"avatar_url":"https://avatars.githubusercontent.com/u/131818?v=3","gravatar_id":"","url":"https://api.github.com/users/jordansissel","html_url":"https://github.com/jordansissel","followers_url":"https://api.github.com/users/jordansissel/followers","following_url":"https://api.github.com/users/jordansissel/following{/other_user}","gists_url":"https://api.github.com/users/jordansissel/gists{/gist_id}","starred_url":"https://api.github.com/users/jordansissel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/jordansissel/subscriptions","organizations_url":"https://api.github.com/users/jordansissel/orgs","repos_url":"https://api.github.com/users/jordansissel/repos","events_url":"https://api.github.com/users/jordansissel/events{/privacy}","received_events_url":"https://api.github.com/users/jordansissel/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/jordansissel/this-is-only-a-test","description":"This
-        is only a test. I promise!","fork":false,"url":"https://api.github.com/repos/jordansissel/this-is-only-a-test","forks_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/forks","keys_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/keys{/key_id}","collaborators_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/teams","hooks_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/hooks","issue_events_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/events{/number}","events_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/events","assignees_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/assignees{/user}","branches_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/branches{/branch}","tags_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/tags","blobs_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/refs{/sha}","trees_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/trees{/sha}","statuses_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/statuses/{sha}","languages_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/languages","stargazers_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/stargazers","contributors_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/contributors","subscribers_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/subscribers","subscription_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/subscription","commits_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/commits{/sha}","git_commits_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/git/commits{/sha}","comments_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/comments{/number}","issue_comment_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/comments/{number}","contents_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/contents/{+path}","compare_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/compare/{base}...{head}","merges_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/merges","archive_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/downloads","issues_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues{/number}","pulls_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls{/number}","milestones_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/milestones{/number}","notifications_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/labels{/name}","releases_url":"https://api.github.com/repos/jordansissel/this-is-only-a-test/releases{/id}","created_at":"2014-09-25T22:38:00Z","updated_at":"2014-09-27T04:08:59Z","pushed_at":"2014-09-27T05:26:36Z","git_url":"git://github.com/jordansissel/this-is-only-a-test.git","ssh_url":"git@github.com:jordansissel/this-is-only-a-test.git","clone_url":"https://github.com/jordansissel/this-is-only-a-test.git","svn_url":"https://github.com/jordansissel/this-is-only-a-test","homepage":"","size":232,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":0,"mirror_url":null,"open_issues_count":4,"forks":0,"open_issues":4,"watchers":0,"default_branch":"master"}},"_links":{"self":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4"},"html":{"href":"https://github.com/jordansissel/this-is-only-a-test/pull/4"},"issue":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/4"},"comments":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/issues/4/comments"},"review_comments":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4/comments"},"review_comment":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/comments/{number}"},"commits":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/pulls/4/commits"},"statuses":{"href":"https://api.github.com/repos/jordansissel/this-is-only-a-test/statuses/6aa67f489306e0ea28d1b47421006278b2ca08ec"}},"merged":false,"mergeable":true,"mergeable_state":"clean","merged_by":null,"comments":0,"review_comments":0,"commits":1,"additions":1,"deletions":1,"changed_files":1}'
-    http_version: 
-  recorded_at: Tue, 02 Dec 2014 14:56:58 GMT
-- request:
-    method: get
-    uri: https://github.com/jordansissel/this-is-only-a-test/pull/4.patch
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v0.9.0
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - GitHub.com
-      Date:
-      - Tue, 02 Dec 2014 14:56:59 GMT
+      - Tue, 16 Dec 2014 16:13:18 GMT
       Content-Type:
       - text/plain; charset=utf-8
       Transfer-Encoding:
@@ -165,25 +88,20 @@ http_interactions:
       - X-PJAX
       X-Ua-Compatible:
       - IE=Edge,chrome=1
-      Set-Cookie:
-      - _gh_sess=eyJzZXNzaW9uX2lkIjoiNDc0Njc1YjcxMGNiYWU4MDA0MjJkMjIzN2RlMDVkOGYiLCJzcHlfcmVwbyI6ImpvcmRhbnNpc3NlbC90aGlzLWlzLW9ubHktYS10ZXN0Iiwic3B5X3JlcG9fYXQiOjE0MTc1MzIyMTl9--adbc4238f539f6d11aa4169844aa46cd8fb091bc;
-        path=/; secure; HttpOnly
-      - logged_in=no; domain=.github.com; path=/; expires=Sat, 02-Dec-2034 14:56:59
-        GMT; secure; HttpOnly
       X-Request-Id:
-      - af4e095618b9d4e8ac920324b54c87f5
+      - e01aa6416dc9414b519df3ff5afb8249
       X-Runtime:
-      - '0.039122'
+      - '0.031448'
       X-Rack-Cache:
       - miss
       X-Github-Request-Id:
-      - 60178CA6:15D6:68D3CBB:547DD33B
+      - 428224B6:11C0:19FB394:54905A1E
       Strict-Transport-Security:
       - max-age=31536000; includeSubdomains; preload
       X-Content-Type-Options:
       - nosniff
       X-Served-By:
-      - 63914e33d55e1647962cf498030a7c16
+      - a128136e4734a9f74c013356c773ece7
     body:
       encoding: UTF-8
       string: |
@@ -211,67 +129,5 @@ http_interactions:
         +Long commit?
          Sat Sep 27 04:42:57 UTC 2014
     http_version: 
-  recorded_at: Tue, 02 Dec 2014 14:56:59 GMT
-- request:
-    method: post
-    uri: https://ph:zodac90@api.github.com/repos/jordansissel/this-is-only-a-test/issues/4/labels
-    body:
-      encoding: UTF-8
-      string: "[]"
-    headers:
-      Accept:
-      - application/vnd.github.v3+json
-      User-Agent:
-      - Octokit Ruby Gem 3.5.2
-      Content-Type:
-      - application/json
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Server:
-      - GitHub.com
-      Date:
-      - Tue, 02 Dec 2014 14:57:00 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Status:
-      - 404 Not Found
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '4998'
-      X-Ratelimit-Reset:
-      - '1417535394'
-      X-Github-Media-Type:
-      - github.v3; format=json
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Frame-Options:
-      - deny
-      Content-Security-Policy:
-      - default-src 'none'
-      Access-Control-Allow-Credentials:
-      - 'true'
-      Access-Control-Expose-Headers:
-      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
-        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-      Access-Control-Allow-Origin:
-      - "*"
-      X-Github-Request-Id:
-      - 60178CA6:15D5:4C602DF:547DD33C
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubdomains; preload
-      X-Content-Type-Options:
-      - nosniff
-    body:
-      encoding: UTF-8
-      string: '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/issues/labels/#add-labels-to-an-issue"}'
-    http_version: 
-  recorded_at: Tue, 02 Dec 2014 14:57:00 GMT
+  recorded_at: Tue, 16 Dec 2014 16:13:19 GMT
 recorded_with: VCR 2.9.3

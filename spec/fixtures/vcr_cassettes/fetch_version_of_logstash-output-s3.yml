@@ -14,8 +14,6 @@ http_interactions:
       User-Agent:
       - Gems 0.8.3
       - Ruby
-      Authorization:
-      - 953b0543ac7ee8528d2a14f263615e33
       Connection:
       - keep-alive
       Keep-Alive:
@@ -30,7 +28,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Tue, 02 Dec 2014 14:56:21 GMT
+      - Tue, 16 Dec 2014 16:12:50 GMT
       Content-Type:
       - text/yaml
       Transfer-Encoding:
@@ -54,12 +52,10 @@ http_interactions:
       X-Ua-Compatible:
       - IE=Edge,chrome=1
       - IE=Edge,chrome=1
-      Set-Cookie:
-      - remember_token=; path=/; expires=Wed, 02-Dec-2015 14:56:21 GMT; secure
       X-Request-Id:
-      - 99c8f8cc6a0d1c01b5b168edb1012a82
+      - e726d0892877a0b310402be784f88add
       X-Runtime:
-      - '0.010505'
+      - '0.012082'
       X-Rack-Cache:
       - miss
     body:
@@ -71,7 +67,7 @@ http_interactions:
           description: This gem is a logstash plugin required to be installed on top of the
             Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is
             not a stand-alone program
-          downloads_count: 245
+          downloads_count: 479
           number: 0.1.1
           summary: This plugin was created for store the logstash's events into Amazon Simple
             Storage Service (Amazon S3)
@@ -85,7 +81,7 @@ http_interactions:
           built_at: '2014-11-06T00:00:00Z'
           description: This plugin was created for store the logstash's events into Amazon
             Simple Storage Service (Amazon S3)
-          downloads_count: 178
+          downloads_count: 195
           number: 0.1.0
           summary: This plugin was created for store the logstash's events into Amazon Simple
             Storage Service (Amazon S3)
@@ -96,5 +92,5 @@ http_interactions:
           - Apache License (2.0)
           requirements: []
     http_version: 
-  recorded_at: Tue, 02 Dec 2014 14:56:21 GMT
+  recorded_at: Tue, 16 Dec 2014 16:12:51 GMT
 recorded_with: VCR 2.9.3
