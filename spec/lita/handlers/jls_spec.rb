@@ -28,6 +28,7 @@ describe Lita::Handlers::Jls, :lita_handler => true do
   it "routes `why computer so bad` to :pop_exception" do
     is_expected.to route_command("why computer so bad?").to(:pop_exception)
     is_expected.to route_command("why computers so bad?").to(:pop_exception)
+    is_expected.to route_command("explain").to(:pop_exception)
   end
 
   context "when dealing with exceptions", :network => true do
