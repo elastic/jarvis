@@ -43,7 +43,8 @@ module Lita
 
       route /^migrate_pr (?<source_url>[^ ]+) (?<destination_url>[^ ]+)$/, :migrate_pr,
             :command => true,
-            :help => { 'migrate pr from one repo to another' => 'migrate pr from one repo to another' }
+            :help => { 'migrate_pr https://github.com/elasticsearch/logstash/pull/1452 "\
++          "https://github.com/logstash-plugins/logstash-codec-line' => 'migrate pr from one repo to another' }
 
       REMOTE = "origin"
       URLBASE = "https://github.com/"
