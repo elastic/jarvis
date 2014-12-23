@@ -42,7 +42,7 @@ describe Lita::Handlers::Jls, :lita_handler => true do
   end
 
   context "test migrate dummy pr", :network => true do
-    it "migrate_pr correctly" do
+    it "does migrate_pr correctly" do
       VCR.use_cassette("successful_migrate_pr") do
         send_command("migrate_pr https://github.com/elasticsearch/logstash/pull/1452 "\
           "https://github.com/logstash-plugins/logstash-codec-line")
@@ -74,10 +74,6 @@ describe Lita::Handlers::Jls, :lita_handler => true do
       send_command("Why computers so bad?")
       expect(replies.last).to match(/^project: #{project}/)
     end
-  end
-
-  context "#migrate_pr", :network => true do
-
   end
 
   context "#merge", :network => true do
