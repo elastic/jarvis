@@ -1,0 +1,311 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/elasticsearch/logstash/pulls/1452
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 3.7.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Tue, 23 Dec 2014 03:49:59 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '47'
+      X-Ratelimit-Reset:
+      - '1419306640'
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Last-Modified:
+      - Tue, 23 Dec 2014 02:23:46 GMT
+      Etag:
+      - '"19a0c83a84214c163f4547db3fe9cc44"'
+      Vary:
+      - Accept
+      - Accept-Encoding
+      X-Github-Media-Type:
+      - github.v3; format=json
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - deny
+      Content-Security-Policy:
+      - default-src 'none'
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Github-Request-Id:
+      - 32A857BD:2877:197BA3B:5498E667
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Served-By:
+      - 065b43cd9674091fec48a221b420fbb3
+    body:
+      encoding: UTF-8
+      string: '{"url":"https://api.github.com/repos/elasticsearch/logstash/pulls/1452","id":17324038,"html_url":"https://github.com/elasticsearch/logstash/pull/1452","diff_url":"https://github.com/elasticsearch/logstash/pull/1452.diff","patch_url":"https://github.com/elasticsearch/logstash/pull/1452.patch","issue_url":"https://api.github.com/repos/elasticsearch/logstash/issues/1452","number":1452,"state":"closed","locked":false,"title":"Fix
+        for #1451","user":{"login":"suyograo","id":1595958,"avatar_url":"https://avatars.githubusercontent.com/u/1595958?v=3","gravatar_id":"","url":"https://api.github.com/users/suyograo","html_url":"https://github.com/suyograo","followers_url":"https://api.github.com/users/suyograo/followers","following_url":"https://api.github.com/users/suyograo/following{/other_user}","gists_url":"https://api.github.com/users/suyograo/gists{/gist_id}","starred_url":"https://api.github.com/users/suyograo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/suyograo/subscriptions","organizations_url":"https://api.github.com/users/suyograo/orgs","repos_url":"https://api.github.com/users/suyograo/repos","events_url":"https://api.github.com/users/suyograo/events{/privacy}","received_events_url":"https://api.github.com/users/suyograo/received_events","type":"User","site_admin":false},"body":"Line
+        codec was using an undefined variable which caused it to throw an exception.\r\n\r\nFixed
+        and added tests for line codecs\r\n\r\nCloses #1451","created_at":"2014-06-18T22:32:38Z","updated_at":"2014-09-09T13:36:19Z","closed_at":"2014-06-30T18:25:43Z","merged_at":"2014-06-30T18:25:43Z","merge_commit_sha":"450a95413c282b3ef3af504e45a2b1eade19617f","assignee":{"login":"suyograo","id":1595958,"avatar_url":"https://avatars.githubusercontent.com/u/1595958?v=3","gravatar_id":"","url":"https://api.github.com/users/suyograo","html_url":"https://github.com/suyograo","followers_url":"https://api.github.com/users/suyograo/followers","following_url":"https://api.github.com/users/suyograo/following{/other_user}","gists_url":"https://api.github.com/users/suyograo/gists{/gist_id}","starred_url":"https://api.github.com/users/suyograo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/suyograo/subscriptions","organizations_url":"https://api.github.com/users/suyograo/orgs","repos_url":"https://api.github.com/users/suyograo/repos","events_url":"https://api.github.com/users/suyograo/events{/privacy}","received_events_url":"https://api.github.com/users/suyograo/received_events","type":"User","site_admin":false},"milestone":{"url":"https://api.github.com/repos/elasticsearch/logstash/milestones/2","labels_url":"https://api.github.com/repos/elasticsearch/logstash/milestones/2/labels","id":624113,"number":2,"title":"v1.5.0","description":"","creator":{"login":"colinsurprenant","id":2010,"avatar_url":"https://avatars.githubusercontent.com/u/2010?v=3","gravatar_id":"","url":"https://api.github.com/users/colinsurprenant","html_url":"https://github.com/colinsurprenant","followers_url":"https://api.github.com/users/colinsurprenant/followers","following_url":"https://api.github.com/users/colinsurprenant/following{/other_user}","gists_url":"https://api.github.com/users/colinsurprenant/gists{/gist_id}","starred_url":"https://api.github.com/users/colinsurprenant/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/colinsurprenant/subscriptions","organizations_url":"https://api.github.com/users/colinsurprenant/orgs","repos_url":"https://api.github.com/users/colinsurprenant/repos","events_url":"https://api.github.com/users/colinsurprenant/events{/privacy}","received_events_url":"https://api.github.com/users/colinsurprenant/received_events","type":"User","site_admin":false},"open_issues":36,"closed_issues":185,"state":"open","created_at":"2014-04-08T16:53:38Z","updated_at":"2014-12-22T21:51:36Z","due_on":null,"closed_at":null},"commits_url":"https://api.github.com/repos/elasticsearch/logstash/pulls/1452/commits","review_comments_url":"https://api.github.com/repos/elasticsearch/logstash/pulls/1452/comments","review_comment_url":"https://api.github.com/repos/elasticsearch/logstash/pulls/comments/{number}","comments_url":"https://api.github.com/repos/elasticsearch/logstash/issues/1452/comments","statuses_url":"https://api.github.com/repos/elasticsearch/logstash/statuses/674c3812f53d6a4ce6b98f78c8a539e0332cc664","head":{"label":"suyograo:fix/1451","ref":"fix/1451","sha":"674c3812f53d6a4ce6b98f78c8a539e0332cc664","user":{"login":"suyograo","id":1595958,"avatar_url":"https://avatars.githubusercontent.com/u/1595958?v=3","gravatar_id":"","url":"https://api.github.com/users/suyograo","html_url":"https://github.com/suyograo","followers_url":"https://api.github.com/users/suyograo/followers","following_url":"https://api.github.com/users/suyograo/following{/other_user}","gists_url":"https://api.github.com/users/suyograo/gists{/gist_id}","starred_url":"https://api.github.com/users/suyograo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/suyograo/subscriptions","organizations_url":"https://api.github.com/users/suyograo/orgs","repos_url":"https://api.github.com/users/suyograo/repos","events_url":"https://api.github.com/users/suyograo/events{/privacy}","received_events_url":"https://api.github.com/users/suyograo/received_events","type":"User","site_admin":false},"repo":{"id":20894963,"name":"logstash","full_name":"suyograo/logstash","owner":{"login":"suyograo","id":1595958,"avatar_url":"https://avatars.githubusercontent.com/u/1595958?v=3","gravatar_id":"","url":"https://api.github.com/users/suyograo","html_url":"https://github.com/suyograo","followers_url":"https://api.github.com/users/suyograo/followers","following_url":"https://api.github.com/users/suyograo/following{/other_user}","gists_url":"https://api.github.com/users/suyograo/gists{/gist_id}","starred_url":"https://api.github.com/users/suyograo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/suyograo/subscriptions","organizations_url":"https://api.github.com/users/suyograo/orgs","repos_url":"https://api.github.com/users/suyograo/repos","events_url":"https://api.github.com/users/suyograo/events{/privacy}","received_events_url":"https://api.github.com/users/suyograo/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/suyograo/logstash","description":"logstash
+        - logs/event transport, processing, management, search.","fork":true,"url":"https://api.github.com/repos/suyograo/logstash","forks_url":"https://api.github.com/repos/suyograo/logstash/forks","keys_url":"https://api.github.com/repos/suyograo/logstash/keys{/key_id}","collaborators_url":"https://api.github.com/repos/suyograo/logstash/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/suyograo/logstash/teams","hooks_url":"https://api.github.com/repos/suyograo/logstash/hooks","issue_events_url":"https://api.github.com/repos/suyograo/logstash/issues/events{/number}","events_url":"https://api.github.com/repos/suyograo/logstash/events","assignees_url":"https://api.github.com/repos/suyograo/logstash/assignees{/user}","branches_url":"https://api.github.com/repos/suyograo/logstash/branches{/branch}","tags_url":"https://api.github.com/repos/suyograo/logstash/tags","blobs_url":"https://api.github.com/repos/suyograo/logstash/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/suyograo/logstash/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/suyograo/logstash/git/refs{/sha}","trees_url":"https://api.github.com/repos/suyograo/logstash/git/trees{/sha}","statuses_url":"https://api.github.com/repos/suyograo/logstash/statuses/{sha}","languages_url":"https://api.github.com/repos/suyograo/logstash/languages","stargazers_url":"https://api.github.com/repos/suyograo/logstash/stargazers","contributors_url":"https://api.github.com/repos/suyograo/logstash/contributors","subscribers_url":"https://api.github.com/repos/suyograo/logstash/subscribers","subscription_url":"https://api.github.com/repos/suyograo/logstash/subscription","commits_url":"https://api.github.com/repos/suyograo/logstash/commits{/sha}","git_commits_url":"https://api.github.com/repos/suyograo/logstash/git/commits{/sha}","comments_url":"https://api.github.com/repos/suyograo/logstash/comments{/number}","issue_comment_url":"https://api.github.com/repos/suyograo/logstash/issues/comments/{number}","contents_url":"https://api.github.com/repos/suyograo/logstash/contents/{+path}","compare_url":"https://api.github.com/repos/suyograo/logstash/compare/{base}...{head}","merges_url":"https://api.github.com/repos/suyograo/logstash/merges","archive_url":"https://api.github.com/repos/suyograo/logstash/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/suyograo/logstash/downloads","issues_url":"https://api.github.com/repos/suyograo/logstash/issues{/number}","pulls_url":"https://api.github.com/repos/suyograo/logstash/pulls{/number}","milestones_url":"https://api.github.com/repos/suyograo/logstash/milestones{/number}","notifications_url":"https://api.github.com/repos/suyograo/logstash/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/suyograo/logstash/labels{/name}","releases_url":"https://api.github.com/repos/suyograo/logstash/releases{/id}","created_at":"2014-06-16T18:07:19Z","updated_at":"2014-12-05T01:03:09Z","pushed_at":"2014-12-09T21:32:31Z","git_url":"git://github.com/suyograo/logstash.git","ssh_url":"git@github.com:suyograo/logstash.git","clone_url":"https://github.com/suyograo/logstash.git","svn_url":"https://github.com/suyograo/logstash","homepage":"http://logstash.net/","size":70702,"stargazers_count":0,"watchers_count":0,"language":"Ruby","has_issues":false,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"master"}},"base":{"label":"elasticsearch:master","ref":"master","sha":"65af91d0158725fd18dc09897c6d73839efa47d0","user":{"login":"elasticsearch","id":141304,"avatar_url":"https://avatars.githubusercontent.com/u/141304?v=3","gravatar_id":"","url":"https://api.github.com/users/elasticsearch","html_url":"https://github.com/elasticsearch","followers_url":"https://api.github.com/users/elasticsearch/followers","following_url":"https://api.github.com/users/elasticsearch/following{/other_user}","gists_url":"https://api.github.com/users/elasticsearch/gists{/gist_id}","starred_url":"https://api.github.com/users/elasticsearch/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/elasticsearch/subscriptions","organizations_url":"https://api.github.com/users/elasticsearch/orgs","repos_url":"https://api.github.com/users/elasticsearch/repos","events_url":"https://api.github.com/users/elasticsearch/events{/privacy}","received_events_url":"https://api.github.com/users/elasticsearch/received_events","type":"Organization","site_admin":false},"repo":{"id":1090311,"name":"logstash","full_name":"elasticsearch/logstash","owner":{"login":"elasticsearch","id":141304,"avatar_url":"https://avatars.githubusercontent.com/u/141304?v=3","gravatar_id":"","url":"https://api.github.com/users/elasticsearch","html_url":"https://github.com/elasticsearch","followers_url":"https://api.github.com/users/elasticsearch/followers","following_url":"https://api.github.com/users/elasticsearch/following{/other_user}","gists_url":"https://api.github.com/users/elasticsearch/gists{/gist_id}","starred_url":"https://api.github.com/users/elasticsearch/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/elasticsearch/subscriptions","organizations_url":"https://api.github.com/users/elasticsearch/orgs","repos_url":"https://api.github.com/users/elasticsearch/repos","events_url":"https://api.github.com/users/elasticsearch/events{/privacy}","received_events_url":"https://api.github.com/users/elasticsearch/received_events","type":"Organization","site_admin":false},"private":false,"html_url":"https://github.com/elasticsearch/logstash","description":"logstash
+        - logs/event transport, processing, management, search.","fork":false,"url":"https://api.github.com/repos/elasticsearch/logstash","forks_url":"https://api.github.com/repos/elasticsearch/logstash/forks","keys_url":"https://api.github.com/repos/elasticsearch/logstash/keys{/key_id}","collaborators_url":"https://api.github.com/repos/elasticsearch/logstash/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/elasticsearch/logstash/teams","hooks_url":"https://api.github.com/repos/elasticsearch/logstash/hooks","issue_events_url":"https://api.github.com/repos/elasticsearch/logstash/issues/events{/number}","events_url":"https://api.github.com/repos/elasticsearch/logstash/events","assignees_url":"https://api.github.com/repos/elasticsearch/logstash/assignees{/user}","branches_url":"https://api.github.com/repos/elasticsearch/logstash/branches{/branch}","tags_url":"https://api.github.com/repos/elasticsearch/logstash/tags","blobs_url":"https://api.github.com/repos/elasticsearch/logstash/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/elasticsearch/logstash/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/elasticsearch/logstash/git/refs{/sha}","trees_url":"https://api.github.com/repos/elasticsearch/logstash/git/trees{/sha}","statuses_url":"https://api.github.com/repos/elasticsearch/logstash/statuses/{sha}","languages_url":"https://api.github.com/repos/elasticsearch/logstash/languages","stargazers_url":"https://api.github.com/repos/elasticsearch/logstash/stargazers","contributors_url":"https://api.github.com/repos/elasticsearch/logstash/contributors","subscribers_url":"https://api.github.com/repos/elasticsearch/logstash/subscribers","subscription_url":"https://api.github.com/repos/elasticsearch/logstash/subscription","commits_url":"https://api.github.com/repos/elasticsearch/logstash/commits{/sha}","git_commits_url":"https://api.github.com/repos/elasticsearch/logstash/git/commits{/sha}","comments_url":"https://api.github.com/repos/elasticsearch/logstash/comments{/number}","issue_comment_url":"https://api.github.com/repos/elasticsearch/logstash/issues/comments/{number}","contents_url":"https://api.github.com/repos/elasticsearch/logstash/contents/{+path}","compare_url":"https://api.github.com/repos/elasticsearch/logstash/compare/{base}...{head}","merges_url":"https://api.github.com/repos/elasticsearch/logstash/merges","archive_url":"https://api.github.com/repos/elasticsearch/logstash/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/elasticsearch/logstash/downloads","issues_url":"https://api.github.com/repos/elasticsearch/logstash/issues{/number}","pulls_url":"https://api.github.com/repos/elasticsearch/logstash/pulls{/number}","milestones_url":"https://api.github.com/repos/elasticsearch/logstash/milestones{/number}","notifications_url":"https://api.github.com/repos/elasticsearch/logstash/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/elasticsearch/logstash/labels{/name}","releases_url":"https://api.github.com/repos/elasticsearch/logstash/releases{/id}","created_at":"2010-11-18T01:31:50Z","updated_at":"2014-12-22T23:56:54Z","pushed_at":"2014-12-22T21:51:25Z","git_url":"git://github.com/elasticsearch/logstash.git","ssh_url":"git@github.com:elasticsearch/logstash.git","clone_url":"https://github.com/elasticsearch/logstash.git","svn_url":"https://github.com/elasticsearch/logstash","homepage":"http://logstash.net/","size":85175,"stargazers_count":3410,"watchers_count":3410,"language":"Ruby","has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":1289,"mirror_url":null,"open_issues_count":564,"forks":1289,"open_issues":564,"watchers":3410,"default_branch":"master"}},"_links":{"self":{"href":"https://api.github.com/repos/elasticsearch/logstash/pulls/1452"},"html":{"href":"https://github.com/elasticsearch/logstash/pull/1452"},"issue":{"href":"https://api.github.com/repos/elasticsearch/logstash/issues/1452"},"comments":{"href":"https://api.github.com/repos/elasticsearch/logstash/issues/1452/comments"},"review_comments":{"href":"https://api.github.com/repos/elasticsearch/logstash/pulls/1452/comments"},"review_comment":{"href":"https://api.github.com/repos/elasticsearch/logstash/pulls/comments/{number}"},"commits":{"href":"https://api.github.com/repos/elasticsearch/logstash/pulls/1452/commits"},"statuses":{"href":"https://api.github.com/repos/elasticsearch/logstash/statuses/674c3812f53d6a4ce6b98f78c8a539e0332cc664"}},"merged":true,"mergeable":null,"mergeable_state":"unknown","merged_by":{"login":"suyograo","id":1595958,"avatar_url":"https://avatars.githubusercontent.com/u/1595958?v=3","gravatar_id":"","url":"https://api.github.com/users/suyograo","html_url":"https://github.com/suyograo","followers_url":"https://api.github.com/users/suyograo/followers","following_url":"https://api.github.com/users/suyograo/following{/other_user}","gists_url":"https://api.github.com/users/suyograo/gists{/gist_id}","starred_url":"https://api.github.com/users/suyograo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/suyograo/subscriptions","organizations_url":"https://api.github.com/users/suyograo/orgs","repos_url":"https://api.github.com/users/suyograo/repos","events_url":"https://api.github.com/users/suyograo/events{/privacy}","received_events_url":"https://api.github.com/users/suyograo/received_events","type":"User","site_admin":false},"comments":0,"review_comments":6,"commits":3,"additions":52,"deletions":1,"changed_files":2}'
+    http_version: 
+  recorded_at: Tue, 23 Dec 2014 03:49:59 GMT
+- request:
+    method: get
+    uri: https://github.com/elasticsearch/logstash/pull/1452.patch
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Tue, 23 Dec 2014 03:50:00 GMT
+      Content-Type:
+      - text/plain; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - deny
+      Content-Security-Policy:
+      - 'default-src *; script-src assets-cdn.github.com collector-cdn.github.com;
+        object-src assets-cdn.github.com; style-src ''self'' ''unsafe-inline'' ''unsafe-eval''
+        assets-cdn.github.com; img-src ''self'' data: assets-cdn.github.com identicons.github.com
+        www.google-analytics.com collector.githubapp.com *.githubusercontent.com *.gravatar.com
+        *.wp.com; media-src ''none''; frame-src ''self'' render.githubusercontent.com
+        gist.github.com www.youtube.com player.vimeo.com checkout.paypal.com; font-src
+        assets-cdn.github.com; connect-src ''self'' ghconduit.com:25035 live.github.com
+        uploads.github.com www.google-analytics.com s3.amazonaws.com'
+      Cache-Control:
+      - no-cache
+      Vary:
+      - Accept-Encoding
+      - X-PJAX
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      Set-Cookie:
+      - _gh_sess=eyJzZXNzaW9uX2lkIjoiMzY5ZTRiZTFkMTI3MTMwNjNiZWU1ZGJhOTgxNmY5NzEiLCJzcHlfcmVwbyI6ImVsYXN0aWNzZWFyY2gvbG9nc3Rhc2giLCJzcHlfcmVwb19hdCI6MTQxOTMwNjYwMH0%3D--1883c1d357b3ad2bba07dbefff8b220019ad472a;
+        path=/; secure; HttpOnly
+      - logged_in=no; domain=.github.com; path=/; expires=Sat, 23-Dec-2034 03:50:00
+        GMT; secure; HttpOnly
+      X-Request-Id:
+      - c81c53e4cce71b4f88fd79f84025baaf
+      X-Runtime:
+      - '0.048298'
+      X-Rack-Cache:
+      - miss
+      X-Github-Request-Id:
+      - 32A857BD:2FD0:CD6E71:5498E668
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Served-By:
+      - 926b734ea1992f8ee1f88ab967a93dac
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        RnJvbSAzOTNhOTYxODA1ZTU5M2VjNTkyOWY3ZGY3N2MxZTg3YjdlNTZhMmUx
+        IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBTdXlvZyBSYW8gPHN1
+        eW9nLnJhb0BlbGFzdGljc2VhcmNoLmNvbT4KRGF0ZTogV2VkLCAxOCBKdW4g
+        MjAxNCAxNToxODo1NCAtMDcwMApTdWJqZWN0OiBbUEFUQ0ggMS8zXSBGaXgg
+        Zm9yICMxNDUxCgpMaW5lIGNvZGVjIHdhcyB1c2luZyBhbiB1bmRlZmluZWQg
+        dmFyaWFibGUgd2hpY2ggY2FzdWVkIGl0IHRvIHRocm93IGFuZCBleGNlcHRp
+        b24uCgpGaXhlZCBhbmQgYWRkZWQgdGVzdHMgZm9yIGxpbmUgY29kZXMKCkNs
+        b3NlcyAjMTQ1MQotLS0KIGxpYi9sb2dzdGFzaC9jb2RlY3MvbGluZS5yYiB8
+        ICAyICstCiBzcGVjL2NvZGVjcy9saW5lLnJiICAgICAgICAgfCA1MSArKysr
+        KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDIg
+        ZmlsZXMgY2hhbmdlZCwgNTIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+        KQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNwZWMvY29kZWNzL2xpbmUucmIKCmRp
+        ZmYgLS1naXQgYS9saWIvbG9nc3Rhc2gvY29kZWNzL2xpbmUucmIgYi9saWIv
+        bG9nc3Rhc2gvY29kZWNzL2xpbmUucmIKaW5kZXggZjY3MzcwOC4uMTIxMDdl
+        NSAxMDA2NDQKLS0tIGEvbGliL2xvZ3N0YXNoL2NvZGVjcy9saW5lLnJiCisr
+        KyBiL2xpYi9sb2dzdGFzaC9jb2RlY3MvbGluZS5yYgpAQCAtNDgsNyArNDgs
+        NyBAQCBkZWYgZmx1c2goJmJsb2NrKQogCiAgIHB1YmxpYwogICBkZWYgZW5j
+        b2RlKGV2ZW50KQotICAgIGlmIGRhdGEuaXNfYT8gTG9nU3Rhc2g6OkV2ZW50
+        IGFuZCBAZm9ybWF0CisgICAgaWYgZXZlbnQuaXNfYT8gTG9nU3Rhc2g6OkV2
+        ZW50IGFuZCBAZm9ybWF0CiAgICAgICBAb25fZXZlbnQuY2FsbChldmVudC5z
+        cHJpbnRmKEBmb3JtYXQpICsgTkwpCiAgICAgZWxzZQogICAgICAgQG9uX2V2
+        ZW50LmNhbGwoZXZlbnQudG9fcyArIE5MKQpkaWZmIC0tZ2l0IGEvc3BlYy9j
+        b2RlY3MvbGluZS5yYiBiL3NwZWMvY29kZWNzL2xpbmUucmIKbmV3IGZpbGUg
+        bW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4uYjEzNjVjMAotLS0gL2Rldi9u
+        dWxsCisrKyBiL3NwZWMvY29kZWNzL2xpbmUucmIKQEAgLTAsMCArMSw1MSBA
+        QAorIyBlbmNvZGluZzogdXRmLTgKKworcmVxdWlyZSAibG9nc3Rhc2gvY29k
+        ZWNzL2xpbmUiCityZXF1aXJlICJsb2dzdGFzaC9ldmVudCIKKworZGVzY3Jp
+        YmUgTG9nU3Rhc2g6OkNvZGVjczo6TGluZSBkbworICBzdWJqZWN0IGRvCisg
+        ICAgbmV4dCBMb2dTdGFzaDo6Q29kZWNzOjpMaW5lLm5ldworICBlbmQKKwor
+        ICBjb250ZXh0ICIjZW5jb2RlIiBkbworICAgIGV2ZW50ID0gTG9nU3Rhc2g6
+        OkV2ZW50Lm5ldyh7Im1lc3NhZ2UiID0+ICJoZWxsbyB3b3JsZCIsICJob3N0
+        IiA9PiAidGVzdCJ9KQorCisgICAgaXQgInNob3VsZCByZXR1cm4gYSBkZWZh
+        dWx0IGRhdGUgZm9ybWF0dGVkIGxpbmUiIGRvCisgICAgICBzdWJqZWN0Lm9u
+        X2V2ZW50IGRvIHxkfAorICAgICAgICBpbnNpc3Qge2R9ID09IGV2ZW50LnRv
+        X3MgKyAiXG4iCisgICAgICBlbmQKKyAgICAgIHN1YmplY3QuZW5jb2RlKGV2
+        ZW50KQorICAgIGVuZAorCisgICAgaXQgInNob3VsZCByZXNwZWN0IHRoZSBz
+        dXBwbGllZCBmb3JtYXQiIGRvCisgICAgICBmb3JtYXQgPSAiJXtob3N0fSIK
+        KyAgICAgIHN1YmplY3QuZm9ybWF0ID0gZm9ybWF0CisgICAgICBzdWJqZWN0
+        Lm9uX2V2ZW50IGRvIHxkfAorICAgICAgICBpbnNpc3Qge2R9ID09IGV2ZW50
+        LnNwcmludGYoZm9ybWF0KSArICJcbiIKKyAgICAgIGVuZAorICAgICAgc3Vi
+        amVjdC5lbmNvZGUoZXZlbnQpCisgICAgZW5kCisgIGVuZAorCisgIGNvbnRl
+        eHQgIiNkZWNvZGUiIGRvCisKKyAgICBpdCAic2hvdWxkIHJldHVybiBhbiBl
+        dmVudCBmcm9tIGFuIGFzY2lpIHN0cmluZyIgZG8KKyAgICAgIGRlY29kZWQg
+        PSBmYWxzZQorICAgICAgc3ViamVjdC5kZWNvZGUoImhlbGxvIHdvcmxkXG4i
+        KSBkbyB8ZXwKKyAgICAgICAgZGVjb2RlZCA9IHRydWUKKyAgICAgICAgaW5z
+        aXN0IHsgZS5pc19hPyhMb2dTdGFzaDo6RXZlbnQpIH0KKyAgICAgICAgaW5z
+        aXN0IHsgZVsibWVzc2FnZSJdIH0gPT0gImhlbGxvIHdvcmxkIgorICAgICAg
+        ZW5kCisgICAgICBpbnNpc3QgeyBkZWNvZGVkIH0gPT0gdHJ1ZQorICAgIGVu
+        ZAorCisgICAgaXQgInNob3VsZCByZXR1cm4gYW4gZXZlbnQgZnJvbSBhIHZh
+        bGlkIHV0Zi04IHN0cmluZyIgZG8KKyAgICAgIHN1YmplY3QuZGVjb2RlKCJN
+        w7xuY2hlblxuIikgZG8gfGV8CisgICAgICAgIGluc2lzdCB7IGUuaXNfYT8o
+        TG9nU3Rhc2g6OkV2ZW50KSB9CisgICAgICAgIGluc2lzdCB7IGVbIm1lc3Nh
+        Z2UiXSB9ID09ICJNw7xuY2hlbiIKKyAgICAgIGVuZAorICAgIGVuZAorCisg
+        IGVuZAorZW5kCgpGcm9tIGRlOTlhZmI0ZjhlMDNhNDU0MzY4ZmI1NGFiNzI4
+        Yjc4M2FhYjYyOTUgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCkZyb206IFN1
+        eW9nIFJhbyA8c3V5b2cucmFvQGVsYXN0aWNzZWFyY2guY29tPgpEYXRlOiBX
+        ZWQsIDE4IEp1biAyMDE0IDE1OjI5OjMyIC0wNzAwClN1YmplY3Q6IFtQQVRD
+        SCAyLzNdIFNxdWFzaCBleHRyYSBsaW5lcwoKLS0tCiBzcGVjL2NvZGVjcy9s
+        aW5lLnJiIHwgMiAtLQogMSBmaWxlIGNoYW5nZWQsIDIgZGVsZXRpb25zKC0p
+        CgpkaWZmIC0tZ2l0IGEvc3BlYy9jb2RlY3MvbGluZS5yYiBiL3NwZWMvY29k
+        ZWNzL2xpbmUucmIKaW5kZXggYjEzNjVjMC4uODJhY2RkZSAxMDA2NDQKLS0t
+        IGEvc3BlYy9jb2RlY3MvbGluZS5yYgorKysgYi9zcGVjL2NvZGVjcy9saW5l
+        LnJiCkBAIC0yOSw3ICsyOSw2IEBACiAgIGVuZAogCiAgIGNvbnRleHQgIiNk
+        ZWNvZGUiIGRvCi0KICAgICBpdCAic2hvdWxkIHJldHVybiBhbiBldmVudCBm
+        cm9tIGFuIGFzY2lpIHN0cmluZyIgZG8KICAgICAgIGRlY29kZWQgPSBmYWxz
+        ZQogICAgICAgc3ViamVjdC5kZWNvZGUoImhlbGxvIHdvcmxkXG4iKSBkbyB8
+        ZXwKQEAgLTQ2LDYgKzQ1LDUgQEAKICAgICAgICAgaW5zaXN0IHsgZVsibWVz
+        c2FnZSJdIH0gPT0gIk3DvG5jaGVuIgogICAgICAgZW5kCiAgICAgZW5kCi0K
+        ICAgZW5kCiBlbmQKCkZyb20gNjc0YzM4MTJmNTNkNmE0Y2U2Yjk4Zjc4Yzhh
+        NTM5ZTAzMzJjYzY2NCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTog
+        U3V5b2cgUmFvIDxzdXlvZy5yYW9AZWxhc3RpY3NlYXJjaC5jb20+CkRhdGU6
+        IFdlZCwgMTggSnVuIDIwMTQgMTY6NDI6MTkgLTA3MDAKU3ViamVjdDogW1BB
+        VENIIDMvM10gVmVyaWZ5IG1ldGhvZCBpcyBnZXR0aW5nIGNhbGxlZAoKLS0t
+        CiBzcGVjL2NvZGVjcy9saW5lLnJiIHwgNCArKystCiAxIGZpbGUgY2hhbmdl
+        ZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0
+        IGEvc3BlYy9jb2RlY3MvbGluZS5yYiBiL3NwZWMvY29kZWNzL2xpbmUucmIK
+        aW5kZXggODJhY2RkZS4uZTUzYTEyOCAxMDA2NDQKLS0tIGEvc3BlYy9jb2Rl
+        Y3MvbGluZS5yYgorKysgYi9zcGVjL2NvZGVjcy9saW5lLnJiCkBAIC05LDkg
+        KzksMTAgQEAKICAgZW5kCiAKICAgY29udGV4dCAiI2VuY29kZSIgZG8KLSAg
+        ICBldmVudCA9IExvZ1N0YXNoOjpFdmVudC5uZXcoeyJtZXNzYWdlIiA9PiAi
+        aGVsbG8gd29ybGQiLCAiaG9zdCIgPT4gInRlc3QifSkKKyAgICBsZXQgKDpl
+        dmVudCkge0xvZ1N0YXNoOjpFdmVudC5uZXcoeyJtZXNzYWdlIiA9PiAiaGVs
+        bG8gd29ybGQiLCAiaG9zdCIgPT4gInRlc3QifSl9CiAKICAgICBpdCAic2hv
+        dWxkIHJldHVybiBhIGRlZmF1bHQgZGF0ZSBmb3JtYXR0ZWQgbGluZSIgZG8K
+        KyAgICAgIGV4cGVjdChzdWJqZWN0KS50byByZWNlaXZlKDpvbl9ldmVudCku
+        b25jZS5hbmRfY2FsbF9vcmlnaW5hbAogICAgICAgc3ViamVjdC5vbl9ldmVu
+        dCBkbyB8ZHwKICAgICAgICAgaW5zaXN0IHtkfSA9PSBldmVudC50b19zICsg
+        IlxuIgogICAgICAgZW5kCkBAIC0yMSw2ICsyMiw3IEBACiAgICAgaXQgInNo
+        b3VsZCByZXNwZWN0IHRoZSBzdXBwbGllZCBmb3JtYXQiIGRvCiAgICAgICBm
+        b3JtYXQgPSAiJXtob3N0fSIKICAgICAgIHN1YmplY3QuZm9ybWF0ID0gZm9y
+        bWF0CisgICAgICBleHBlY3Qoc3ViamVjdCkudG8gcmVjZWl2ZSg6b25fZXZl
+        bnQpLm9uY2UuYW5kX2NhbGxfb3JpZ2luYWwKICAgICAgIHN1YmplY3Qub25f
+        ZXZlbnQgZG8gfGR8CiAgICAgICAgIGluc2lzdCB7ZH0gPT0gZXZlbnQuc3By
+        aW50Zihmb3JtYXQpICsgIlxuIgogICAgICAgZW5kCg==
+    http_version: 
+  recorded_at: Tue, 23 Dec 2014 03:50:00 GMT
+- request:
+    method: post
+    uri: https://api.github.com/repos/logstash-plugins/logstash-codec-line/pulls
+    body:
+      encoding: UTF-8
+      string: '{"base":"master","head":"pr/1452","title":"Fix for #1451","body":"Line
+        codec was using an undefined variable which caused it to throw an exception.\r\n\r\nFixed
+        and added tests for line codecs\r\n\r\nCloses #1451"}'
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 3.7.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Tue, 23 Dec 2014 03:50:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '46'
+      X-Ratelimit-Reset:
+      - '1419306640'
+      X-Github-Media-Type:
+      - github.v3; format=json
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - deny
+      Content-Security-Policy:
+      - default-src 'none'
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Github-Request-Id:
+      - 32A857BD:2872:1510989:5498E668
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"message":"Not Found","documentation_url":"https://developer.github.com/v3"}'
+    http_version: 
+  recorded_at: Tue, 23 Dec 2014 03:50:00 GMT
+recorded_with: VCR 2.9.3

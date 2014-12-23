@@ -248,6 +248,15 @@ module LitaJLS
 
     end # def github_issue_comment
 
+    def github_create_pr(project, branch, title, body)
+      logger.debug('Creating a pull request', :project => project, :branch => branch)
+      github_client.create_pull_request(project, "master", branch, title, body)
+    end
+
+    def github_get_pr(project, pr_num)
+      github_client.pull_request(project, pr_num)
+    end
+
     def git(gitdir, *args)
       Dir.chdir(gitdir) do
         system!("git", *args)

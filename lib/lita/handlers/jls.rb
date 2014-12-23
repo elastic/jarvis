@@ -1,5 +1,6 @@
 require "cabin"
 require "tmpdir"
+require "tempfile"
 require "fileutils"
 require "insist"
 require "uri"
@@ -39,6 +40,10 @@ module Lita
       route /^(why computer(s?) so bad\?|explain)/i, :pop_exception,
         :command => true,
         :help => { 'explain or why computers so bad?' => 'return the last exception from redis' }
+
+      route /^migrate_pr (?<source_url>[^ ]+) (?<destination_url>[^ ]+)$/, :migrate_pr,
+            :command => true,
+            :help => { 'migrate pr from one repo to another' => 'migrate pr from one repo to another' }
 
       REMOTE = "origin"
       URLBASE = "https://github.com/"
@@ -135,6 +140,72 @@ module Lita
       rescue => e
         msg.reply("cla check error: #{e}")
         push_exception(e, :project => "#{user}/#{project}", :pr => pr)
+      end
+
+      def migrate_pr(msg)
+        source_url = msg.match_data["source_url"]
+        destination_url = msg.match_data["destination_url"]
+        if source_url.nil? || destination_url.nil?
+          raise "Invalid paramaters provided #{msg}"
+        end
+
+        pr_num = source_url.strip.split("/").last
+        if pr_num.nil? || pr_num !~ /\d+/
+          raise "Invalid pull request provided #{source_url}"
+        end
+
+        destination_github_parser = parse_github_url(destination_url)
+        source_github_parser = parse_github_url(source_url)
+
+        source_github_pr = github_get_pr("#{source_github_parser.user}/#{source_github_parser.project}", pr_num)
+
+        # Clone destination dir, patch and then push branch
+        repository = LitaJLS::Repository.new(destination_github_parser)
+        repository.clone if Dir["#{repository.git_path}/*"].empty?
+        repository.switch_branch("master")
+
+        # create a branch like pr/1234
+        pr_branch = "pr/#{pr_num}"
+        repository.delete_local_branch(pr_branch, true)
+        repository.switch_branch(pr_branch, true)
+
+        response = get_patch(source_github_pr[:patch_url])
+        patch_file = Tempfile.new("#{pr_num}.patch")
+
+        # Apply patch on repo
+        begin
+          #TODO: Use chunked writes
+          patch_file.write(response.body)
+          patch_file.close
+          repository.git_patch(patch_file.path)
+        rescue => e
+          msg.reply("Error while migrating pr: #{e}")
+          push_exception(e, :source_url => source_url,
+                         :destination_url => destination_url)
+        ensure
+          patch_file.unlink
+        end
+
+        # create the migrated PR in the destination repo
+        github_create_pr("#{destination_github_parser.user}/#{destination_github_parser.project}",
+                         pr_branch, source_github_pr[:title], source_github_pr[:body])
+      end
+
+      @private
+      def get_patch(pr_url)
+        http = Faraday.new("https://github.com")
+        response = http.get(URI.parse(pr_url).path)
+        if response.status != 200
+          raise "Unable to fetch pull request #{pr_url}"
+        end
+        return response
+      end
+
+      @private
+      def parse_github_url(url)
+        github_parser = LitaJLS::GithubUrlParser.parse(url, :link => :repository)
+        github_parser.validate!
+        return github_parser
       end
 
       def merge(msg)
