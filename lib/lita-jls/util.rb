@@ -71,7 +71,6 @@ module LitaJLS
       begin
         git(".", "clone", url, cache)
       rescue => e
-        puts "!cache: #{cache}"
         logger.debug("clone_at failed, trying to open repo instead", :cache => cache, :error => e)
         git(cache, "log", "-n0") # Verify some kind of git works here
       end
