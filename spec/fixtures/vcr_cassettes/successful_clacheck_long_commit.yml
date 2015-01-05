@@ -21,7 +21,7 @@ http_interactions:
       Server:
       - nginx/1.4.6 (Ubuntu)
       Date:
-      - Tue, 16 Dec 2014 16:18:16 GMT
+      - Mon, 05 Jan 2015 21:31:31 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -39,7 +39,7 @@ http_interactions:
       string: '{"status":"success","status_human":"Success","message":"All commit
         authors have signed the CLA or are members of Elasticsearch"}'
     http_version: 
-  recorded_at: Tue, 16 Dec 2014 16:13:18 GMT
+  recorded_at: Mon, 05 Jan 2015 21:25:38 GMT
 - request:
     method: get
     uri: https://test.local/jordansissel/this-is-only-a-test/pull/4.patch
@@ -61,7 +61,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Tue, 16 Dec 2014 16:13:18 GMT
+      - Mon, 05 Jan 2015 21:25:38 GMT
       Content-Type:
       - text/plain; charset=utf-8
       Transfer-Encoding:
@@ -89,19 +89,19 @@ http_interactions:
       X-Ua-Compatible:
       - IE=Edge,chrome=1
       X-Request-Id:
-      - e01aa6416dc9414b519df3ff5afb8249
+      - 1f5263bae1f70249691653237f258e29
       X-Runtime:
-      - '0.031448'
+      - '0.029353'
       X-Rack-Cache:
       - miss
       X-Github-Request-Id:
-      - 428224B6:11C0:19FB394:54905A1E
+      - C0DEBD91:4818:6B28D4:54AB0152
       Strict-Transport-Security:
       - max-age=31536000; includeSubdomains; preload
       X-Content-Type-Options:
       - nosniff
       X-Served-By:
-      - a128136e4734a9f74c013356c773ece7
+      - 3f38dada85f97412f7f824e59f77fa9d
     body:
       encoding: UTF-8
       string: |
@@ -129,5 +129,5 @@ http_interactions:
         +Long commit?
          Sat Sep 27 04:42:57 UTC 2014
     http_version: 
-  recorded_at: Tue, 16 Dec 2014 16:13:19 GMT
+  recorded_at: Mon, 05 Jan 2015 21:25:38 GMT
 recorded_with: VCR 2.9.3
