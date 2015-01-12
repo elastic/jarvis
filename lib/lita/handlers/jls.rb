@@ -150,14 +150,10 @@ module Lita
           raise "Invalid paramaters provided #{msg}"
         end
 
-        pr_num = source_url.strip.split("/").last
-        if pr_num.nil? || pr_num !~ /\d+/
-          raise "Invalid pull request provided #{source_url}"
-        end
-
         destination_github_parser = parse_github_url(destination_url)
         source_github_parser = parse_github_url(source_url)
 
+        pr_num = source_github_parser.pr
         source_github_pr = github_get_pr("#{source_github_parser.user}/#{source_github_parser.project}", pr_num)
 
         # Clone destination dir, patch and then push branch
@@ -166,18 +162,14 @@ module Lita
         repository.switch_branch("master")
 
         # create a branch like pr/1234
-        pr_branch = "pr/#{pr_num}"
+        pr_branch = "bot-migrated-pr/#{pr_num}"
         repository.delete_local_branch(pr_branch, true)
         repository.switch_branch(pr_branch, true)
 
-        response = get_patch(source_github_pr[:patch_url])
-        patch_file = Tempfile.new("#{pr_num}.patch")
+        patch_file = download_patch(source_github_pr[:patch_url])
 
         # Apply patch on repo
         begin
-          #TODO: Use chunked writes
-          patch_file.write(response.body)
-          patch_file.close
           repository.git_patch(patch_file.path)
         rescue => e
           msg.reply("Error while migrating pr: #{e}")
@@ -193,13 +185,25 @@ module Lita
       end
 
       @private
-      def get_patch(pr_url)
+      # downloads the patch file in mail format and saves it to a file
+      def download_patch(pr_url)
         http = Faraday.new("https://github.com")
         response = http.get(URI.parse(pr_url).path)
         if response.status != 200
           raise "Unable to fetch pull request #{pr_url}"
         end
-        return response
+
+        patch_file = Tempfile.new("#{pr_num}.patch")
+
+        begin
+          #TODO: Use chunked writes
+          patch_file.write(response.body)
+          patch_file.close
+        rescue => e
+          raise "Error while downloading pr: #{pr_url}, exception #{e}"
+        end
+
+        return patch_file
       end
 
       @private

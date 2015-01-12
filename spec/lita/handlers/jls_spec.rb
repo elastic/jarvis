@@ -36,11 +36,6 @@ describe Lita::Handlers::Jls, :lita_handler => true do
       "https://github.com/logstash-plugins/logstash-codec-line").to(:migrate_pr)
   end
 
-  it "raises exception when migrate_pr has invalid pr number" do
-    expect {send_command("migrate_pr https://github.com/elasticsearch/logstash/pull/abc "\
-    "https://github.com/logstash-plugins/logstash-codec-line") }.to raise_error(RuntimeError)
-  end
-
   context "test migrate dummy pr", :network => true do
     it "does migrate_pr correctly" do
       VCR.use_cassette("successful_migrate_pr") do
