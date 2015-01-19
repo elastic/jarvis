@@ -31,6 +31,20 @@ describe Lita::Handlers::Jls, :lita_handler => true do
     is_expected.to route_command("explain").to(:pop_exception)
   end
 
+  it "routes migrate_pr to :migrate_pr with proper arguments" do
+    is_expected.to route_command("migrate_pr https://github.com/elasticsearch/logstash/pull/1452 "\
+      "https://github.com/logstash-plugins/logstash-codec-line").to(:migrate_pr)
+  end
+
+  context "test migrate dummy pr", :network => true do
+    it "does migrate_pr correctly" do
+      VCR.use_cassette("successful_migrate_pr") do
+        send_command("migrate_pr https://github.com/elasticsearch/logstash/pull/1452 "\
+          "https://github.com/logstash-plugins/logstash-codec-line")
+      end
+    end
+  end
+
   context "when dealing with exceptions", :network => true do
     let(:bad_exception) { double("exception", :backtrace => 'line X', :message => '0 != 1', :exception => 'not working') }
 
