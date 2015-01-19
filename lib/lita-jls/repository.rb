@@ -42,6 +42,10 @@ module LitaJLS
       git(git_path, "am", "--3way", patch_file)
     end
 
+    def git_push_branch(local_branch)
+      git(git_path, "push", "origin", local_branch)
+    end
+
     def delete_local_branch(branch, ignore_error=false)
       begin
         git(git_path, "branch", "-D", branch)

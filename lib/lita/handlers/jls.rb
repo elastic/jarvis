@@ -166,11 +166,12 @@ module Lita
         repository.delete_local_branch(pr_branch, true)
         repository.switch_branch(pr_branch, true)
 
-        patch_file = download_patch(source_github_pr[:patch_url])
+        patch_file = download_patch(source_github_pr[:patch_url], pr_num)
 
         # Apply patch on repo
         begin
           repository.git_patch(patch_file.path)
+          repository.git_push_branch(pr_branch)
         rescue => e
           msg.reply("Error while migrating pr: #{e}")
           push_exception(e, :source_url => source_url,
@@ -181,12 +182,13 @@ module Lita
 
         # create the migrated PR in the destination repo
         github_create_pr("#{destination_github_parser.user}/#{destination_github_parser.project}",
-                         pr_branch, source_github_pr[:title], source_github_pr[:body])
+                         pr_branch, source_github_pr[:title],
+                         source_github_pr[:body] + "\nMoved from #{source_url}")
       end
 
       @private
       # downloads the patch file in mail format and saves it to a file
-      def download_patch(pr_url)
+      def download_patch(pr_url, pr_num)
         http = Faraday.new("https://github.com")
         response = http.get(URI.parse(pr_url).path)
         if response.status != 200
