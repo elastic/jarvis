@@ -287,13 +287,15 @@ module Lita
         if dry_run
           msg.reply("(success) Merging was successful #{user}/#{project}##{pr} into: #{branchspec}.\n(but I did not push it)")
         else
-          msg.reply("(success) #{user}/#{project}##{pr} merged into: #{branchspec}")
+          msg.reply("(success) #{user}/#{project}##{pr} merged into: #{branchspec.join(", ")}")
           git(gitpath, "push", REMOTE, *branches)
 
           labels = branches.reject { |b| b == "master" }
           github_issue_label("#{user}/#{project}", pr.to_i, labels)
         end
-        github_issue_comment("#{user}/#{project}", pr.to_i, "Merged sucessfully into #{branchspec}!")
+
+        markdown_comment = "Merged successfully into #{branchspec.collect { |b| "\`#{b}\`" }.join(", ")}"
+        github_issue_comment("#{user}/#{project}", pr.to_i, markdown_comment)
       rescue => e
         push_exception(e, :project => "#{user}/#{project}", :pr => pr, :branch => branches)
         msg.reply("(stare) Error: #{e.inspect}")
