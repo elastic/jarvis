@@ -186,7 +186,7 @@ module Lita
                          source_github_pr[:body] + "\nMoved from #{source_url}")
       end
 
-      @private
+      private
       # downloads the patch file in mail format and saves it to a file
       def download_patch(pr_url, pr_num)
         http = Faraday.new("https://github.com")
@@ -208,7 +208,6 @@ module Lita
         return patch_file
       end
 
-      @private
       def parse_github_url(url)
         github_parser = LitaJLS::GithubUrlParser.parse(url, :link => :repository)
         github_parser.validate!
