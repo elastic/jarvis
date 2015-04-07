@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "lita", ">= 3.3"
   spec.add_runtime_dependency "cabin", ">= 0"
   spec.add_runtime_dependency "faraday", ">= 0"
+  spec.add_runtime_dependency "faraday_middleware"
 
   # For access to Github's api
   spec.add_runtime_dependency "octokit", ">= 0"

@@ -8,6 +8,7 @@ require "lita-jls/bot_builder"
 require "lita-jls/repository"
 require "lita-jls/github_url_parser"
 require "lita-jls/util"
+require "faraday_middleware"
 
 # TODO(sissel): This code needs some suuuper serious refactoring and testing improvements.
 # TODO(sissel): Remove any usage of Rugged. This library requires compile-time
@@ -186,10 +187,10 @@ module Lita
                          source_github_pr[:body] + "\nMoved from #{source_url}")
       end
 
-      private
       # downloads the patch file in mail format and saves it to a file
       def download_patch(pr_url, pr_num)
-        http = Faraday.new("https://github.com")
+        http = http_conn
+
         response = http.get(URI.parse(pr_url).path)
         if response.status != 200
           raise "Unable to fetch pull request #{pr_url}"
@@ -250,7 +251,7 @@ module Lita
 
         # TODO(sissel): Fetch the PR patch
         logger.info("Fetching PR patch", :url => pr_url)
-        http = Faraday.new("https://github.com")
+        http = http_conn
         response = http.get(URI.parse(pr_url).path)
         if !response.success?
           logger.warn("Failed fetching patch", :url => pr_url, :status => response.status, :headers => response.headers)
@@ -311,6 +312,13 @@ module Lita
           push_exception(e)
           msg.reply("Git: (tableflip) (huh): #{e}")
           raise e
+        end
+      end
+
+      def http_conn
+        Faraday.new("https://github.com") do |conn|
+          conn.use FaradayMiddleware::FollowRedirects
+          conn.adapter :net_http
         end
       end
     end # class Jls
