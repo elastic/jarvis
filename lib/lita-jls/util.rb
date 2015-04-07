@@ -40,19 +40,6 @@ module LitaJLS
       true
     end # cla?
 
-    def logstash_team?(user)
-      ["electrical",
-       "jordansissel",
-       "ph",
-       "colinsurprenant",
-       "jsvd",
-       "untergeek",
-       "talevy",
-       "kurtado",
-       "suyograo",
-       "purbon"].include?(user.downcase)
-    end
-
     # Clone a git url into a local path.
     #
     # This caches a remote git repo and performs a clone against that in

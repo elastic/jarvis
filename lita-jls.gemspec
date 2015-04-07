@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-jls"
-  spec.version       = "0.0.10"
+  spec.version       = "0.0.11"
   spec.authors       = ["Jordan Sissel"]
   spec.email         = ["jls@semicomplete.com"]
   spec.description   = %q{Some stuff for the lita.io bot}
@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "lita", ">= 3.3"
   spec.add_runtime_dependency "cabin", ">= 0"
   spec.add_runtime_dependency "faraday", ">= 0"
+  spec.add_runtime_dependency "faraday_middleware"
 
   # For access to Github's api
   spec.add_runtime_dependency "octokit", ">= 0"
