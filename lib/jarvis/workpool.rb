@@ -8,13 +8,22 @@ module Jarvis class WorkPool
   class InvalidWorkPoolName < Jarvis::Error; end
 
   class << self
-    def setup_singleton
-      @singleton = self.new
-      nil
+    INITIALIZER = Mutex.new
+
+    # Provide a singleton instance of WorkPool
+    #
+    # We don't use `include Singleton` because that disables `WorkPool.new` and
+    # makes this class very difficult to test. Practically, I don't want a
+    # global/singleton workpool anyway and this singleton instance only exists
+    # until we don't need it.
+    def instance
+      INITIALIZER.synchronize do
+        @instance ||= self.new
+      end
     end
 
     def fetch(name)
-      @singleton.fetch(name)
+      instance.fetch(name)
     end
 
     def post(name, &block)
