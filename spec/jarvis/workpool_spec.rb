@@ -1,29 +1,29 @@
 require "jarvis/workpool"
 require "rspec/wait"
 
-describe WorkPool do
+describe ::Jarvis::WorkPool do
   subject { described_class.new }
 
   describe "#fetch" do
     [ 1234, "invalid", "administrative", "", nil, false, true ].each do |name|
       context "with #{name.inspect} (of type #{name.class})" do
-        it "raises WorkPool::InvalidWorkPoolName for an invalid pool name" do
-          expect { subject.fetch(name) }.to raise_error(WorkPool::InvalidWorkPoolName)
+        it "raises Jarvis::WorkPool::InvalidWorkPoolName for an invalid pool name" do
+          expect { subject.fetch(name) }.to raise_error(::Jarvis::WorkPool::InvalidWorkPoolName)
         end
       end
     end
 
-    [WorkPool::ADMINISTRATIVE, WorkPool::NORMAL].each do |name|
+    [::Jarvis::WorkPool::ADMINISTRATIVE, ::Jarvis::WorkPool::NORMAL].each do |name|
       context "with WorkPool::#{name}" do
         it "should be successful " do
-          expect { subject.fetch(WorkPool::ADMINISTRATIVE) }.not_to raise_error
+          expect { subject.fetch(::Jarvis::WorkPool::ADMINISTRATIVE) }.not_to raise_error
         end
       end
     end
   end
 
   describe "#post" do
-    [WorkPool::ADMINISTRATIVE, WorkPool::NORMAL].each do |pool|
+    [::Jarvis::WorkPool::ADMINISTRATIVE, ::Jarvis::WorkPool::NORMAL].each do |pool|
       context "on the #{pool} pool" do
         context "and when the pool is not full" do
           let(:queue) { Queue.new }
@@ -56,7 +56,7 @@ describe WorkPool do
     end
 
     context "on ADMINISTRATIVE when NORMAL is full" do
-      let(:normal) { subject.fetch(WorkPool::NORMAL) }
+      let(:normal) { subject.fetch(::Jarvis::WorkPool::NORMAL) }
       let(:value) { 1 }
 
       let(:normal_pool_size) { normal.max_length + normal.max_queue }
@@ -64,13 +64,13 @@ describe WorkPool do
       before do
         # fill pool with blocked workers...
         normal_pool_size.times do
-          subject.post(WorkPool::NORMAL) { sleep(60) }
+          subject.post(::Jarvis::WorkPool::NORMAL) { sleep(60) }
         end
       end
 
       it "should succeed in posting" do
         expect do
-          subject.post(WorkPool::ADMINISTRATIVE) { nil }
+          subject.post(::Jarvis::WorkPool::ADMINISTRATIVE) { nil }
         end.not_to raise_error
       end
     end

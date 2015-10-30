@@ -1,10 +1,11 @@
 require "concurrent"
+require "jarvis/error"
 
-class WorkPool
+module Jarvis class WorkPool
   ADMINISTRATIVE = :ADMINISTRATIVE
   NORMAL = :NORMAL
 
-  class InvalidWorkPoolName < StandardError; end
+  class InvalidWorkPoolName < Jarvis::Error; end
 
   class << self
     def setup_singleton
@@ -49,4 +50,4 @@ class WorkPool
   def post(name, &block)
     fetch(name).post(&block)
   end
-end
+end end

@@ -17,7 +17,7 @@ module Jarvis module Mixins module FancyRoute
     pattern = Regexp.new("^#{Regexp.escape(pattern)}(\\s|$)") if pattern.is_a?(String)
 
     # Default to the NORMAL workpool
-    pool = options.fetch(:pool, WorkPool::NORMAL)
+    pool = options.fetch(:pool, ::Jarvis::WorkPool::NORMAL)
 
     # Invoke the normal Lita route method to setup our new fancy route. :)
     route(pattern, options, &pool_delegate(pool, &handler))

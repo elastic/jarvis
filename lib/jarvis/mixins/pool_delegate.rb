@@ -7,7 +7,7 @@ module Jarvis module Mixins module PoolDelegate
   end
 
   def pool_execute(pool_name, callback_proc, request)
-    pool = WorkPool.fetch(pool_name)
+    pool = ::Jarvis::WorkPool.fetch(pool_name)
     pool.post do
       # TODO(sissel): Track active commands so that debugging/inspection of
       #   active tasks can occur.
