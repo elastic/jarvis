@@ -1,0 +1,9 @@
+en:
+  lita:
+    handlers:
+      jarvis:
+        unhandled exception: >-
+          Unhandled exception: %{exception}
+        rejected execution: >-
+          The %{pool} pool is full, so I am too busy to do that work right now,
+          sorry!
