@@ -1,4 +1,5 @@
 require "clamp"
+require "i18n"
 
 module Jarvis module Command class Merge < Clamp::Command
 
@@ -10,6 +11,6 @@ module Jarvis module Command class Merge < Clamp::Command
   def execute
     puts "Merging: #{url} into #{branches_list}"
   rescue => e
-    puts "An error occurred: #{e.class} - #{e}\n" + e.backtrace.join("\n")
+    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :stacktrace => e.backtrace.join("\n"), :command => "merge")
   end
 end end end

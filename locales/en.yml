@@ -2,6 +2,9 @@ en:
   lita:
     handlers:
       jarvis:
+        exception: >-
+          (sadpanda) An error occurred in %{command}: %{exception} - %{message}
+          %{stacktrace}
         unhandled exception: >-
           (boom) Unhandled exception: %{exception}
         rejected execution: >-
