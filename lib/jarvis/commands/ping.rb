@@ -1,4 +1,5 @@
 require "clamp"
+require "i18n"
 
 module Jarvis module Command class Ping < Clamp::Command
   def execute
