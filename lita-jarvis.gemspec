@@ -24,4 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack-test"
   spec.add_development_dependency "rspec", ">= 3.0.0"
   spec.add_development_dependency "rspec-wait"
+  spec.add_development_dependency "guard"
+  spec.add_development_dependency "guard-rspec"
+  spec.add_development_dependency "guard-bundler"
 end
