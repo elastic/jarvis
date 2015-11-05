@@ -1,19 +1,24 @@
-# lita-jarvis
+# J.A.R.V.I.S.
 
-TODO: Add a description of the plugin.
+Jarvis is a chatops bot used at Elastic.
 
-## Installation
+## Developing
 
-Add lita-jarvis to your Lita instance's Gemfile:
+Jarvis is written in Ruby, so you'll need Ruby.
 
-``` ruby
-gem "lita-jarvis"
-```
+Once you've got Ruby, we can continue and install Jarvis' other dependencies:
 
-## Configuration
+* `gem install bundler`
+* `bundle install`
 
-TODO: Describe any configuration attributes the plugin exposes.
+You'll also need a Redis server running because Lita requires that for some
+runtime storage/configuration. Simply running a local `redis-server` is
+sufficient.
 
-## Usage
+## Testing
 
-TODO: Describe the plugin's features and how to use them.
+* `bundle exec rspec`
+
+## Contributing
+
+Patches, ideas, and bug reports welcome. :)
