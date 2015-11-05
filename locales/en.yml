@@ -3,14 +3,14 @@ en:
     handlers:
       jarvis:
         unhandled exception: >-
-          Unhandled exception: %{exception}
+          (boom) Unhandled exception: %{exception}
         rejected execution: >-
-          The %{pool} pool is full, so I am too busy to do that work right now,
-          sorry!
+          The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
+        ping response: >-
+          (chompy)
         cla:
           failure: |-
             (failed) %{project}#%{pr} - %{message}
           success: |-
             (freddie) %{project}#%{pr} - %{message}
-
 
