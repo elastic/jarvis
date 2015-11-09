@@ -10,7 +10,7 @@ en:
         rejected execution: >-
           The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
         ping response: >-
-          (chompy)
+          (chompy) Last heartbeat: %{last_heartbeat}
         cla:
           failure: |-
             (failed) %{project}#%{pr} - %{message}
