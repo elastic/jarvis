@@ -8,12 +8,6 @@ module Lita
     class Jarvis < Handler
       extend ::Jarvis::Mixins::FancyRoute
 
-      on(:loaded) do |*args|
-        #p :connection => args
-        #require "pry"
-        #binding.pry
-      end
-
       fancy_route("restart", ::Jarvis::Command::Bounce, :command => true, :pool => ::Jarvis::WorkPool::ADMINISTRATIVE)
       fancy_route("merge", ::Jarvis::Command::Merge, :command => true)
       fancy_route("cla", ::Jarvis::Command::CLA, :command => true)
