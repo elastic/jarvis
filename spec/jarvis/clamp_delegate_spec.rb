@@ -10,14 +10,14 @@ describe Jarvis::ClampDelegate do
 
   describe "#delegate" do
     it "should return a proc" do
-      expect(described_class.delegate(clamp)).to be_a(Proc)
+      expect(described_class.delegate(clamp, {})).to be_a(Proc)
     end
   end
 
   context "when the delegate is called" do
     let(:request) { double() }
     let(:message) { double() }
-    let(:delegate) { described_class.delegate(clamp) }
+    let(:delegate) { described_class.delegate(clamp, {}) }
 
     before do
       expect(request).to receive(:message).and_return(message)
@@ -46,6 +46,35 @@ describe Jarvis::ClampDelegate do
         delegate.call(request)
       end
     end
-  end
 
+    context "and :flags are given to clamp_delegate" do
+      let(:clamp) do
+        Class.new(Clamp::Command) do
+          option "--bar", :flag, "Set bar"
+          option "--name", "NAME", "The name"
+          def execute; end
+        end
+      end
+      let(:delegate) { described_class.delegate(clamp, flags: flags) }
+      let(:command_line_text) { "" }
+
+      context "with an invalid flag" do
+        let(:flags) do
+          { "--invalid-flag" => ->(_) { "example" } }
+        end
+        it "should fail" do
+          expect(request).to receive(:reply).with(/Unrecognised option '--invalid-flag'/)
+          delegate.call(request)
+        end
+      end
+      context "with a valid flag" do
+        let(:flags) do
+          { "--name" => ->(_) { "Jordan" } }
+        end
+        it "should succeed" do
+          delegate.call(request)
+        end
+      end
+    end
+  end
 end
