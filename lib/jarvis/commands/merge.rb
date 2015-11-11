@@ -13,6 +13,7 @@ module Jarvis module Command class Merge < Clamp::Command
 
   def execute
     puts "This merge command does nothing, yet!"
+    puts "I will use #{committer} as the committer"
     # Fetch the .patch
     # Clone the git repo
     # Merge the patch
