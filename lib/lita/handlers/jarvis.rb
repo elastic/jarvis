@@ -16,7 +16,7 @@ module Lita
         "--committer-name" => ->(request) { request.user.name },
       })
       fancy_route("cla", ::Jarvis::Command::CLA, :command => true, :flags => {
-        "--cla-url" => ->(_) { config.find { |c| c.name == :cla_url }.value },
+        "--cla-url" => ->(_) { config.find { |c| c.name == :cla_url }.value || raise(::Jarvis::Error, "Missing this setting in lita_config.rb: config.handlers.jarvis.cla_url") }
       })
 
       Lita.register_handler(self)
