@@ -66,10 +66,10 @@ module Jarvis module ClampDelegate
     # Override `puts` and `p` calls from within `obj` to cause them to reply
     # instead of printing to stdout.
     obj.define_singleton_method(:puts) do |*args|
-      request.reply(args.collect(&:to_s))
+      request.reply(*args.collect(&:to_s))
     end
     obj.define_singleton_method(:p) do |*args|
-      request.reply(args.collect(&:inspect))
+      request.reply(*args.collect(&:inspect))
     end
   end
 end end
