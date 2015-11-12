@@ -12,7 +12,7 @@ en:
           %{user}: %{key} has no value for your profile.
       jarvis:
         merge success: |-
-          (success) Merged %{organization}/%{project}#{number} into %{branches}
+          (success) Merged %{organization}/%{project}#%{number} into %{branches}
         exception: |-
           (sadpanda) An error occurred in %{command}: %{exception} - %{message}
           %{stacktrace}
