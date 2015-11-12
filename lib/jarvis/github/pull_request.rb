@@ -2,6 +2,8 @@ require "jarvis/error"
 
 module Jarvis module GitHub class PullRequest
   class InvalidURL < ::Jarvis::Error; end
+  BASE_URL = "https://github.com"
+
   def self.parse(url)
     url = URI.parse(url) if url.is_a?(String)
 
@@ -17,5 +19,18 @@ module Jarvis module GitHub class PullRequest
 
   def to_s
     "https://github.com/#{organization}/#{project}/pull/#{number}"
+  end
+
+  def repository_url
+    [BASE_URL, organization, project].join("/")
+  end
+
+  def git_url
+    #repository_url + ".git"
+    "git@github.com:/#{organization}/#{project}.git"
+  end
+
+  def patch_url
+    to_s + ".patch"
   end
 end end end

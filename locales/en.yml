@@ -11,9 +11,14 @@ en:
         user profile key not set: >-
           %{user}: %{key} has no value for your profile.
       jarvis:
-        exception: >-
+        merge success: |-
+          (success) Merged %{organization}/%{project}#{number} into %{branches}
+        exception: |-
           (sadpanda) An error occurred in %{command}: %{exception} - %{message}
           %{stacktrace}
+
+          Logs from this execution:
+          %{logs}
         unhandled exception: >-
           (boom) Unhandled exception: %{class} - %{message}
         rejected execution: >-

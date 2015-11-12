@@ -19,6 +19,12 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "stud"
   spec.add_runtime_dependency "concurrent-ruby", "0.9.1"
   spec.add_runtime_dependency "git", "~> 1.2.9"
+  spec.add_runtime_dependency "faraday"
+  spec.add_runtime_dependency "mbox"
+  spec.add_runtime_dependency "cabin"
+  spec.add_runtime_dependency "open4"
+  spec.add_runtime_dependency "lita-hipchat"
+  spec.add_runtime_dependency "faraday_middleware"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "pry-byebug"
