@@ -7,6 +7,7 @@ require "stud/temporary"
 require "jarvis/github/pull_request"
 require "jarvis/git"
 require "jarvis/fetch"
+require "jarvis/defer"
 require "mbox"
 
 module Jarvis module Command class Merge < Clamp::Command
@@ -27,7 +28,7 @@ module Jarvis module Command class Merge < Clamp::Command
   end
 
   def execute
-    cleanup = []
+    defer = ::Jarvis::Defer.new
     logs = []
     logger = ::Cabin::Channel.new
     logger.subscribe(logs)
@@ -42,7 +43,7 @@ module Jarvis module Command class Merge < Clamp::Command
     # Download the patch
     logger.info("Fetching PR", :url => pr.patch_url)
     patch_file = Jarvis::Fetch.file(pr.patch_url)
-    cleanup << patch_file.path
+    defer.do { File.unlink(patch_file.path) }
 
     # Clone the git repo
     logger.info("Cloning repo", :url => pr.git_url)
@@ -79,14 +80,14 @@ module Jarvis module Command class Merge < Clamp::Command
     _, status = Process::waitpid2(pid)
     raise PushFailure, "git push failed" unless status.success?
 
-    # Set labels on PRs
     puts I18n.t("lita.handlers.jarvis.merge success", organization: pr.organization, project: pr.project, number: pr.number, branches: branches.join(","))
+
+    # TODO(sissel): Set labels on PRs
+    # TODO(sissel): Comment on PR
   rescue => e
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :stacktrace => e.backtrace.join("\n"), :command => "merge", :logs => logs.join("\n"))
   ensure
-    cleanup.each do |path|
-      File.unlink(path)
-    end
+    defer.run
   end
 
 end end end
