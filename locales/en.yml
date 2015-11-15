@@ -2,14 +2,20 @@ en:
   lita:
     handlers:
       settings:
-        set user: Set a value for your chat profile.
-        get user: Get the current value for a given setting in your chat profile.
-        user profile updated: >-
-          %{user}: Ok! Updated `%{key}` for your profile.
-        user profile get: >-
-          %{user}: %{key} = %{value}
-        user profile key not set: >-
-          %{user}: %{key} has no value for your profile.
+        help:
+          user set: Set a value for your chat profile.
+          user get: Get the current value for a given setting in your chat profile.
+          user clear: Remove a given setting.
+        response:
+          empty user profile: Your profile has no settings.
+          user profile updated: >-
+            %{user}: Ok! Updated `%{key}` for your profile.
+          user profile get: >-
+            %{user}: %{key} = %{value}
+          user profile clear: >-
+            %{user}: %{key} cleared.
+          user profile key not set: >-
+            %{user}: %{key} has no value for your profile.
       jarvis:
         merge success: |-
           (success) Merged %{organization}/%{project}#%{number} into %{branches}
