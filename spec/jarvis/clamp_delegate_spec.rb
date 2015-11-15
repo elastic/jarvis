@@ -55,6 +55,7 @@ describe Jarvis::ClampDelegate do
           def execute; end
         end
       end
+
       let(:delegate) { described_class.delegate(clamp, flags: flags) }
       let(:command_line_text) { "" }
 
@@ -67,6 +68,7 @@ describe Jarvis::ClampDelegate do
           delegate.call(request)
         end
       end
+
       context "with a valid flag" do
         let(:flags) do
           { "--name" => ->(_) { "Jordan" } }
