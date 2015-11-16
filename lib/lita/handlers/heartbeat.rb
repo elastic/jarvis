@@ -26,7 +26,8 @@ module Lita
       route(/^ping\s*$/, :ping, :command => true)
 
       on(:loaded) do |*args|
-        if robot.config.adapter.any?
+        #if robot.config.adapter.any?
+        if robot.config.adapters.respond_to?(:hipchat)
           puts "Starting chat health checker"
           Thread.new { self.class.heartbeat_loop(robot) }
           Thread.new { self.class.health_check_loop(robot) }
