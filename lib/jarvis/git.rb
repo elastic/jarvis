@@ -52,4 +52,9 @@ module Jarvis module Git
       File.unlink(path)
     end
   end
+
+  def self.config(git, key, value)
+    # ruby Git doesn't support this, so we do it ourselves.
+    system("git", "-C", git.dir.to_s, "config", key, value)
+  end
 end end

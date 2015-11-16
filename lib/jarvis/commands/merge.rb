@@ -52,8 +52,8 @@ module Jarvis module Command class Merge < Clamp::Command
     # ruby Git library doesn't seem to support setting per-repo configuration,
     # so we call `git` directly.
     logger.info("Setting local git committer details", :email => committer_email, :name => committer_name)
-    system("git", "-C", git.dir.to_s, "config", "user.email", committer_email)
-    system("git", "-C", git.dir.to_s, "config", "user.name", committer_name)
+    Jarvis::Git.config(git, "user.email", committer_email)
+    Jarvis::Git.config(git, "user.name", committer_name)
 
     branches.each do |branch|
       logger[:branch] = branch
