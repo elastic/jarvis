@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 
-gem "lita-hipchat"
+gem "lita", :path => "#{File.dirname(__FILE__)}/../lita"
 gemspec
