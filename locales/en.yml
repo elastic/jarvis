@@ -19,6 +19,8 @@ en:
       jarvis:
         merge success: |-
           (success) Merged %{organization}/%{project}#%{number} into %{branches}
+        publish success: |-
+          (success) Published %{organization}/%{project} from the following branches: %{branches}
         exception: |-
           (sadpanda) An error occurred in %{command}: %{exception} - %{message}
           %{stacktrace}
