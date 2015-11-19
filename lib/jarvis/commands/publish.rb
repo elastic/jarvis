@@ -25,7 +25,7 @@ module Jarvis module Command class Publish < Clamp::Command
     logger = ::Cabin::Channel.new
     logger.subscribe(logs)
     logger.subscribe(STDOUT)
-    logger.level = :debug
+    logger.level = :info
 
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
@@ -40,6 +40,9 @@ module Jarvis module Command class Publish < Clamp::Command
       TASKS.each do |command|
         context[:command] = command
         Jarvis.execute(command, logger, git.dir)
+
+        # Clear the logs if it was successful
+        logs.clear unless logger.debug?
       end
       context.clear()
       git.reset
