@@ -25,16 +25,16 @@ module Lita
       route(/^heartbeat (\S+) (\d+(?:\.\d+)?)/, :heartbeat, command: true)
       route(/^ping\s*$/, :ping, :command => true)
 
-      on(:loaded) do |*args|
-        #if robot.config.adapter.any?
-        if robot.config.adapters.respond_to?(:hipchat)
-          puts "Starting chat health checker"
-          Thread.new { self.class.heartbeat_loop(robot) }
-          Thread.new { self.class.health_check_loop(robot) }
-        else
-          puts "No Lita adapter is configured. Chat health checker is disabled! This is OK only if the adapter is Shell. The rest of the time (production?) you will want this"
-        end
-      end
+      #on(:loaded) do |*args|
+        ##if robot.config.adapter.any?
+        #if robot.config.adapters.respond_to?(:hipchat)
+          #puts "Starting chat health checker"
+          #Thread.new { self.class.heartbeat_loop(robot) }
+          #Thread.new { self.class.health_check_loop(robot) }
+        #else
+          #puts "No Lita adapter is configured. Chat health checker is disabled! This is OK only if the adapter is Shell. The rest of the time (production?) you will want this"
+        #end
+      #end
 
       def self.heartbeat_loop(robot)
         # Periodically send a heartbeat via chat to ourselves to verify that the actual chat system is alive.
