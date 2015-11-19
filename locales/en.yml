@@ -32,7 +32,7 @@ en:
         rejected execution: >-
           The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
         ping response: >-
-          (chompy) Last heartbeat: %{last_heartbeat}
+          (chompy) (new jarvis)
         user profile error: >-
           %{user}: (whoa) %{class}: %{message}.
           You can resolve this by telling me your git email `set git-email
