@@ -9,13 +9,13 @@ en:
         response:
           empty user profile: Your profile has no settings.
           user profile updated: >-
-            %{user}: Ok! Updated `%{key}` for your profile.
+            Ok! Updated `%{key}` for your profile.
           user profile get: >-
-            %{user}: %{key} = %{value}
+            %{key} = %{value}
           user profile clear: >-
-            %{user}: %{key} cleared.
+            %{key} cleared.
           user profile key not set: >-
-            %{user}: %{key} has no value for your profile.
+            %{key} has no value for your profile.
       jarvis:
         merge success: |-
           (success) Merged %{organization}/%{project}#%{number} into %{branches}
@@ -34,7 +34,7 @@ en:
         ping response: >-
           (chompy) (new jarvis)
         user profile error: >-
-          %{user}: (whoa) %{class}: %{message}.
+          @%{user}: (whoa) %{class}: %{message}.
           You can resolve this by telling me your git email `set git-email
           your@email-address`. I need this information for setting the git
           committer data during the merge.

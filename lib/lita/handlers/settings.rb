@@ -4,7 +4,7 @@ module Lita module Handlers class Settings < Handler
     _, key, value, *_ = request.match_data.to_a
     request.user.metadata[key] = value
     request.user.save
-    request.reply(t("response.user profile updated", :user => request.user.mention_name, :key => key))
+    request.reply_with_mention(t("response.user profile updated", :key => key))
   end
 
   # user get some-key
@@ -12,9 +12,9 @@ module Lita module Handlers class Settings < Handler
     _, key, *_ = request.match_data.to_a
     value = request.user.metadata[key]
     if value
-      request.reply(t("response.user profile get", :user => request.user.mention_name, :key => key, :value => value))
+      request.reply_with_mention(t("response.user profile get", :key => key, :value => value))
     else
-      request.reply(t("response.user profile key not set", :user => request.user.mention_name, :key => key))
+      request.reply_with_mention(t("response.user profile key not set", :key => key))
     end
   end
  
@@ -23,15 +23,15 @@ module Lita module Handlers class Settings < Handler
     _, key, *_ = request.match_data.to_a
     request.user.metadata.delete(key)
     request.user.save
-    request.reply(t("response.user profile clear", :user => request.user.mention_name, :key => key))
+    request.reply_with_mention(t("response.user profile clear", :key => key))
   end
 
   route(/^user\s+get\s*$/, :command => true, :help => {"user get" => t("help.user get")}) do |request|
     text = request.user.metadata.collect { |k,v| "#{k} = #{v}" }.join("\n")
     if text.empty?
-      request.reply(t("response.empty user profile"))
+      request.reply_with_mention(t("response.empty user profile"))
     else
-      request.reply(text)
+      request.reply_with_mention(text)
     end
   end
 
