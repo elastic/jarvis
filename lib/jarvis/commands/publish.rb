@@ -39,7 +39,7 @@ module Jarvis module Command class Publish < Clamp::Command
 
       TASKS.each do |command|
         context[:command] = command
-        Jarvis.execute(Shellwords.shellsplit(command), logger)
+        Jarvis.execute(command, logger, git.dir)
       end
       context.clear()
       git.reset
@@ -48,6 +48,6 @@ module Jarvis module Command class Publish < Clamp::Command
 
     puts I18n.t("lita.handlers.jarvis.publish success", organization: project.organization, project: project.name, branches: branches.join(", "))
   rescue => e
-    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :stacktrace => e.backtrace.join("\n"), :command => "merge", :logs => logs.join("\n"))
+    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :stacktrace => e.backtrace.join("\n"), :command => "merge", :logs => logs.collect { |l| l[:message] }.join("\n"))
   end
 end end end
