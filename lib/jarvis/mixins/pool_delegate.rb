@@ -15,7 +15,7 @@ module Jarvis module Mixins module PoolDelegate
       begin
         callback_proc.call(request)
       rescue ::Jarvis::UserProfileError => e
-        request.reply(t("user profile error", :user => request.user.name, :class => e.class, :message => e.message))
+        request.reply(t("user profile error", :user => request.user.mention_name, :class => e.class, :message => e.message))
       rescue => e
         # TODO(sissel): Mark this job as failed
         request.reply(t("unhandled exception", :class => e.class, :message => e.message))
