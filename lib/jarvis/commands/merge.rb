@@ -14,6 +14,7 @@ require "mbox"
 
 module Jarvis module Command class Merge < Clamp::Command
   class PushFailure < ::Jarvis::Error; end
+  class Bug < ::Jarvis::Error; end
 
   banner "Merge a pull request into one or more branches."
 
@@ -80,6 +81,13 @@ module Jarvis module Command class Merge < Clamp::Command
           # whatever PR this is..
           description + "\nFixes \##{pr.number}"
         end
+
+        # Verify the committer is set correctly.
+        data = git.lib.commit_data("HEAD")
+        # format of the committer field is this: Your Name <foo@example.com> 1234567890 -0800
+        _, name, email, *_ = /^([^<]+) <([^>]+)> \d+ [+-]\d+/.match(data["committer"]).to_a
+        raise Bug, "Committer name didn't match: #{name} vs #{committer_name}" if name != committer_name
+        raise Bug, "Committer email didn't match: #{email} vs #{committer_email}" if email != committer_email
 
         # Record the commit hash for this commit.
         commits.last[:commits] << git.revparse("HEAD") 
