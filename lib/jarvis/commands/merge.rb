@@ -1,4 +1,5 @@
 require "clamp"
+require "fileutils"
 require "octokit"
 require "mustache"
 require "open4"
@@ -48,8 +49,10 @@ module Jarvis module Command class Merge < Clamp::Command
     logger.level = :debug
     logger[:context] = "#{pr.project}\##{pr.number}"
 
-    self.workdir = Stud::Temporary.pathname if workdir.nil?
-
+    if workdir.nil?
+      self.workdir = Stud::Temporary.pathname
+      defer.do { FileUtils.rm_r(workdir, :secure => true) }
+    end
     Dir.mkdir(workdir) unless File.directory?(workdir)
 
     # Download the patch
