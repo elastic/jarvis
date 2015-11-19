@@ -1,6 +1,6 @@
 module Lita module Handlers class Settings < Handler
   # set user some-key some-value
-  route(/^user\s+get\s+(\S+)\s+(.*)\s*$/, :command => true, :help => {"user set <key> <value>" => t("help.user set")}) do |request|
+  route(/^user\s+set\s+(\S+)\s+(.*)\s*$/, :command => true, :help => {"user set <key> <value>" => t("help.user set")}) do |request|
     _, key, value, *_ = request.match_data.to_a
     request.user.metadata[key] = value
     request.user.save
