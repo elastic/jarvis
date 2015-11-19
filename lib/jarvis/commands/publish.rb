@@ -24,7 +24,7 @@ module Jarvis module Command class Publish < Clamp::Command
     logs = []
     logger = ::Cabin::Channel.new
     logger.subscribe(logs)
-    logger.subscribe(STDOUT) if STDOUT.tty?
+    logger.subscribe(STDOUT)
     logger.level = :debug
 
     logger.info("Cloning repo", :url => project.git_url)
