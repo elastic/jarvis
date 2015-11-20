@@ -11,7 +11,7 @@ module Jarvis module Mixins module FancyRoute
       options[:help] = { pattern => handler.description || "#{pattern} #{handler.derived_usage_description}" }
     end
 
-    handler = fancy_handler(handler, &block)
+    handler = fancy_handler(handler, options, &block)
 
     # Turn a string "foo" into a regexp /^foo(\s|$)/
     pattern = Regexp.new("^#{Regexp.escape(pattern)}(\\s|$)") if pattern.is_a?(String)
@@ -23,7 +23,7 @@ module Jarvis module Mixins module FancyRoute
     route(pattern, options, &pool_delegate(pool, &handler))
   end
 
-  def fancy_handler(handler, &block)
+  def fancy_handler(handler, options, &block)
     if handler.nil?
       raise "Nothing to route to - no block or handler given for #{regexp} route." if block.nil?
 
@@ -38,7 +38,7 @@ module Jarvis module Mixins module FancyRoute
       # nothing needed to be done
     when Class
       if handler.ancestors.include?(::Clamp::Command)
-        handler = ::Jarvis::ClampDelegate.delegate(handler)
+        handler = ::Jarvis::ClampDelegate.delegate(handler, options)
       end
     else
       raise "Unsupported handler type #{handler.class} (#{handler.inspect})"

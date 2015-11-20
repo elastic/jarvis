@@ -1,2 +1,4 @@
-module Jarvis class Error < StandardError 
-end end
+module Jarvis 
+  class Error < StandardError ; end
+  class UserProfileError < StandardError ; end
+end

@@ -1,9 +1,47 @@
 en:
   lita:
     handlers:
+      settings:
+        help:
+          user set: Set a value for your chat profile.
+          user get: Get the current value for a given setting in your chat profile.
+          user clear: Remove a given setting.
+        response:
+          empty user profile: Your profile has no settings.
+          user profile updated: >-
+            Ok! Updated `%{key}` for your profile.
+          user profile get: >-
+            %{key} = %{value}
+          user profile clear: >-
+            %{key} cleared.
+          user profile key not set: >-
+            %{key} has no value for your profile.
+      heartbeat:
+        ping response: >-
+          (chompy) (new jarvis)
       jarvis:
+        merge success: |-
+          (success) Merged %{organization}/%{project}#%{number} into %{branches}
+        publish success: |-
+          (success) Published %{organization}/%{project} from the following branches: %{branches}
+        exception: |-
+          (sadpanda) An error occurred in %{command}: %{exception} - %{message}
+          %{stacktrace}
+
+          Logs from this execution:
+          %{logs}
         unhandled exception: >-
-          Unhandled exception: %{exception}
+          (boom) Unhandled exception: %{class} - %{message}
         rejected execution: >-
-          The %{pool} pool is full, so I am too busy to do that work right now,
-          sorry!
+          The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
+        user profile error: >-
+          (whoa) %{class}: %{message}.
+          You can resolve this by telling me your git email `set git-email
+          your@email-address`. I need this information for setting the git
+          committer data during the merge.
+        cla:
+          failure: |-
+            (failed) %{project}#%{pr} - %{message}
+          success: |-
+            (freddie) %{project}#%{pr} - %{message}
+
