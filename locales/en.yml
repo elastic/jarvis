@@ -34,7 +34,7 @@ en:
         ping response: >-
           (chompy) (new jarvis)
         user profile error: >-
-          @%{user}: (whoa) %{class}: %{message}.
+          (whoa) %{class}: %{message}.
           You can resolve this by telling me your git email `set git-email
           your@email-address`. I need this information for setting the git
           committer data during the merge.
