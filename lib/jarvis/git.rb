@@ -11,6 +11,13 @@ module Jarvis module Git
     ::Git.clone(git_url, name, :path => workdir)
   end
 
+  # return the last sha1 of a repo
+  def self.sha1(workdir)
+    Dir.chdir(workdir) do
+      system("git log -1 --pretty=oneline | cut -d " " -f1")
+    end
+  end
+
   # Apply a mail-format patch to a git repo.
   #
   # - git: a Git::Base (from Git.init, Git.clone, etc)
