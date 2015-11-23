@@ -7,17 +7,17 @@ require "jarvis/github/project"
 module Jarvis module Command class Publish < Clamp::Command
   banner "Publish a logstash plugin"
 
-  option "--committer-email", "EMAIL", "The git committer to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.email` and `git config --get user.email`)."
-  option "--committer-name", "NAME", "The git committer name to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.name` and `git config --get user.email`)."
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--github-token", "GITHUB_TOKEN", "Your github auth token", :required => true
 
   parameter "PROJECT", "The project URL" do |url|
     Jarvis::GitHub::Project.parse(url)
   end
   parameter "[BRANCH] ...", "The branches to publish", :default => [ "master" ], :attribute_name => "branches"
 
-  TASKS = [ 'bundle install', 'bundle exec rake vendor', 'bundle exec rake publish_gem' ].freeze
+  TASKS = [ 'bundle install',
+            'bundle exec rake vendor',
+            'bundle exec rake publish_gem' ].freeze
+
   def execute
     self.workdir = Stud::Temporary.pathname if workdir.nil?
 
