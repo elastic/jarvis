@@ -14,7 +14,7 @@ module Jarvis module Git
   # return the last sha1 of a repo
   def self.sha1(workdir)
     Dir.chdir(workdir) do
-      system("git log -1 --pretty=oneline | cut -d " " -f1")
+      system('git log -1 --pretty=oneline | cut -d " " -f1')
     end
   end
 

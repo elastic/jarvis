@@ -22,6 +22,7 @@ module Lita
         "--cla-url" => ->(_) { config.find { |c| c.name == :cla_url }.value || raise(::Jarvis::Error, "Missing this setting in lita_config.rb: config.handlers.jarvis.cla_url") },
       })
       fancy_route("publish", ::Jarvis::Command::Publish, :command => true)
+      # fancy_route("force publish", ::Jarvis::Command::Publish, :command => true, :flags => { "--force" }
 
       Lita.register_handler(self)
     end
