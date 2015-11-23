@@ -23,9 +23,13 @@ module Jarvis module Command class Publish < Clamp::Command
   end
   parameter "[BRANCH] ...", "The branches to publish", :default => [ "master" ], :attribute_name => "branches"
 
-  TASKS = [ "bundle install",
-            "bundle exec rake vendor",
-            "bundle exec rake publish_gem" ].freeze
+  ALWAYS_RUN = lambda { |workdir| true }
+
+  TASKS = { "bundle install" => ALWAYS_RUN,
+            "bundle exec rake vendor" => lambda { |directory| Dir.glob(File.join(directory, "**/vendor.json")).size > 0 },
+            "bundle exec rake publish_gem" => ALWAYS_RUN }.freeze
+
+  NO_PREVIOUS_GEMS_PUBLISHED = "This rubygem could not be found."
 
   def execute
     self.workdir = Stud::Temporary.pathname if workdir.nil?
@@ -60,12 +64,14 @@ module Jarvis module Command class Publish < Clamp::Command
       context[:operation] = "publish"
       context[:branch] = branch
 
-      TASKS.each do |command|
-        context[:command] = command
-        Jarvis.execute(command, logger, git.dir)
+      TASKS.each do |command, condition|
+        if condition.call(workdir)
+          context[:command] = command
+          Jarvis.execute(command, logger, git.dir)
 
-        # Clear the logs if it was successful
-        logs.clear unless logger.debug?
+          # Clear the logs if it was successful
+          logs.clear unless logger.debug?
+        end
       end
       context.clear()
       git.reset
@@ -87,9 +93,15 @@ module Jarvis module Command class Publish < Clamp::Command
                 :logs => logs.collect { |l| l[:message] }.join("\n"))
   end
 
+  def contains_vendor_files?(directory)
+  end
+
   def check_version_match
     name, local_version = gem_specification
-    remote_versions = Gems.versions(name).collect { |v| v["number"] }
+    published_gems = Gems.versions(name)
+    # First version out
+    return if published_gems == NO_PREVIOUS_GEMS_PUBLISHED 
+    remote_versions = published_gems.collect { |v| v["number"] }
 
     if !remote_versions.include?(local_version)
       raise RemoteVersionDontMatchLocal, "local version: #{local_version}, not in remove version #{remote_versions}"
