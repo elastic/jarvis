@@ -16,6 +16,9 @@ en:
             %{key} cleared.
           user profile key not set: >-
             %{key} has no value for your profile.
+      heartbeat:
+        ping response: >-
+          (chompy) (new jarvis)
       jarvis:
         merge success: |-
           (success) Merged %{organization}/%{project}#%{number} into %{branches}
@@ -31,10 +34,8 @@ en:
           (boom) Unhandled exception: %{class} - %{message}
         rejected execution: >-
           The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
-        ping response: >-
-          (chompy) (new jarvis)
         user profile error: >-
-          @%{user}: (whoa) %{class}: %{message}.
+          (whoa) %{class}: %{message}.
           You can resolve this by telling me your git email `set git-email
           your@email-address`. I need this information for setting the git
           committer data during the merge.
