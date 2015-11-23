@@ -16,7 +16,7 @@ module Jarvis module Command class Publish < Clamp::Command
   banner "Publish a logstash plugin"
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--force", :flag, "Dont check if the build pass on jenkins and try to publish anyway"
+  option "--[no-]check-build", :flag, "Don't check if the build pass on jenkins and try to publish anyway", :default => true#, :attribute_name => :check_build
 
   parameter "PROJECT", "The project URL" do |url|
     Jarvis::GitHub::Project.parse(url)
@@ -45,24 +45,26 @@ module Jarvis module Command class Publish < Clamp::Command
     
     branches.each do |branch|
 
-      unless force?
-        build = build_report(project)
-        workdir_sha1 = Jarvis::Git.sha1(workdir) 
-
-        if build.sha1 == workdir_sha1
-          raise CommitHashDontMatch, "workdir_sha1: #{workdir_sha1}, build_sha1: #{build_sha1}"
-        end
-
-        if !build.success?
-          raise CIBuildFail, "Expecting success got #{build.status}"
-        end
-      end
 
       logger.info("Switching branches", :branch => branch)
       git.checkout(branch)
       context = logger.context
       context[:operation] = "publish"
       context[:branch] = branch
+
+      if check_build?
+        build = build_report(project)
+
+        workdir_sha1 = git.revparse("HEAD")
+
+        if build.sha1 !=  workdir_sha1
+          raise CommitHashDontMatch, "workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}"
+        end
+
+        if !build.success?
+          raise CIBuildFail, "Expecting success got #{build.status}"
+        end
+      end
 
       TASKS.each do |command, condition|
         if condition.call(workdir)
@@ -77,9 +79,8 @@ module Jarvis module Command class Publish < Clamp::Command
       git.reset
       git.clean(force: true)
 
-      check_version_match
+      verify_publish
     end
-
 
     puts I18n.t("lita.handlers.jarvis.publish success",
                 :organization => project.organization,
@@ -93,10 +94,7 @@ module Jarvis module Command class Publish < Clamp::Command
                 :logs => logs.collect { |l| l[:message] }.join("\n"))
   end
 
-  def contains_vendor_files?(directory)
-  end
-
-  def check_version_match
+  def verify_publish
     name, local_version = gem_specification
     published_gems = Gems.versions(name)
     # First version out
@@ -130,7 +128,8 @@ module Jarvis module Command class Publish < Clamp::Command
   end
 
   def extract_build_sha1(data)
-    build_node = data.fetch("actions", []).select { |i| i.has_key?("lastBuiltRevision") }.first
+    build_node = data.fetch("actions", []).find { |i| i.has_key?("lastBuiltRevision") }
+
     if build_node.nil?
       raise Bug, "Can't find the `lastbuiltRevision` node in the json document"
     end

@@ -5,13 +5,12 @@ require "bundler"
 module Jarvis
   class SubprocessFailure < ::Jarvis::Error ; end
   JRUBY_VERSION = "1.7.22"
-  JRUBY_VERSION = "1.7.19"
 
   def self.execute(args, logger, directory=nil)
     logger.info("Running command", :args => args)
     # We have to wrap the command into this block to make sure the current command use his 
     # defined set of gems and not jarvis gems.
-    Bundler.with_clean_env do
+    # Bundler.with_clean_env do
       pid, stdin, stdout, stderr = if directory
                                      wrapped = ["env",
                                                 "-",
@@ -28,6 +27,6 @@ module Jarvis
       logger.pipe(stdout => :info, stderr => :error)
       _, status = Process::waitpid2(pid)
       raise SubprocessFailure, "subprocess failed with code #{status.exitstatus}" unless status.success?
-    end
+    # end
   end
 end
