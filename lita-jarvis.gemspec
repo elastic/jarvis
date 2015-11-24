@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "open4"
   #spec.add_runtime_dependency "lita-hipchat"
   spec.add_runtime_dependency "faraday_middleware"
+  spec.add_runtime_dependency "gems"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "pry-byebug"
