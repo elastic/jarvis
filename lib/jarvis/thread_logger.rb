@@ -10,6 +10,9 @@ module Jarvis module ThreadLogger
     def <<(hash)
       @lock.synchronize do
         @state[Thread.current] = hash
+
+        # Purge any dead threads
+        @state.delete_if { |k,v| !k.alive? }
       end
     end
 
