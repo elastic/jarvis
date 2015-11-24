@@ -1,5 +1,6 @@
 require "git"
 require "jarvis/error"
+require "rfc2047"
 
 module Jarvis module Git
   class MergeProblem < ::Jarvis::Error; end
@@ -21,7 +22,7 @@ module Jarvis module Git
   def self.apply_mail(git, mail, logger, &block)
     cleanup = []
     # github prefixes the subject line with [PATCH], remove that part.
-    subject = mail.headers[:subject].gsub(/^\[PATCH\] /, "")
+    subject = clean_subject(mail.headers[:subject])
     logger.info("Working on a patch", :subject => subject)
     # The email body (minus the patch itself) is the rest of the commit message
     description, diff = mail.content.first.content.split(PATCH_MESSAGE_SEPARATOR, 2)
@@ -51,6 +52,10 @@ module Jarvis module Git
     cleanup.each do |path|
       File.unlink(path)
     end
+  end
+
+  def self.clean_subject(subject)
+    Rfc2047.decode(subject.gsub(/^\[PATCH\] /, ""))
   end
 
   def self.config(git, key, value)
