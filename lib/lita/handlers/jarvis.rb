@@ -1,8 +1,11 @@
 require "jarvis/commands/merge"
+require "jarvis/commands/status"
 require "jarvis/commands/restart"
+require "jarvis/commands/slowcmd"
 require "jarvis/commands/cla"
 require "jarvis/commands/publish"
 require "jarvis/mixins/fancy_route"
+require "jarvis/thread_logger"
 
 module Lita
   module Handlers
@@ -12,7 +15,13 @@ module Lita
       config :github_token
       config :organization
 
+      on(:loaded) do 
+        ::Jarvis::ThreadLogger.setup
+      end
+
       fancy_route("restart", ::Jarvis::Command::Restart, :command => true, :pool => ::Jarvis::WorkPool::ADMINISTRATIVE)
+      fancy_route("status", ::Jarvis::Command::Status, :command => true, :pool => ::Jarvis::WorkPool::ADMINISTRATIVE)
+      fancy_route("slowcmd", ::Jarvis::Command::SlowCommand, :command => true)
       fancy_route("merge", ::Jarvis::Command::Merge, :command => true, :flags => {
         "--committer-email" => ->(request) { request.user.metadata["git-email"] || raise(::Jarvis::UserProfileError, "Missing user setting `git-email` for user #{request.user.name}") },
         "--committer-name" => ->(request) { request.user.name },

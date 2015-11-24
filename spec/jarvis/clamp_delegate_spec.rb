@@ -20,8 +20,8 @@ describe Jarvis::ClampDelegate do
     let(:delegate) { described_class.delegate(clamp, {}) }
 
     before do
-      expect(request).to receive(:message).and_return(message)
-      expect(message).to receive(:body).and_return(command_line_text)
+      allow(request).to receive(:message).and_return(message)
+      allow(message).to receive(:body).and_return(command_line_text)
     end
 
     context "with valid arguments" do

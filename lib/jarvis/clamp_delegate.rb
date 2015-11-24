@@ -35,6 +35,7 @@ module Jarvis module ClampDelegate
     end
 
     lambda do |request|
+      Jarvis::ThreadLogger.log("Running command", :request => request.message.body)
       name, *args = Shellwords.shellsplit(request.message.body)
       cmd = command_class.new(name)
 
@@ -58,6 +59,8 @@ module Jarvis module ClampDelegate
       rescue ::Clamp::HelpWanted => e
         cmd.puts(cmd.help)
       end
+
+      Jarvis::ThreadLogger.log("Finished command", :request => request.message.body)
       nil
     end
   end
