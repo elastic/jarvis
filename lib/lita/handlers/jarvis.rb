@@ -1,5 +1,5 @@
 require "jarvis/commands/merge"
-require "jarvis/commands/bounce"
+require "jarvis/commands/restart"
 require "jarvis/commands/cla"
 require "jarvis/commands/publish"
 require "jarvis/mixins/fancy_route"
@@ -12,7 +12,7 @@ module Lita
       config :github_token
       config :organization
 
-      fancy_route("restart", ::Jarvis::Command::Bounce, :command => true, :pool => ::Jarvis::WorkPool::ADMINISTRATIVE)
+      fancy_route("restart", ::Jarvis::Command::Restart, :command => true, :pool => ::Jarvis::WorkPool::ADMINISTRATIVE)
       fancy_route("merge", ::Jarvis::Command::Merge, :command => true, :flags => {
         "--committer-email" => ->(request) { request.user.metadata["git-email"] || raise(::Jarvis::UserProfileError, "Missing user setting `git-email` for user #{request.user.name}") },
         "--committer-name" => ->(request) { request.user.name },
