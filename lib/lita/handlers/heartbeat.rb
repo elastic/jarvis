@@ -1,5 +1,4 @@
 require "securerandom"
-require "jarvis/commands/ping"
 require "concurrent"
 require "stud/interval"
 require "time"
