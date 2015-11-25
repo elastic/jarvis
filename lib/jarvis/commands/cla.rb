@@ -1,6 +1,6 @@
 require "clamp"
 require "jarvis/cla"
-require "i18n"
+require "jarvis/patches/i18n"
 
 module Jarvis module Command class CLA < Clamp::Command
   banner "Run a CLA check on a PR"

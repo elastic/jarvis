@@ -1,10 +1,10 @@
 require "clamp"
 require "net/http"
-require "i18n"
 require "json"
 require "stud/temporary"
 require "jarvis/exec"
 require "jarvis/github/project"
+require "jarvis/patches/i18n"
 require "gems"
 
 module Jarvis module Command class Publish < Clamp::Command
@@ -43,9 +43,12 @@ module Jarvis module Command class Publish < Clamp::Command
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
     
+    puts I18n.t("lita.handlers.jarvis.publish success",
+                :organization => project.organization,
+                :project => project.name,
+                :branches => branches.join(", "))
+
     branches.each do |branch|
-
-
       logger.info("Switching branches", :branch => branch)
       git.checkout(branch)
       context = logger.context
