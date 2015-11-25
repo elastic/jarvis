@@ -1,5 +1,5 @@
 require "clamp"
-require "i18n"
+require "jarvis/patches/i18n"
 require "jarvis/thread_logger"
 
 module Jarvis module Command class Status < Clamp::Command

@@ -45,3 +45,5 @@ en:
           success: |-
             (freddie) %{project}#%{pr} - %{message}
 
+      test:
+        this should not fail the test %{messge}
