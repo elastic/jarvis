@@ -11,7 +11,9 @@ module Jarvis module Command class Publish < Clamp::Command
   class RemoteVersionDontMatchLocal < ::Jarvis::Error; end
   class CommitHashDontMatch < ::Jarvis::Error; end
   class CIBuildFail < ::Jarvis::Error; end
+  class CIBuildJobNotFound < ::Jarvis::Error; end
   class NoGemspecFound < ::Jarvis::Error; end
+  class Bug < ::Jarvis::Error; end
 
   banner "Publish a logstash plugin"
 
@@ -61,7 +63,7 @@ module Jarvis module Command class Publish < Clamp::Command
         workdir_sha1 = git.revparse("HEAD")
 
         if build.sha1 !=  workdir_sha1
-          raise CommitHashDontMatch, "workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}"
+          raise CommitHashDontMatch, "workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}, check build_url: #{build.url}"
         end
 
         if !build.success?
@@ -140,7 +142,7 @@ module Jarvis module Command class Publish < Clamp::Command
     branch = build_node["lastBuiltRevision"].fetch("branch", []).first
 
     if branch.nil?
-      raise "Can't find the branch node from the jenkins response"
+      raise Bug, "Can't find the branch node from the jenkins response"
     end
 
     return branch["SHA1"]
@@ -156,6 +158,11 @@ module Jarvis module Command class Publish < Clamp::Command
     req = Net::HTTP::Get.new(uri.path)
 
     response = http.request(req)
+
+    if response.code.to_i == 404
+      raise CIBuildJobNotFound, "Can't find the build job at  #{url}"
+    end
+
     data = JSON.parse(response.body)
 
     sha1 = extract_build_sha1(data)
@@ -172,6 +179,7 @@ module Jarvis module Command class Publish < Clamp::Command
       @job_name = job_name
       @sha1 = sha1
       @status = status
+      @url = url
     end
 
     def success?
