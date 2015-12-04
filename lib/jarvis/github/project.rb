@@ -22,6 +22,7 @@ module Jarvis module GitHub class Project
   end
 
   def git_url
-    return "https://github.com/#{@organization}/#{@name}"
+    #return "https://github.com/#{@organization}/#{@name}"
+    return "git@github.com:/#{@organization}/#{@name}.git"
   end
 end end end
