@@ -17,7 +17,6 @@ module Jarvis module Fetch
     response = http.get(url)
 
     if response.status != 200
-      require "pry"; binding.pry
       raise DownloadFailure, "Got HTTP #{response.status} when fetching #{url}"
     end
 
