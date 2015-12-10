@@ -16,6 +16,7 @@ module Jarvis
                                                 "-",
                                                 "PATH=#{ENV["PATH"]}",
                                                 "HOME=#{ENV["HOME"]}",
+                                                "SSH_AUTH_SOCK=#{ENV["SSH_AUTH_SOCK"]}",
                                                 "bash",
                                                 "-c",
                                                 "cd #{Shellwords.shellescape(directory)};. ~/.rvm/scripts/rvm; echo PWD; pwd; rvm use #{JRUBY_VERSION}; rvm use; #{args}"]
