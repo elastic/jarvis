@@ -45,7 +45,7 @@ module Jarvis module Command class Publish < Clamp::Command
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
     
-    puts I18n.t("lita.handlers.jarvis.publish success",
+    puts I18n.t("lita.handlers.jarvis.publish",
                 :organization => project.organization,
                 :project => project.name,
                 :branches => branches.join(", "))
@@ -74,6 +74,7 @@ module Jarvis module Command class Publish < Clamp::Command
       TASKS.each do |command, condition|
         if condition.call(workdir)
           context[:command] = command
+          puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
           Jarvis.execute(command, logger, git.dir)
 
           # Clear the logs if it was successful
