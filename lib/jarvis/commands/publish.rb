@@ -63,7 +63,7 @@ module Jarvis module Command class Publish < Clamp::Command
         workdir_sha1 = git.revparse("HEAD")
 
         if build.sha1 !=  workdir_sha1
-          raise CommitHashDontMatch, "workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}, check build_url: #{build.url}"
+          raise CommitHashDontMatch, "Please make sure Jenkins has run the build, before trying to publish, workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}, latest build found build_url: #{build.url}"
         end
 
         if !build.success?
