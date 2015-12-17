@@ -33,4 +33,8 @@ module Jarvis module GitHub class PullRequest
   def patch_url
     to_s + ".patch"
   end
+
+  def diff_url
+    to_s + ".diff"
+  end
 end end end

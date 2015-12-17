@@ -22,6 +22,8 @@ en:
       jarvis:
         merge success: |-
           (success) Merged %{organization}/%{project}#%{number} into %{branches}
+        backport success: |-
+          (success) Backported %{organization}/%{project}#%{number} to %{branches}
         publish: |-
           (ninja) Trying to publish %{organization}/%{project} from the following branches: %{branches}
         publish command: |-
