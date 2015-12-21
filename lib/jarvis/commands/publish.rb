@@ -5,6 +5,7 @@ require "stud/temporary"
 require "jarvis/exec"
 require "jarvis/github/project"
 require "jarvis/patches/i18n"
+require "travis"
 require "gems"
 
 module Jarvis module Command class Publish < Clamp::Command
@@ -58,16 +59,45 @@ module Jarvis module Command class Publish < Clamp::Command
       context[:branch] = branch
 
       if check_build?
-        build = build_report(project)
-
         workdir_sha1 = git.revparse("HEAD")
+        context[:sha1] = workdir_sha1
+        statuses = Octokit.statuses(project.path, workdir_sha1)
 
-        if build.sha1 !=  workdir_sha1
-          raise CommitHashDontMatch, "Please make sure Jenkins has run the build, before trying to publish, workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}, latest build found build_url: #{build.url}"
+        current_states = Hash[statuses.group_by(&:context).map do |ctx, info|
+           last_info = info.sort_by(&:created_at).last
+           [last_info.context, last_info.state]
+        end]
+
+        if current_states.any?
+          unsuccessful_statuses = Hash[current_states.select {|context,state| state != "success" }]
+          if unsuccessful_statuses.any?
+            logger.error("Cannot publish, some github commit hooks are not in a successful state.", :statuses => unsuccessful_statuses)
+            if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
+              logger.error("https://travis-ci.org/andrewvc/logstash-output-elasticsearch_java/branches")
+            end
+            next
+          end
         end
 
-        if !build.success?
-          raise CIBuildFail, "Expecting success got #{build.status}"
+        if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
+          logger.info("(freddie) Successful Travis run detected!")
+          logger.info("https://travis-ci.org/andrewvc/logstash-output-elasticsearch_java/branches")
+        else
+          logger.warn("No travis status found for this commit! Will fall back to jenkins")
+
+          build = build_report(project)
+
+          if build.sha1 !=  workdir_sha1
+            logger.error "Please make sure Jenkins has run the build, before trying to publish, workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}, latest build found build_url: #{build.url}"
+            next
+          end
+
+          if build.success?
+            logger.info("Successful Jenkins build was found!")
+          else
+            logger.error("Jenkins build was not a success, got #{build.status}")
+            next
+          end
         end
       end
 
@@ -86,12 +116,12 @@ module Jarvis module Command class Publish < Clamp::Command
       git.clean(force: true)
 
       verify_publish
-    end
 
-    puts I18n.t("lita.handlers.jarvis.publish success",
-                :organization => project.organization,
-                :project => project.name,
-                :branches => branches.join(", "))
+      puts I18n.t("lita.handlers.jarvis.publish success",
+                  :organization => project.organization,
+                  :project => project.name,
+                  :branch => branch)
+    end
   rescue => e
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class,
                 :message => e.to_s,

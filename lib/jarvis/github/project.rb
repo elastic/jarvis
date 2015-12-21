@@ -21,6 +21,10 @@ module Jarvis module GitHub class Project
     @name = name
   end
 
+  def path
+    "#{organization}/#{name}"
+  end
+
   def git_url
     #return "https://github.com/#{@organization}/#{@name}"
     return "git@github.com:/#{@organization}/#{@name}.git"
