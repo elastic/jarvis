@@ -5,7 +5,6 @@ require "stud/temporary"
 require "jarvis/exec"
 require "jarvis/github/project"
 require "jarvis/patches/i18n"
-require "travis"
 require "gems"
 
 module Jarvis module Command class Publish < Clamp::Command
