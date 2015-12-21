@@ -27,7 +27,7 @@ en:
         publish command: |-
           Running command: %{command}
         publish success: |-
-          (success) Published %{organization}/%{project} from the following branches: %{branches}
+          (success) Published %{organization}/%{project}/%{branch}
         exception: |-
           (sadpanda) An error occurred in %{command}: %{exception} - %{message}
           %{stacktrace}
