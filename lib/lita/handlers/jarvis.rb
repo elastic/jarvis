@@ -4,6 +4,7 @@ require "jarvis/commands/restart"
 require "jarvis/commands/slowcmd"
 require "jarvis/commands/cla"
 require "jarvis/commands/publish"
+require "jarvis/commands/teamtime"
 require "jarvis/mixins/fancy_route"
 require "jarvis/thread_logger"
 
@@ -15,7 +16,7 @@ module Lita
       config :github_token
       config :organization
 
-      on(:loaded) do 
+      on(:loaded) do
         ::Jarvis::ThreadLogger.setup
       end
 
@@ -31,6 +32,7 @@ module Lita
         "--cla-url" => ->(_) { config.find { |c| c.name == :cla_url }.value || raise(::Jarvis::Error, "Missing this setting in lita_config.rb: config.handlers.jarvis.cla_url") },
       })
       fancy_route("publish", ::Jarvis::Command::Publish, :command => true)
+      fancy_route("teamtime", ::Jarvis::Command::Teamtime, :command => true)
 
       Lita.register_handler(self)
     end

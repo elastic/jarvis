@@ -25,10 +25,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "mbox"
   spec.add_runtime_dependency "cabin"
   spec.add_runtime_dependency "open4"
-  #spec.add_runtime_dependency "lita-hipchat"
+  spec.add_runtime_dependency "lita-hipchat"
   spec.add_runtime_dependency "faraday_middleware"
-  spec.add_runtime_dependency "gems"
   spec.add_runtime_dependency "rfc2047"
+  spec.add_runtime_dependency "gems"
+  spec.add_runtime_dependency "tzinfo"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "pry-byebug"
