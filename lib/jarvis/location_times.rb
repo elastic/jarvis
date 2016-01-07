@@ -8,6 +8,7 @@ module Jarvis
       'London/Lisbon' => 'Europe/London',
       '     Montreal' => 'America/Montreal',
       '  Minneapolis' => 'America/Chicago',
+      'American Fork' => 'America/Denver',
       'Mountain View' => 'America/Los_Angeles'
     }
 
