@@ -22,9 +22,12 @@ describe Jarvis::LocationTimes do
       expect(subject[3]).to eq("  Minneapolis Fri 10:30:00 AM")
     end
 
-    it "the fifth entry is mountain view" do
-      expect(subject[4]).to eq("Mountain View Fri 08:30:00 AM")
+    it "the fifth entry is american fork" do
+      expect(subject[4]).to eq("American Fork Fri 09:30:00 AM")
     end
 
+    it "the sixth entry is mountain view" do
+      expect(subject[5]).to eq("Mountain View Fri 08:30:00 AM")
+    end
   end
 end
