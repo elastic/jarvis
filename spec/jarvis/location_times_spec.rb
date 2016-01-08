@@ -1,7 +1,7 @@
 require "jarvis/location_times"
 
 describe Jarvis::LocationTimes do
-  let(:utc) { Time.new(2016, 1, 8, 16, 30, 00).utc }
+  let(:utc) { Time.new(2016, 1, 8, 16, 30, 00, 0).utc }
 
   subject { described_class.new(utc).to_a }
 
