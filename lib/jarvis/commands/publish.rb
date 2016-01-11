@@ -121,6 +121,7 @@ module Jarvis module Command class Publish < Clamp::Command
                   :project => project.name,
                   :branch => branch)
     end
+    puts logs.join("\n")
   rescue => e
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class,
                 :message => e.to_s,
