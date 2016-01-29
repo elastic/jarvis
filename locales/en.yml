@@ -40,7 +40,7 @@ en:
           The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
         user profile error: >-
           (whoa) %{class}: %{message}.
-          You can resolve this by telling me your git email `set git-email
+          You can resolve this by telling me your git email `user set git-email
           your@email-address`. I need this information for setting the git
           committer data during the merge.
         cla:
