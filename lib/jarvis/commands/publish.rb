@@ -71,16 +71,12 @@ module Jarvis module Command class Publish < Clamp::Command
           unsuccessful_statuses = Hash[current_states.select {|context,state| state != "success" }]
           if unsuccessful_statuses.any?
             logger.error("Cannot publish, some github commit hooks are not in a successful state.", :statuses => unsuccessful_statuses)
-            if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
-              logger.error("https://travis-ci.org/andrewvc/logstash-output-elasticsearch_java/branches")
-            end
             next
           end
         end
 
         if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
           logger.info("(freddie) Successful Travis run detected!")
-          logger.info("https://travis-ci.org/andrewvc/logstash-output-elasticsearch_java/branches")
         else
           logger.warn("No travis status found for this commit! Will fall back to jenkins")
 
