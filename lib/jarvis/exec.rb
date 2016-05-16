@@ -4,7 +4,7 @@ require "bundler"
 
 module Jarvis
   class SubprocessFailure < ::Jarvis::Error ; end
-  JRUBY_VERSION = "1.7.22"
+  JRUBY_VERSION = "1.7.25"
 
   def self.execute(args, logger, directory=nil)
     logger.info("Running command", :args => args)
