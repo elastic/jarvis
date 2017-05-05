@@ -1,3 +1,4 @@
+require 'jarvis/github'
 require "jarvis/commands/merge"
 require "jarvis/commands/status"
 require "jarvis/commands/restart"
@@ -7,6 +8,8 @@ require "jarvis/commands/publish"
 require "jarvis/commands/teamtime"
 require "jarvis/mixins/fancy_route"
 require "jarvis/thread_logger"
+require "jarvis/commands/review"
+require 'jarvis/github/review_search'
 
 module Lita
   module Handlers
@@ -17,7 +20,30 @@ module Lita
       config :organization
 
       on(:loaded) do
+        # Set github token
+        ::Jarvis::Github.client(config.github_token)
         ::Jarvis::ThreadLogger.setup
+
+        every(60*60) { review_search(robot) }
+      end
+
+      def review_search(robot)
+        total, items = ::Jarvis::Github::ReviewSearch.execute
+        return if total == 0
+        
+        @target_room ||= Lita::Room.find_by_name("logstash")
+        @target ||= Lita::Source.new(room: @target_room)
+
+        messages = []
+        messages << "There are #{total} items needing PR review. Consider reviewing one of these please :)"
+        messages.concat ::Jarvis::Github::ReviewSearch.format_items(items)
+
+        messages.each do |message|
+          robot.send_messages(@target, message)
+          # Weirdly, slack displays messages out of order unless you do this. They must have a race
+          # this only happens sometimes
+          sleep 0.1 
+        end
       end
 
       fancy_route("restart", ::Jarvis::Command::Restart, :command => true, :pool => ::Jarvis::WorkPool::ADMINISTRATIVE)
@@ -25,14 +51,19 @@ module Lita
       fancy_route("slowcmd", ::Jarvis::Command::SlowCommand, :command => true)
       fancy_route("merge", ::Jarvis::Command::Merge, :command => true, :flags => {
         "--committer-email" => ->(request) { request.user.metadata["git-email"] || raise(::Jarvis::UserProfileError, "Missing user setting `git-email` for user #{request.user.name}") },
-        "--committer-name" => ->(request) { request.user.name },
-        "--github-token" => ->(_) { config.find { |c| c.name == :github_token }.value || raise(::Jarvis::Error, "Missing this setting in lita_config.rb: config.handlers.jarvis.github_token") }
+        "--committer-name" => ->(request) { request.user.name }
       })
       fancy_route("cla", ::Jarvis::Command::CLA, :command => true, :flags => {
         "--cla-url" => ->(_) { config.find { |c| c.name == :cla_url }.value || raise(::Jarvis::Error, "Missing this setting in lita_config.rb: config.handlers.jarvis.cla_url") },
       })
       fancy_route("publish", ::Jarvis::Command::Publish, :command => true)
       fancy_route("teamtime", ::Jarvis::Command::Teamtime, :command => true)
+
+      # These are the same thing, but its expected people will use 
+      # 'reviews' as a zero-arity to get a list of all reviews
+      # and 'review PR_URL' to submit a PR
+      fancy_route("reviews", ::Jarvis::Command::Review, :command => true)
+      fancy_route("review", ::Jarvis::Command::Review, :command => true)
 
       Lita.register_handler(self)
     end
