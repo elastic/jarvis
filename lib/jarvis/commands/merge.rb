@@ -14,6 +14,8 @@ require "jarvis/defer"
 require "mbox"
 
 module Jarvis module Command class Merge < Clamp::Command
+  include ::Jarvis::Github
+
   class PushFailure < ::Jarvis::Error; end
   class Bug < ::Jarvis::Error; end
 
@@ -23,21 +25,12 @@ module Jarvis module Command class Merge < Clamp::Command
   option "--committer-name", "NAME", "The git committer name to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.name` and `git config --get user.email`)."
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--github-token", "GITHUB_TOKEN", "Your github auth token", :required => true
 
   parameter "URL", "The URL to merge"
   parameter "BRANCHES ...", "The branches to merge", :attribute_name => :branches
 
   def pr
     @pr ||= Jarvis::GitHub::PullRequest.parse(url)
-  end
-
-  def github
-    return @github if @github
-    @github = Octokit::Client.new
-    @github.access_token = github_token
-    @github.login
-    @github
   end
 
   def execute
