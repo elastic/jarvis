@@ -35,10 +35,10 @@ module Lita
       end
 
       def travis_watchdog(robot)
-        total, failures = ::Jarvis::Travis::Watchdog.execute
-        return if total == 0
+        total_failures, total_pl_gins, failures = ::Jarvis::Travis::Watchdog.execute
+        return if total_failures == 0
 
-        messages = [ "Oops, We have currently *#{total}* plugins jobs failing :sadbazpanda:", ]
+        messages = [ "Oops, We have currently have *#{total_failures}* plugins jobs failing :sadbazpanda: (#{total_plugins} plugins checked)" ]
         messages.concat(::Jarvis::Travis::Watchdog.format_items(failures))
 
         send_messages(room_target, messages)
