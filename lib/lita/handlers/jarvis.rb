@@ -31,7 +31,7 @@ module Lita
         Travis.github_auth(config.github_token)
 
         every(60*60) { review_search(robot) }
-        every(90*60) { travis_watchdog(robot) }
+        every(6*60*60) { travis,watchdog(robot) }
       end
 
       def travis_watchdog(robot)
