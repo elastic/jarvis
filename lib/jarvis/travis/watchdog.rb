@@ -41,8 +41,8 @@ module Jarvis module Travis
         end
       end
 
-      total =  failures.values.collect(&:size).reduce(&:+)
-      [total, failures]
+      total_failures =  failures.values.collect(&:size).reduce(&:+)
+      [total_failures, plugins_status.size, failures]
     end
 
     def execute
