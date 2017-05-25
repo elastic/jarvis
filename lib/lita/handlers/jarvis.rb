@@ -6,15 +6,18 @@ require "jarvis/commands/slowcmd"
 require "jarvis/commands/cla"
 require "jarvis/commands/publish"
 require "jarvis/commands/teamtime"
+require "jarvis/commands/plugins"
 require "jarvis/mixins/fancy_route"
 require "jarvis/thread_logger"
 require "jarvis/commands/review"
-require 'jarvis/github/review_search'
+require "jarvis/github/review_search"
+require "travis"
 
 module Lita
   module Handlers
     class Jarvis < Handler
       extend ::Jarvis::Mixins::FancyRoute
+
       config :cla_url
       config :github_token
       config :organization
@@ -24,25 +27,44 @@ module Lita
         ::Jarvis::Github.client(config.github_token)
         ::Jarvis::ThreadLogger.setup
 
+        # Use github token to get a travis token
+        Travis.github_auth(config.github_token)
+
         every(60*60) { review_search(robot) }
+        every(90*60) { travis_watchdog(robot) }
+      end
+
+      def travis_watchdog(robot)
+        total, failures = ::Jarvis::Travis::Watchdog.execute
+        return if total == 0
+
+        messages = [ "Oops, We have currently *#{total}* plugins jobs failing :sadbazpanda:", ]
+        messages.concat(::Jarvis::Travis::Watchdog.format_items(failures))
+
+        send_messages(room_target, messages)
+      end
+
+      def room_target
+        @target_room ||= Lita::Room.find_by_name("logstash")
+        @target ||= Lita::Source.new(room: @target_room)
       end
 
       def review_search(robot)
         total, items = ::Jarvis::Github::ReviewSearch.execute
         return if total == 0
-        
-        @target_room ||= Lita::Room.find_by_name("logstash")
-        @target ||= Lita::Source.new(room: @target_room)
 
         messages = []
         messages << "There are #{total} items needing PR review. Consider reviewing one of these please :)"
         messages.concat ::Jarvis::Github::ReviewSearch.format_items(items)
+        send_messages(room_target, messages)
+      end
 
+      def send_messages(target, messages)
         messages.each do |message|
           robot.send_messages(@target, message)
           # Weirdly, slack displays messages out of order unless you do this. They must have a race
           # this only happens sometimes
-          sleep 0.1 
+          sleep 0.1
         end
       end
 
@@ -64,6 +86,7 @@ module Lita
       # and 'review PR_URL' to submit a PR
       fancy_route("reviews", ::Jarvis::Command::Review, :command => true)
       fancy_route("review", ::Jarvis::Command::Review, :command => true)
+      fancy_route("plugins", ::Jarvis::Command::Plugins, :command => true)
 
       Lita.register_handler(self)
     end
