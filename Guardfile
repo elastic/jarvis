@@ -19,3 +19,7 @@
 guard :rspec, :cmd => "rspec" do
   watch(%r{^(lib|spec)/.*\.rb$})
 end
+
+guard :process, :name => "lita", :command => ['bundle', 'exec', 'lita'] do
+  watch(%r{^lib/.*\.rb$})
+end
