@@ -23,7 +23,7 @@ module Jarvis module Travis
         location = "logstash-plugins/#{plugin_name}"
         repo = ::Travis::Repository.find(location)
         branches = branch_to_monitor(plugin_name)
-        status[plugin_name] = branches.each_with_object({}) { |branch, hsh| hsh[branch] = repo.branches[branch].passed?  }
+        status[plugin_name] = branches.each_with_object({}) { |branch, hsh| hsh[branch] = repo.branches[branch].failed?  }
       end
 
       status
@@ -33,8 +33,8 @@ module Jarvis module Travis
       failures = {}
 
       plugins_status.each do |plugin_name, status|
-        status.each do |branch, state|
-          if !state
+        status.each do |branch, failed|
+          if failed
             failures[branch] ||= []
             failures[branch] << plugin_name
           end
