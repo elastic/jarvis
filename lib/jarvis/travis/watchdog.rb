@@ -22,6 +22,7 @@ module Jarvis module Travis
       default_plugins.each do |plugin_name|
         location = "logstash-plugins/#{plugin_name}"
         repo = ::Travis::Repository.find(location)
+        repo.reload
         branches = branch_to_monitor(plugin_name)
         status[plugin_name] = branches.each_with_object({}) { |branch, hsh| hsh[branch] = repo.branches[branch].passed?  }
       end
