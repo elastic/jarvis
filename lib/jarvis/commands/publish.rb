@@ -178,8 +178,7 @@ module Jarvis module Command class Publish < Clamp::Command
   def build_report(project)
     # job format: logstash-plugin-input-beats-unit/
     job_name = "logstash-plugin-#{project.name.gsub(/logstash-/, '')}-unit" # we only test master and PR and not the core v1 branch
-
-    url = "http://build-eu-00.elastic.co/job/#{job_name}/lastStableBuild/api/json"
+    url = "http://build-eu-00.elastic.co/job/#{job_name}/lastBuild/api/json"
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Get.new(uri.path)
