@@ -20,7 +20,7 @@ module Jarvis module Fetch
       raise DownloadFailure, "Got HTTP #{response.status} when fetching #{url}"
     end
 
-    file.write(response.body)
+    file.write(response.body.force_encoding('utf-8'))
     file.flush
     file.rewind
 
