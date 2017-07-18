@@ -9,12 +9,16 @@ require "stud/temporary"
 require "jarvis/github/pull_request"
 require "jarvis/patches/i18n"
 require "jarvis/git"
+require "jarvis/github"
 require "jarvis/fetch"
 require "jarvis/defer"
 require "mbox"
 
 module Jarvis module Command class Merge < Clamp::Command
   include ::Jarvis::Github
+
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
 
   class PushFailure < ::Jarvis::Error; end
   class Bug < ::Jarvis::Error; end
