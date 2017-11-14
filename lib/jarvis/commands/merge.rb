@@ -30,12 +30,11 @@ module Jarvis module Command class Merge < Clamp::Command
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
 
-  parameter "URL", "The URL to merge"
-  parameter "BRANCHES ...", "The branches to merge", :attribute_name => :branches
-
-  def pr
-    @pr ||= Jarvis::GitHub::PullRequest.parse(url)
+  parameter "PR", "The PR URL to merge" do |url|
+    Jarvis::GitHub::PullRequest.parse(url)
   end
+
+  parameter "BRANCHES ...", "The branches to merge", :attribute_name => :branches
 
   def execute
     defer = ::Jarvis::Defer.new
@@ -52,14 +51,20 @@ module Jarvis module Command class Merge < Clamp::Command
     end
     Dir.mkdir(workdir) unless File.directory?(workdir)
 
-    # Download the patch
-    logger.info("Fetching PR", :url => pr.patch_url)
-    patch_file = Jarvis::Fetch.file(pr.patch_url)
-    defer.do { File.unlink(patch_file.path) }
-
     # Clone the git repo
     logger.info("Cloning repo", :url => pr.git_url)
     git = Jarvis::Git.clone_repo(pr.git_url, workdir)
+
+    # Download the patch
+    logger.info("Fetching PR")
+    pull = github.pull_request("#{pr.organization}/#{pr.project}", pr.number)
+
+    git.lib.send(:command, "fetch", ["origin", "pull/#{pr.number}/head"])
+    git.checkout("FETCH_HEAD")
+
+    patch_file = File.join(workdir, "patch")
+    File.write(patch_file, git.lib.send(:command, "format-patch", ["--stdout", pull.base.sha]))
+    defer.do { File.unlink(patch_file) }
 
     # ruby Git library doesn't seem to support setting per-repo configuration,
     # so we call `git` directly.
@@ -74,7 +79,7 @@ module Jarvis module Command class Merge < Clamp::Command
       git.checkout(branch)
 
       commits << { :branch => branch, :commits => [] }
-      patches = Mbox.new(patch_file)
+      patches = Mbox.new(File.new(patch_file, "r"))
       patches.each do |mail|
         ::Jarvis::Git.apply_mail(git, mail, logger) do |description|
           # Append the 'Fixes #1234' to the bottom of the commit message for
