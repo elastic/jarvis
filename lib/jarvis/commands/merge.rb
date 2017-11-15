@@ -121,7 +121,7 @@ module Jarvis module Command class Merge < Clamp::Command
     # TODO(sissel): Set labels on PRs
     puts I18n.t("lita.handlers.jarvis.merge success", organization: pr.organization, project: pr.project, number: pr.number, branches: branches.join(","))
   rescue => e
-    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :stacktrace => e.backtrace.join("\n"), :command => "merge", :logs => logs.join("\n"))
+    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :command => "merge")
   ensure
     defer.run
   end

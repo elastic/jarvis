@@ -30,10 +30,6 @@ en:
           (success) Published %{organization}/%{project}/%{branch}
         exception: |-
           (sadpanda) An error occurred in %{command}: %{exception} - %{message}
-          %{stacktrace}
-
-          Logs from this execution:
-          %{logs}
         unhandled exception: >-
           (boom) Unhandled exception: %{class} - %{message}
         rejected execution: >-

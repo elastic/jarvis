@@ -19,6 +19,7 @@ module Jarvis module Command class CLA < Clamp::Command
       return 1
     end
   rescue => e
-    puts "An error occurred: #{e.class} - #{e}\n" + e.backtrace.join("\n")
+    puts "An error occurred: #{e.class} - #{e}\n"
+    #+ e.backtrace.join("\n")
   end
 end end end

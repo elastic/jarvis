@@ -119,11 +119,9 @@ module Jarvis module Command class Publish < Clamp::Command
     end
     puts logs.join("\n")
   rescue => e
-    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class,
-                :message => e.to_s,
-                :stacktrace => e.backtrace.join("\n"),
-                :command => "publish",
-                :logs => logs.collect { |l| l[:message] }.join("\n"))
+    puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :command => "publish")
+                #:stacktrace => e.backtrace.join("\n"),
+                #:logs => logs.collect { |l| l[:message] }.join("\n"))
   end
 
   def verify_publish
