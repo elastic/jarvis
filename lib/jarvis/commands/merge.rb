@@ -64,7 +64,7 @@ module Jarvis module Command class Merge < Clamp::Command
 
     patch_file = File.join(workdir, "patch")
     File.write(patch_file, git.lib.send(:command, "format-patch", ["--stdout", pull.base.sha]))
-    defer.do { File.unlink(patch_file) }
+    defer.do { File.unlink(patch_file) if File.exist?(patch_file) }
 
     # ruby Git library doesn't seem to support setting per-repo configuration,
     # so we call `git` directly.
