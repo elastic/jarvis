@@ -19,7 +19,7 @@ module Jarvis module Mixins module PoolDelegate
       rescue => e
         # TODO(sissel): Mark this job as failed
         request.reply_with_mention(t("unhandled exception", :class => e.class, :message => e.message))
-        request.reply_with_mention(e.backtrace.join("\n"))
+        #request.reply_with_mention(e.backtrace.join("\n"))
       end
       # TODO(sissel): Mark this job as complete. (Once we have job/command tracking)
     end
