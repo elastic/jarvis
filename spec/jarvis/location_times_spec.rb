@@ -6,28 +6,28 @@ describe Jarvis::LocationTimes do
   subject { described_class.new(utc).to_a }
 
   context "when an array is generated" do
-    it "the first entry is berlin" do
-      expect(subject[0]).to eq("       Berlin Fri 05:30:00 PM")
+    it "the first entry is berlin/munich" do
+      expect(subject[0]).to eq("     Berlin/Munich Fri 05:30:00 PM")
     end
 
     it "the second entry is london/lisbon" do
-      expect(subject[1]).to eq("London/Lisbon Fri 04:30:00 PM")
+      expect(subject[1]).to eq("     London/Lisbon Fri 04:30:00 PM")
     end
 
-    it "the third entry is montreal" do
-      expect(subject[2]).to eq("     Montreal Fri 11:30:00 AM")
+    it "the third entry is montreal/boston" do
+      expect(subject[2]).to eq("   Montreal/Boston Fri 11:30:00 AM")
     end
 
-    it "the fourth entry is minneapolis" do
-      expect(subject[3]).to eq("  Minneapolis Fri 10:30:00 AM")
+    it "the fourth entry is minneapolis/kansas" do
+      expect(subject[3]).to eq("Minneapolis/Kansas Fri 10:30:00 AM")
     end
 
     it "the fifth entry is american fork" do
-      expect(subject[4]).to eq("American Fork Fri 09:30:00 AM")
+      expect(subject[4]).to eq("     American Fork Fri 09:30:00 AM")
     end
 
     it "the sixth entry is mountain view" do
-      expect(subject[5]).to eq("Mountain View Fri 08:30:00 AM")
+      expect(subject[5]).to eq("     Mountain View Fri 08:30:00 AM")
     end
   end
 end
