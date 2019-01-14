@@ -4,12 +4,10 @@ require "tzinfo"
 module Jarvis
   class LocationTimes
     ZONES = {
-      '       Berlin' => 'Europe/Berlin',
-      'London/Lisbon' => 'Europe/London',
-      '     Montreal' => 'America/Montreal',
-      '  Minneapolis' => 'America/Chicago',
-      'American Fork' => 'America/Denver',
-      'Mountain View' => 'America/Los_Angeles'
+      '         London/Lisbon' => 'Europe/London',
+      'Montreal/Massachusetts' => 'America/Montreal',
+      '                 Texas' => 'America/Chicago',
+      ' Seattle/Mountain View' => 'America/Los_Angeles'
     }
 
     def initialize(utc = Time.now.utc)
