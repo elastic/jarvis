@@ -27,7 +27,7 @@ module Jarvis module Command class Publish < Clamp::Command
 
   ALWAYS_RUN = lambda { |workdir| true }
 
-  TASKS = { "bundle install" => ALWAYS_RUN,
+  TASKS_RUBY = { "bundle install" => ALWAYS_RUN,
             "bundle exec rake vendor" => ALWAYS_RUN,
             "bundle exec rake publish_gem" => ALWAYS_RUN }.freeze
 
@@ -96,16 +96,24 @@ module Jarvis module Command class Publish < Clamp::Command
         end
       end
 
-      TASKS.each do |command, condition|
-        if condition.call(workdir)
-          context[:command] = command
-          puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
-          Jarvis.execute(command, logger, git.dir)
-
-          # Clear the logs if it was successful
-          logs.clear unless logger.debug?
+      if Dir.glob("*.gemspec").empty? # it's a java plugin
+        #logstash_core_branch = IO.read("PLUGIN_API_VERSION")
+        logstash_core_branch = "nsjp_ga" # TODO read this from the plugin's repository
+        clone_logstash = "git clone https://github.com/elastic/logstash/ --branch #{logstash_core_branch} --single-branch ../logstash"
+        execute_command(context, clone_logstash, logger)
+        build_logstash_jar = "./gradlew assemble" # build the core jar
+        Dir.chdir("../logstash") {|_|  execute(context, build_logstash_jar, logger) }
+        IO.write("gradle.properties", "LOGSTASH_CORE_PATH=../logstash/logstash-core")
+        build_gem = "./gradlew gem"
+        execute(context, build_gem, logger)
+      else # it's a ruby plugin
+        TASKS_RUBY.each do |command, condition|
+          next unless condition.call(workdir)
+          execute_command(context, command, logger, git.dir)
         end
       end
+      # Clear the logs if it was successful
+      logs.clear unless logger.debug?
       context.clear()
       git.reset
       git.clean(force: true)
@@ -122,6 +130,12 @@ module Jarvis module Command class Publish < Clamp::Command
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :command => "publish")
                 #:stacktrace => e.backtrace.join("\n"),
                 #:logs => logs.collect { |l| l[:message] }.join("\n"))
+  end
+
+  def execute_command(context, command, logger, dir = nil)
+     context[:command] = command
+     puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
+     Jarvis.execute(command, logger, dir)
   end
 
   def verify_publish
