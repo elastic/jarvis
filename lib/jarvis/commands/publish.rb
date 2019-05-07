@@ -5,6 +5,7 @@ require "stud/temporary"
 require "jarvis/exec"
 require "jarvis/github/project"
 require "jarvis/patches/i18n"
+require "fileutils"
 require "gems"
 
 module Jarvis module Command class Publish < Clamp::Command
@@ -96,20 +97,28 @@ module Jarvis module Command class Publish < Clamp::Command
         end
       end
 
-      if Dir.glob("*.gemspec").empty? # it's a java plugin
-        #logstash_core_branch = IO.read("PLUGIN_API_VERSION")
-        logstash_core_branch = "nsjp_ga" # TODO read this from the plugin's repository
-        clone_logstash = "git clone https://github.com/elastic/logstash/ --branch #{logstash_core_branch} --single-branch ../logstash"
-        execute_command(context, clone_logstash, logger)
-        build_logstash_jar = "./gradlew assemble" # build the core jar
-        Dir.chdir("../logstash") {|_|  execute(context, build_logstash_jar, logger) }
-        IO.write("gradle.properties", "LOGSTASH_CORE_PATH=../logstash/logstash-core")
-        build_gem = "./gradlew gem"
-        execute(context, build_gem, logger)
-      else # it's a ruby plugin
-        TASKS_RUBY.each do |command, condition|
-          next unless condition.call(workdir)
-          execute_command(context, command, logger, git.dir)
+      Dir.chdir(git.dir.path) do |dir|
+        if Dir.glob("*.gemspec").empty? # it's a java plugin
+          #logstash_core_branch = IO.read("PLUGIN_API_VERSION")
+          logstash_core_branch = "7.x" # TODO read this from the plugin's repository
+          clone_logstash = "git clone https://github.com/elastic/logstash/ --branch #{logstash_core_branch} --single-branch ../logstash"
+          execute_command(context, clone_logstash, logger)
+          build_logstash_jar = "./gradlew assemble" # build the core jar
+          Dir.chdir("../logstash") {|_|  execute_command(context, build_logstash_jar, logger) }
+          IO.write("gradle.properties", "LOGSTASH_CORE_PATH=../logstash/logstash-core")
+          build_gem = "./gradlew gem"
+          execute_command(context, build_gem, logger)
+          FileUtils.rm_rf('../logstash') # we no longer need this
+          gem_push = "vendor/jruby/bin/jruby -S jgem push *.gem"
+          execute_command(context, gem_push, logger)
+          _, local_version = gem_specification
+          tag_repository = "git tag v#{local_version} && git push origin v#{local_version}"
+          execute_command(context, tag_repository, logger)
+        else # it's a ruby plugin
+          TASKS_RUBY.each do |command, condition|
+            next unless condition.call(workdir)
+            execute_command(context, command, logger, git.dir)
+          end
         end
       end
       # Clear the logs if it was successful
@@ -118,7 +127,7 @@ module Jarvis module Command class Publish < Clamp::Command
       git.reset
       git.clean(force: true)
 
-      verify_publish
+      Dir.chdir(git.dir.path) { |_| verify_publish }
 
       puts I18n.t("lita.handlers.jarvis.publish success",
                   :organization => project.organization,
