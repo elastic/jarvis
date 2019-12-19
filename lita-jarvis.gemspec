@@ -14,7 +14,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "lita", ">= 4.6"
+  spec.add_runtime_dependency "lita", ">= 4.7"
+  spec.add_runtime_dependency "lita-slack"
   spec.add_runtime_dependency "clamp", "~> 1.0.0"
   spec.add_runtime_dependency "mustache"
   spec.add_runtime_dependency "octokit"
