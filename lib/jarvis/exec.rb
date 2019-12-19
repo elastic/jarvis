@@ -19,8 +19,9 @@ module Jarvis
                                          "cd #{Shellwords.shellescape(directory)}",
                                          ". #{rvm_path}/scripts/rvm",
                                          "echo PWD; pwd",
-                                         "rvm use #{JRUBY_VERSION}; rvm use; #{args}"
+                                         "rvm use #{JRUBY_VERSION}; rvm use"
                                      ]
+                                     cd_rvm_args << Array(args).join(' ')
                                      wrapped = [ 'env', '-' ]
                                      wrapped.concat env_to_shell_lines(execute_env.merge(env))
                                      wrapped.concat [ 'bash', '-c', cd_rvm_args.join('; ') ]

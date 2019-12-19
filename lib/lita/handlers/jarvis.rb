@@ -7,6 +7,7 @@ require "jarvis/commands/cla"
 require "jarvis/commands/publish"
 require "jarvis/commands/teamtime"
 require "jarvis/commands/plugins"
+require "jarvis/commands/run"
 require "jarvis/mixins/fancy_route"
 require "jarvis/thread_logger"
 require "jarvis/commands/review"
@@ -87,6 +88,9 @@ module Lita
       fancy_route("reviews", ::Jarvis::Command::Review, :command => true)
       fancy_route("review", ::Jarvis::Command::Review, :command => true)
       fancy_route("plugins", ::Jarvis::Command::Plugins, :command => true)
+
+      fancy_route("run", ::Jarvis::Command::Run, :command => true)
+      fancy_route("exec", ::Jarvis::Command::Run, :command => true)
 
       Lita.register_handler(self)
     end
