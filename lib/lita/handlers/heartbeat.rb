@@ -1,8 +1,3 @@
-require "securerandom"
-require "concurrent"
-require "stud/interval"
-require "time"
-
 module Lita
   module Handlers
     class Heartbeat < Handler
