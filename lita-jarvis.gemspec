@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "mustache"
   spec.add_runtime_dependency "octokit"
   spec.add_runtime_dependency "stud"
-  spec.add_runtime_dependency "concurrent-ruby", "0.9.1"
+  spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
   spec.add_runtime_dependency "git", "~> 1.2.9"
   spec.add_runtime_dependency "faraday"
   spec.add_runtime_dependency "mbox"
