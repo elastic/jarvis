@@ -76,7 +76,7 @@ module Jarvis module Command class Publish < Clamp::Command
         end
 
         if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
-          logger.info("(freddie) Successful Travis run detected!")
+          logger.info(":freddie: Successful Travis run detected!")
         else
           logger.warn("No travis status found for this commit! Will fall back to jenkins")
 
