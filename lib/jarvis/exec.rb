@@ -10,6 +10,7 @@ module Jarvis
 
   def self.execute(args, logger, directory = nil, env = {})
     logger.info("Running command", :args => args)
+    env = parse_env_string(env) if env.is_a?(String)
     # We have to wrap the command into this block to make sure the current command use his 
     # defined set of gems and not jarvis gems.
     with_dir(directory) do # Bundler.with_clean_env do
@@ -58,6 +59,10 @@ module Jarvis
 
     def env_to_shell_lines(env)
       env.map { |var, val| "#{var}=#{Shellwords.shellescape(val)}" }
+    end
+
+    def parse_env_string(str)
+      str.scan(/\w+=\w+/).map { |s| s.split('=') }.to_h
     end
 
   end
