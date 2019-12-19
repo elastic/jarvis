@@ -28,8 +28,8 @@ module Jarvis module Command class Publish < Clamp::Command
   ALWAYS_RUN = lambda { |workdir| true }
 
   TASKS = { "bundle install" => ALWAYS_RUN,
-            "bundle exec rake vendor" => ALWAYS_RUN,
-            "bundle exec rake publish_gem" => ALWAYS_RUN }.freeze
+            "ruby -rbundler/setup -S rake vendor" => ALWAYS_RUN,
+            "ruby -rbundler/setup -S rake publish_gem" => ALWAYS_RUN }.freeze
 
   NO_PREVIOUS_GEMS_PUBLISHED = "This rubygem could not be found."
 
