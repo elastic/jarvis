@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-jarvis"
-  spec.version       = "0.1.0"
+  spec.version       = "0.3.0"
   spec.authors       = ["Jordan Sissel"]
   spec.email         = ["jls@semicomplete.com"]
   spec.description   = "-"
@@ -14,12 +14,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "lita", ">= 4.6"
+  spec.add_runtime_dependency "lita", ">= 4.7"
+  spec.add_runtime_dependency "lita-slack"
   spec.add_runtime_dependency "clamp", "~> 1.0.0"
   spec.add_runtime_dependency "mustache"
   spec.add_runtime_dependency "octokit"
   spec.add_runtime_dependency "stud"
-  spec.add_runtime_dependency "concurrent-ruby", "0.9.1"
+  spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
   spec.add_runtime_dependency "git", "~> 1.2.9"
   spec.add_runtime_dependency "faraday"
   spec.add_runtime_dependency "mbox"

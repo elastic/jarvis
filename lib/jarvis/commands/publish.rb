@@ -18,7 +18,8 @@ module Jarvis module Command class Publish < Clamp::Command
   banner "Publish a logstash plugin"
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--[no-]check-build", :flag, "Don't check if the build pass on jenkins and try to publish anyway", :default => true#, :attribute_name => :check_build
+  option "--env", "ENV", "ENV variables passed to publish task.", :default => 'JARVIS=true LOGSTASH_SOURCE=false' # to be able to bundle wout LS
+  option "--[no-]check-build", :flag, "Don't check if the build pass on jenkins and try to publish anyway", :default => true
 
   parameter "PROJECT", "The project URL" do |url|
     Jarvis::GitHub::Project.parse(url)
@@ -28,8 +29,8 @@ module Jarvis module Command class Publish < Clamp::Command
   ALWAYS_RUN = lambda { |workdir| true }
 
   TASKS = { "bundle install" => ALWAYS_RUN,
-            "bundle exec rake vendor" => ALWAYS_RUN,
-            "bundle exec rake publish_gem" => ALWAYS_RUN }.freeze
+            "ruby -rbundler/setup -S rake vendor" => ALWAYS_RUN,
+            "ruby -rbundler/setup -S rake publish_gem" => ALWAYS_RUN }.freeze
 
   NO_PREVIOUS_GEMS_PUBLISHED = "This rubygem could not be found."
 
@@ -44,7 +45,7 @@ module Jarvis module Command class Publish < Clamp::Command
 
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
-    
+
     puts I18n.t("lita.handlers.jarvis.publish",
                 :organization => project.organization,
                 :project => project.name,
@@ -76,7 +77,7 @@ module Jarvis module Command class Publish < Clamp::Command
         end
 
         if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
-          logger.info("(freddie) Successful Travis run detected!")
+          logger.info(":freddie: Successful Travis run detected!")
         else
           logger.warn("No travis status found for this commit! Will fall back to jenkins")
 
@@ -100,7 +101,7 @@ module Jarvis module Command class Publish < Clamp::Command
         if condition.call(workdir)
           context[:command] = command
           puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
-          Jarvis.execute(command, logger, git.dir)
+          Jarvis.execute(command, logger, git.dir, env)
 
           # Clear the logs if it was successful
           logs.clear unless logger.debug?

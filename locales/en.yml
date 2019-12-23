@@ -18,32 +18,32 @@ en:
             %{key} has no value for your profile.
       heartbeat:
         ping response: >-
-          (chompy) (new jarvis)
+          :chompy: (j.a.r.v.i.s.)
       jarvis:
         merge success: |-
-          (success) Merged %{organization}/%{project}#%{number} into %{branches}
+          :success: Merged %{organization}/%{project}#%{number} into %{branches}
         publish: |-
-          (ninja) Trying to publish %{organization}/%{project} from the following branches: %{branches}
+          :ninja: Trying to publish %{organization}/%{project} from the following branches: %{branches}
         publish command: |-
           Running command: %{command}
         publish success: |-
-          (success) Published %{organization}/%{project}/%{branch}
+          :success: Published %{organization}/%{project}/%{branch}
         exception: |-
-          (sadpanda) An error occurred in %{command}: %{exception} - %{message}
+          :sadpanda: An error occurred in %{command}: %{exception} - %{message}
         unhandled exception: >-
-          (boom) Unhandled exception: %{class} - %{message}
+          :boom: Unhandled exception: %{class} - %{message}
         rejected execution: >-
-          The %{pool} pool is full, so I am too busy to do that work right now, sorry! (shrug)
+          The %{pool} pool is full, so I am too busy to do that work right now, sorry! :shrug:
         user profile error: >-
-          (whoa) %{class}: %{message}.
+          :whoa: %{class}: %{message}.
           You can resolve this by telling me your git email `user set git-email
           your@email-address`. I need this information for setting the git
           committer data during the merge.
         cla:
           failure: |-
-            (failed) %{project}#%{pr} - %{message}
+            :failed: %{project}#%{pr} - %{message}
           success: |-
-            (freddie) %{project}#%{pr} - %{message}
+            :freddie: %{project}#%{pr} - %{message}
 
       test:
         this should not fail the test %{messge}
