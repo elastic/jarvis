@@ -1,10 +1,12 @@
 require "jarvis/error"
-require "shellwords"
+require "jarvis/env_utils"
 require "bundler"
 require "open4"
 require "tmpdir"
 
 module Jarvis
+  extend EnvUtils
+
   class SubprocessFailure < ::Jarvis::Error ; end
   JRUBY_VERSION = "9.1.14.0"
 
@@ -16,7 +18,7 @@ module Jarvis
     with_dir(directory) do # Bundler.with_clean_env do
       pid, stdin, stdout, stderr = if directory || env.any?
                                      cd_rvm_args = [
-                                         "cd #{Shellwords.shellescape(directory)}",
+                                         "cd #{shell_escape(directory)}",
                                          ". #{rvm_path}/scripts/rvm",
                                          "echo PWD; pwd",
                                          "rvm use #{JRUBY_VERSION}; rvm use"
@@ -56,14 +58,6 @@ module Jarvis
       [ 'PATH', 'HOME', 'SSH_AUTH_SOCK' ].map do |var|
         ENV[var] ? [ var, ENV[var] ] : nil
       end.compact.to_h
-    end
-
-    def env_to_shell_lines(env)
-      env.map { |var, val| "#{var}=#{Shellwords.shellescape(val)}" }
-    end
-
-    def parse_env_string(str)
-      str.scan(/\w+=\w+/).map { |s| s.split('=') }.to_h
     end
 
   end
