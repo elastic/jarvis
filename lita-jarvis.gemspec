@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "gems"
   spec.add_runtime_dependency "tzinfo"
   spec.add_runtime_dependency "travis"
+  spec.add_runtime_dependency "down"
 
   spec.add_development_dependency "bundler", "~> 1.3"
 #  spec.add_development_dependency "pry-byebug"

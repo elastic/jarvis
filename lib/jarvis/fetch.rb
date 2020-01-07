@@ -1,28 +1,24 @@
 require "jarvis/error"
-require "faraday"
-require "faraday_middleware"
+require "down"
 
 module Jarvis module Fetch
-  class DownloadFailure < ::Jarvis::Error; end
+  DownloadError = ::Down::Error
+
   def self.file(url)
     url = URI.parse(url) if url.is_a?(String)
-    file = Stud::Temporary.file
 
-    # TODO(sissel): timeout + retry
-    http = Faraday.new do |conn|
-      conn.use FaradayMiddleware::FollowRedirects
-      conn.adapter :net_http
+    file = Down.download(url.to_s) # Tempfile
+
+    if block_given?
+      begin
+        yield(file)
+      ensure
+        file.close
+      end
+    else
+      file.flush
+      file.rewind
     end
-
-    response = http.get(url)
-
-    if response.status != 200
-      raise DownloadFailure, "Got HTTP #{response.status} when fetching #{url}"
-    end
-
-    file.write(response.body.force_encoding('utf-8'))
-    file.flush
-    file.rewind
 
     file
   end
