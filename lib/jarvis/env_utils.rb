@@ -9,7 +9,7 @@ module Jarvis module EnvUtils
   end
 
   def parse_env_string(str)
-    str.scan(/\w+=\w+/).map { |s| s.split('=') }.to_h
+    str.scan(/\w+=[^\s]+/).map { |s| s.split('=') }.to_h
   end
 
   def shell_escape(path)
@@ -29,7 +29,7 @@ module Jarvis module EnvUtils
 
     def call(processors)
       env.map do |key, val|
-        if processor = processors[key]
+        if processor = processors[key.to_sym]
           val = processor.call(val)
         end
         [key, val]
