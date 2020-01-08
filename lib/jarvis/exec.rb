@@ -10,8 +10,8 @@ module Jarvis
   class SubprocessFailure < ::Jarvis::Error ; end
   JRUBY_VERSION = "9.1.14.0"
 
-  def self.execute(args, logger, directory = nil, env = {})
-    logger.info("Running command", :args => args)
+  def self.execute(args, directory = nil, env = {}, logger = self.logger)
+    logger.info("Running command", :args => args) if logger
     env = parse_env_string(env) if env.is_a?(String)
     # We have to wrap the command into this block to make sure the current command use his 
     # defined set of gems and not jarvis gems.
@@ -32,10 +32,14 @@ module Jarvis
                                      Open4::popen4(*args)
                                    end
       stdin.close
-      logger.pipe(stdout => :info, stderr => :error)
+      logger.pipe(stdout => :info, stderr => :error) if logger
       _, status = Process::waitpid2(pid)
       raise SubprocessFailure, "subprocess failed with code #{status.exitstatus}" unless status.success?
     end
+  end
+
+  def self.logger
+    Thread.current[:logger]
   end
 
   class << self

@@ -101,7 +101,7 @@ module Jarvis module Command class Publish < Clamp::Command
         if condition.call(workdir)
           context[:command] = command
           puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
-          Jarvis.execute(command, logger, git.dir, env)
+          Jarvis.execute(command, git.dir, env, logger)
 
           # Clear the logs if it was successful
           logs.clear unless logger.debug?

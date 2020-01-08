@@ -1,6 +1,8 @@
 require "clamp"
 require "stud/temporary"
 require "jarvis/exec"
+require "jarvis/env_utils"
+require "jarvis/logstash_helper"
 require "jarvis/github/project"
 
 module Jarvis module Command class Run < Clamp::Command
@@ -40,7 +42,7 @@ module Jarvis module Command class Run < Clamp::Command
     commands.each do |command|
       context[:command] = command
       puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
-      Jarvis.execute(command, logger, git.dir, env)
+      Jarvis.execute(command, git.dir, env, logger)
 
       # Clear the logs if it was successful
       logs.clear unless logger.debug?
