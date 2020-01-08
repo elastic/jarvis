@@ -9,13 +9,16 @@ module Jarvis module Command class Run < Clamp::Command
   banner "Execute a command against a repository (kind of like bundle exec ...)"
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--env", "ENV", "ENV variables passed to task.", :default => 'JARVIS=true LOGSTASH_SOURCE=false' # to be able to bundle wout LS
+  option "--env", "ENV", "ENV variables passed to task.", :default => 'JARVIS=true'
   option "--branch", "BRANCH", "The branch to run from.", :default => 'master'
 
   parameter "PROJECT", "The project URL" do |url|
     Jarvis::GitHub::Project.parse(url)
   end
   parameter "SCRIPT ...", "The script runner", :attribute_name => :script
+
+  # This command can potentially run any task  e.g.
+  # @jarvis run --env "LOGSTASH_SOURCE=1 LOGSTASH_PATH=#{latest}" https://github.com/logstash-plugins/logstash-integration-jdbc rake -T
 
   def execute
     self.workdir = Stud::Temporary.pathname if workdir.nil?
