@@ -3,6 +3,8 @@ require "net/http"
 require "json"
 require "stud/temporary"
 require "jarvis/exec"
+require "jarvis/env_utils"
+require "jarvis/logstash_helper"
 require "jarvis/github/project"
 require "jarvis/patches/i18n"
 require "gems"
@@ -42,6 +44,7 @@ module Jarvis module Command class Publish < Clamp::Command
     logger.subscribe(logs)
     logger.subscribe(STDOUT)
     logger.level = :info
+    Thread.current[:logger] = logger
 
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
@@ -50,6 +53,11 @@ module Jarvis module Command class Publish < Clamp::Command
                 :organization => project.organization,
                 :project => project.name,
                 :branches => branches.join(", "))
+
+    env = Jarvis::EnvUtils::Handler.call(self.env,
+        LOGSTASH_PATH: lambda { |val| Jarvis::LogstashHelper.download_and_extract_gems_if_necessary(val) }
+    )
+    logs.clear unless logger.debug?
 
     branches.each do |branch|
       logger.info("Switching branches", :branch => branch)
@@ -118,11 +126,13 @@ module Jarvis module Command class Publish < Clamp::Command
                   :project => project.name,
                   :branch => branch)
     end
-    puts logs.join("\n")
   rescue => e
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :command => "publish")
                 #:stacktrace => e.backtrace.join("\n"),
                 #:logs => logs.collect { |l| l[:message] }.join("\n"))
+    logger.error e if logger
+  ensure
+    Thread.current[:logger] = nil
   end
 
   def verify_publish

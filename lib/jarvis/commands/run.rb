@@ -25,12 +25,19 @@ module Jarvis module Command class Run < Clamp::Command
     logger.subscribe(logs)
     logger.subscribe(STDOUT)
     logger.level = :info
+    Thread.current[:logger] = logger
 
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
 
     task = "#{script.join(' ')}"
     puts ":ninja: Trying to run `#{task}` from #{project.organization}/#{project.name} (branch: #{branch})"
+
+    env = Jarvis::EnvUtils::Handler.call(self.env,
+        LOGSTASH_PATH: lambda { |val| Jarvis::LogstashHelper.download_and_extract_gems_if_necessary(val) }
+    )
+
+    logs.clear unless logger.debug?
 
     git.checkout(branch)
     context = logger.context
@@ -53,9 +60,12 @@ module Jarvis module Command class Run < Clamp::Command
 
     puts ":success: Finished task `#{task}` from #{project.organization}/#{project.name} (branch: #{branch})"
 
-    puts logs.join("\n")
   rescue => e
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :command => 'run')
+    logger.error e if logger
+  ensure
+    Thread.current[:logger] = nil
+    puts logs.join("\n") if logs
   end
 
 end end end
