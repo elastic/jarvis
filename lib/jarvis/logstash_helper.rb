@@ -78,10 +78,8 @@ module Jarvis class LogstashHelper
 
   # @return a LS_HOME path
   def download_and_extract_gems
-    tmp_dir = download do |tgz|
-      extract(tgz, paths: [ "#{@base}/logstash-core-plugin-api", "#{@base}/logstash-core" ])
-    end
-    File.join(tmp_dir, @base)
+    tmp_dir = extract(download, paths: [ "#{@base}/logstash-core-plugin-api", "#{@base}/logstash-core" ])
+    return File.join(tmp_dir, @base)
   end
 
   def download(&block)
