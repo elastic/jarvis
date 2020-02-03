@@ -17,7 +17,7 @@ module Jarvis class LogstashHelper
       end
     end
 
-    return version if version.nil? || version.empty? || %w{ true false }.eql?(version)
+    return version if version.nil? || version.empty? || %w{ true false }.include?(version)
 
     ls_helper = Jarvis::LogstashHelper.new(version)
     ls_helper.download_and_extract_gems
@@ -88,7 +88,7 @@ module Jarvis class LogstashHelper
   end
 
   def extract(tgz, paths: [])
-    ls_dir = Dir.mktmpdir #'logstash-'
+    ls_dir = Dir.mktmpdir
     self.class.log "Extracting #{tgz.path}", dir: ls_dir
     Jarvis.execute("tar -zxvf #{tgz.path} #{paths.join(' ')}", ls_dir) # -C #{ls_dir}
     ls_dir
