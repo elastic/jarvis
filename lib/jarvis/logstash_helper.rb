@@ -8,12 +8,16 @@ module Jarvis class LogstashHelper
   class UnresolvedLogstashVersion < ::Jarvis::Error ; end
 
   def self.download_and_extract_gems_if_necessary(version)
-    if download_version = version.to_s.match(/^#(\{|\()(.*?)(\}|\))$/) # '#{7.5.1}' or '#{latest}'
+    if download_version = version.to_s.match(/^(.+)@(.+)$/) # 'RELEASE@7.5.1' or 'SNAPSHOT@latest'
+      qualifier = download_version[1].upcase
+      unless %w{ RELEASE SNAPSHOT }.include?(qualifier)
+        raise UnresolvedLogstashVersion.new("unsupported qualifier: #{download_version[1].inspect}")
+      end
       download_version = download_version[2]
       if download_version.match(/\d\.\d\.\d(\.\d)?/)
         version = download_version
-      else # need to resolve '7.x' or 'releases[last]'
-        version = resolve_logstash_version(download_version)
+      else # need to resolve 'RELEASE@7.x' or 'RELEASE@latest'
+        version = resolve_logstash_version(download_version, snapshot: qualifier.eql?('SNAPSHOT'))
       end
     end
 
@@ -23,33 +27,25 @@ module Jarvis class LogstashHelper
     ls_helper.download_and_extract_gems
   end
 
-  def self.resolve_logstash_version(version)
+  def self.resolve_logstash_version(version, snapshot: false)
     log "Fetching logstash_releases.json", url: LS_RELEASES_JSON
     download(LS_RELEASES_JSON) do |file|
       versions_data = JSON.parse(file.read)
 
-      if (data = versions_data['releases']).is_a?(Hash)
+      if (data = versions_data[snapshot ? 'snapshots' : 'releases']).is_a?(Hash)
         v = data[version]
         return v if v
-        # TODO won't do once LS 10.0.0 is released
-        # enrich so we can resolve 'releases[last]' :
-        data['last'] ||= data.sort.last[1]
-        data['first'] ||= data.sort.first[1]
       end
 
-      if (data = versions_data['snapshots']).is_a?(Hash)
-        v = data[version]
-        return v if v
-        # TODO won't do once LS 10.0.0 is released
-        # enrich so we can resolve 'snapshots[first]' :
-        data['last'] ||= data.sort.last[1]
-        data['first'] ||= data.sort.first[1]
-      end
+      # TODO won't do once LS 10.0.0 is released
+      # enrich so we can resolve 'last' :
+      data['last'] ||= data.sort.last[1]
+      data['first'] ||= data.sort.first[1]
+      version = { 'latest' => 'last' }.fetch(version, version) # aliases
 
-      version = { 'last' => 'releases[last]', 'latest' => 'releases[last]' }.fetch(version, version) # aliases
-      v = versions_data.dig *version.split(/\[(.*?)\]/).reject(&:empty?) # 'releases[last]' => 'releases', 'last'
+      v = data[version]
 
-      raise UnresolvedLogstashVersion.new(version.inspect) unless v
+      raise UnresolvedLogstashVersion.new("'#{version}'#{'(SNAPSHOT)' if snapshot}") unless v
 
       return v
     end
