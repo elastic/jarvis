@@ -18,7 +18,7 @@ module Jarvis module Command class Run < Clamp::Command
   parameter "SCRIPT ...", "The script runner", :attribute_name => :script
 
   # This command can potentially run any task  e.g.
-  # @jarvis run --env "LOGSTASH_SOURCE=1 LOGSTASH_PATH=#{latest}" https://github.com/logstash-plugins/logstash-integration-jdbc rake -T
+  # @jarvis run --env "LOGSTASH_SOURCE=1 LOGSTASH_PATH=RELEASE@6.x" https://github.com/logstash-plugins/logstash-integration-jdbc rake -T
 
   def execute
     self.workdir = Stud::Temporary.pathname if workdir.nil?
