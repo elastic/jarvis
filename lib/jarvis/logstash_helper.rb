@@ -19,12 +19,11 @@ module Jarvis class LogstashHelper
       else # need to resolve 'RELEASE@7.x' or 'RELEASE@latest'
         version = resolve_logstash_version(download_version, snapshot: qualifier.eql?('SNAPSHOT'))
       end
+
+      ls_helper = Jarvis::LogstashHelper.new(version)
+      return ls_helper.download_and_extract_gems
     end
-
-    return version if version.nil? || version.empty? || %w{ true false }.include?(version)
-
-    ls_helper = Jarvis::LogstashHelper.new(version)
-    ls_helper.download_and_extract_gems
+    version
   end
 
   def self.resolve_logstash_version(version, snapshot: false)

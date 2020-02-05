@@ -11,6 +11,10 @@ describe Jarvis::LogstashHelper do
       expect( described_class.download_and_extract_gems_if_necessary('') ).to eql ''
       expect( described_class.download_and_extract_gems_if_necessary(nil) ).to eql nil
     end
+
+    it "should not download and extract wout PREFIX@ (LOGSTASH_PATH=7.5.0)" do
+      expect( described_class.download_and_extract_gems_if_necessary('7.5.0') ).to eql '7.5.0'
+    end
   end
 
   let(:tmpfile) { Tempfile.new }
@@ -19,12 +23,12 @@ describe Jarvis::LogstashHelper do
 
   context "exact download version" do
 
-    it "should download and extract (LOGSTASH_PATH=7.5.0)" do
+    it "should download and extract (LOGSTASH_PATH=RELEASE@7.5.0)" do
       expect( Down ).to receive(:download).
           with('https://artifacts.elastic.co/downloads/logstash/logstash-7.5.0.tar.gz').and_return(tmpfile)
       expect( Jarvis ).to receive(:execute).
           with("tar -zxvf #{tmpfile.path} logstash-7.5.0/logstash-core-plugin-api logstash-7.5.0/logstash-core", anything)
-      expect( described_class.download_and_extract_gems_if_necessary('7.5.0') ).to match /.*?\/logstash\-7\.5\.0/
+      expect( described_class.download_and_extract_gems_if_necessary('RELEASE@7.5.0') ).to match /.*?\/logstash\-7\.5\.0/
       # /tmp/d20200203-1954-1el50b3/logstash-7.5.1
     end
   end
