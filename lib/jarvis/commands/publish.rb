@@ -3,6 +3,8 @@ require "net/http"
 require "json"
 require "stud/temporary"
 require "jarvis/exec"
+require "jarvis/env_utils"
+require "jarvis/logstash_helper"
 require "jarvis/github/project"
 require "jarvis/patches/i18n"
 require "gems"
@@ -18,7 +20,7 @@ module Jarvis module Command class Publish < Clamp::Command
   banner "Publish a logstash plugin"
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--env", "ENV", "ENV variables passed to publish task.", :default => 'JARVIS=true LOGSTASH_SOURCE=false' # to be able to bundle wout LS
+  option "--env", "ENV", "ENV variables passed to publish task.", :default => 'JARVIS=true LOGSTASH_SOURCE=1 LOGSTASH_PATH=RELEASE@6.5.4'
   option "--[no-]check-build", :flag, "Don't check if the build pass on jenkins and try to publish anyway", :default => true
 
   parameter "PROJECT", "The project URL" do |url|
@@ -42,6 +44,7 @@ module Jarvis module Command class Publish < Clamp::Command
     logger.subscribe(logs)
     logger.subscribe(STDOUT)
     logger.level = :info
+    Thread.current[:logger] = logger
 
     logger.info("Cloning repo", :url => project.git_url)
     git = Jarvis::Git.clone_repo(project.git_url, workdir)
@@ -50,6 +53,11 @@ module Jarvis module Command class Publish < Clamp::Command
                 :organization => project.organization,
                 :project => project.name,
                 :branches => branches.join(", "))
+
+    env = Jarvis::EnvUtils::Handler.call(self.env,
+        LOGSTASH_PATH: lambda { |val| Jarvis::LogstashHelper.download_and_extract_gems_if_necessary(val) }
+    )
+    logs.clear unless logger.debug?
 
     branches.each do |branch|
       logger.info("Switching branches", :branch => branch)
@@ -101,7 +109,7 @@ module Jarvis module Command class Publish < Clamp::Command
         if condition.call(workdir)
           context[:command] = command
           puts I18n.t("lita.handlers.jarvis.publish command", :command => command)
-          Jarvis.execute(command, logger, git.dir, env)
+          Jarvis.execute(command, git.dir, env, logger)
 
           # Clear the logs if it was successful
           logs.clear unless logger.debug?
@@ -118,11 +126,13 @@ module Jarvis module Command class Publish < Clamp::Command
                   :project => project.name,
                   :branch => branch)
     end
-    puts logs.join("\n")
   rescue => e
     puts I18n.t("lita.handlers.jarvis.exception", :exception => e.class, :message => e.to_s, :command => "publish")
                 #:stacktrace => e.backtrace.join("\n"),
                 #:logs => logs.collect { |l| l[:message] }.join("\n"))
+    logger.error e if logger
+  ensure
+    Thread.current[:logger] = nil
   end
 
   def verify_publish
