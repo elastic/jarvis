@@ -1,5 +1,6 @@
 require 'jarvis/fetch'
 require 'jarvis/exec'
+require 'fileutils'
 require 'tmpdir'
 require 'json'
 
@@ -74,7 +75,9 @@ module Jarvis class LogstashHelper
   # @return a LS_HOME path
   def download_and_extract_gems
     tmp_dir = extract(download, paths: [ "#{@base}/logstash-core-plugin-api", "#{@base}/logstash-core" ])
-    return File.join(tmp_dir, @base)
+    File.join(tmp_dir, @base).tap do |ls_dir|
+      copy_plugin_api_missing_versions_yml(ls_dir)
+    end
   end
 
   def download(&block)
@@ -87,6 +90,15 @@ module Jarvis class LogstashHelper
     self.class.log "Extracting #{tgz.path}", dir: ls_dir
     Jarvis.execute("tar -zxvf #{tgz.path} #{paths.join(' ')}", ls_dir) # -C #{ls_dir}
     ls_dir
+  end
+
+  # NOTE: older 6.X versions (<= 6.7) missed copying versions.yml for the plugin-api gemspec
+  def copy_plugin_api_missing_versions_yml(ls_dir)
+    gem_copy_name = 'versions-gem-copy.yml'
+    plugin_api_gem_copy_path = File.join(ls_dir, "logstash-core-plugin-api/#{gem_copy_name}")
+    unless File.exist?(plugin_api_gem_copy_path)
+      FileUtils.cp(File.join(ls_dir, "logstash-core/#{gem_copy_name}"), plugin_api_gem_copy_path)
+    end
   end
 
 end end
