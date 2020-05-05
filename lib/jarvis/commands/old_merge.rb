@@ -14,7 +14,7 @@ require "jarvis/fetch"
 require "jarvis/defer"
 require "mbox"
 
-module Jarvis module Command class Merge < Clamp::Command
+module Jarvis module Command class OldMerge < Clamp::Command
   include ::Jarvis::Github
 
   Encoding.default_external = Encoding::UTF_8
@@ -23,7 +23,7 @@ module Jarvis module Command class Merge < Clamp::Command
   class PushFailure < ::Jarvis::Error; end
   class Bug < ::Jarvis::Error; end
 
-  banner "Merge a pull request into one or more branches. Uses git merge for the first branch and git am for the rest."
+  banner "Merge a pull request into one or more branches. Uses 'git am' on all branches."
 
   option "--committer-email", "EMAIL", "The git committer to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.email` and `git config --get user.email`)."
   option "--committer-name", "NAME", "The git committer name to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.name` and `git config --get user.email`)."
@@ -34,7 +34,7 @@ module Jarvis module Command class Merge < Clamp::Command
     Jarvis::GitHub::PullRequest.parse(url)
   end
 
-  parameter "[BRANCHES] ...", "The branches to merge", :attribute_name => :branches
+  parameter "BRANCHES ...", "The branches to merge", :attribute_name => :branches
 
   def execute
     defer = ::Jarvis::Defer.new
@@ -72,41 +72,39 @@ module Jarvis module Command class Merge < Clamp::Command
     Jarvis::Git.config(git, "user.email", committer_email)
     Jarvis::Git.config(git, "user.name", committer_name)
 
-    if branches.empty?
-      logger.info("No branches given, merging to PR's base branch: #{pull.base.ref}")
-      target_branch = pull.base.ref
-      backport_branches = []
-    else
-      target_branch, *backport_branches = branches
-
-      if pull.base.ref != target_branch
-        raise "First branch in the list doesn't match the PR's target branch. Expected '#{pull.base.ref}', got '#{target_branch}'"
-      end
-    end
-
     commits = []
-
-    logger[:operation] = "git merge"
-    logger[:branch] = target_branch
-    pr_head = git.revparse("HEAD")
-    git.checkout(target_branch)
-    git.merge(pr_head)
-    logger.info("Merged to target branch: \"#{target_branch}\"")
-
-    backport_branches.each do |branch|
+    branches.each do |branch|
       logger[:branch] = branch
-      logger.info("Backport to branch: \"#{branch}\"")
+      logger.info("Working on a branch")
       git.checkout(branch)
 
       commits << { :branch => branch, :commits => [] }
       patches = Mbox.new(File.new(patch_file, "r"))
       patches.each do |mail|
-        ::Jarvis::Git.apply_mail(git, mail, logger)
-        commits.last[:commits] << git.revparse("HEAD")
+        ::Jarvis::Git.apply_mail(git, mail, logger) do |description|
+          # Append the 'Fixes #1234' to the bottom of the commit message for
+          # whatever PR this is..
+          description + "\nFixes \##{pr.number}"
+        end
+
+        # Verify the committer is set correctly.
+        data = git.lib.commit_data("HEAD")
+        # format of the committer field is this: Your Name <foo@example.com> 1234567890 -0800
+        _, name, email, *_ = /^([^<]+) <([^>]+)> \d+ [+-]\d+/.match(data["committer"]).to_a
+        raise Bug, "Committer name didn't match: #{name} vs #{committer_name}" if name != committer_name
+        raise Bug, "Committer email didn't match: #{email} vs #{committer_email}" if email != committer_email
+
+        # Record the commit hash for this commit.
+        commits.last[:commits] << git.revparse("HEAD") 
       end
       logger.info("Patch successfully applied")
       logger[:branch] = nil
     end
+
+    template = File.join(File.dirname(__FILE__), "..", "..", "..", "templates", "github_oldmerge_comment.mustache")
+    comment = Mustache.render(File.read(template),
+                              :committer => committer_name,
+                              :commits => commits.each { |v| v[:commits] = v[:commits].join(", ") })
 
     # Push to branches
     logger[:operation] = "git push"
@@ -115,17 +113,6 @@ module Jarvis module Command class Merge < Clamp::Command
     logger.pipe(stdout => :info, stderr => :error)
     _, status = Process::waitpid2(pid)
     raise PushFailure, "git push failed" unless status.success?
-
-    # let's give github some time to mark the PR as merged
-    # otherwise it looks weird having the backport comment
-    # before the target branch merge
-    sleep(1)
-
-    template = File.join(File.dirname(__FILE__), "..", "..", "..", "templates", "github_merge_comment.mustache")
-    comment = Mustache.render(File.read(template),
-                              :base => pull.base.ref,
-                              :committer => committer_name,
-                              :commits => commits.empty? ? nil : commits.each { |v| v[:commits] = v[:commits].join(", ") })
 
     logger[:operation]  = "add comment"
     logger.info("Adding comment to issue")
