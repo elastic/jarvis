@@ -1,7 +1,11 @@
-{{ committer }} merged this into the following branches!
+{{ committer }} merged this to {{ base }}!
+{{#commits.length}}
+
+Pull request was also backported into the following branches:
 
 Branch | Commits
 -------|--------
 {{#commits}}
 {{branch}} | {{commits}}
 {{/commits}}
+{{/commits.length}}
