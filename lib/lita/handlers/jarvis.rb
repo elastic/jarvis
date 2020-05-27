@@ -14,6 +14,7 @@ require "jarvis/thread_logger"
 require "jarvis/commands/review"
 require "jarvis/github/review_search"
 require "travis"
+require "date"
 
 module Lita
   module Handlers
@@ -33,7 +34,8 @@ module Lita
         Travis.github_auth(config.github_token)
 
         every(60*60) { review_search(robot) }
-        every(6*60*60) { travis_watchdog(robot) }
+        # only run on Mondays, check every day what day is it
+        every(24*60*60) { travis_watchdog(robot) if Date.today.monday? }
       end
 
       def travis_watchdog(robot)
