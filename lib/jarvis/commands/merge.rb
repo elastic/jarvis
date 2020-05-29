@@ -73,8 +73,9 @@ module Jarvis module Command class Merge < Clamp::Command
     Jarvis::Git.config(git, "user.name", committer_name)
 
     if branches.empty?
-      logger.info("No branches given, merging to PR's base branch: #{pull.base.ref}")
       target_branch = pull.base.ref
+      logger.info("No branches given, merging to PR's base branch: #{target_branch}")
+      branches << target_branch
       backport_branches = []
     else
       target_branch, *backport_branches = branches
@@ -86,13 +87,11 @@ module Jarvis module Command class Merge < Clamp::Command
 
     commits = []
 
-    logger[:operation] = "git merge"
-    logger[:branch] = target_branch
-    pr_head = git.revparse("HEAD")
-    git.checkout(target_branch)
-    git.merge(pr_head)
-    logger.info("Merged to target branch: \"#{target_branch}\"")
+    unless pull.mergeable
+      raise "Pull request can't be merged to #{target_branch} according to Github. Mergeable: #{pull.mergeable}"
+    end
 
+    logger[:operation] = "git am"
     backport_branches.each do |branch|
       logger[:branch] = branch
       logger.info("Backport to branch: \"#{branch}\"")
@@ -108,13 +107,19 @@ module Jarvis module Command class Merge < Clamp::Command
       logger[:branch] = nil
     end
 
+    # Merge to target branch
+    logger[:operation] = "github merge"
+    github.merge_pull_request("#{pr.organization}/#{pr.project}", pr.number, '', :merge_method => "rebase")
+    logger.info("Merged to target branch: \"#{target_branch}\"")
     # Push to branches
-    logger[:operation] = "git push"
-    pid, stdin, stdout, stderr = Open4::popen4("git", "-C", "#{git.dir}", "push", "origin", *branches)
-    stdin.close
-    logger.pipe(stdout => :info, stderr => :error)
-    _, status = Process::waitpid2(pid)
-    raise PushFailure, "git push failed" unless status.success?
+    if backport_branches.any?
+      logger[:operation] = "git push"
+      pid, stdin, stdout, stderr = Open4::popen4("git", "-C", "#{git.dir}", "push", "origin", *backport_branches)
+      stdin.close
+      logger.pipe(stdout => :info, stderr => :error)
+      _, status = Process::waitpid2(pid)
+      raise PushFailure, "git push failed" unless status.success?
+    end
 
     # let's give github some time to mark the PR as merged
     # otherwise it looks weird having the backport comment
