@@ -39,7 +39,7 @@ module Lita
       end
 
       def travis_watchdog(robot)
-        total_failures, total_pl_gins, failures = ::Jarvis::Travis::Watchdog.execute
+        total_failures, total_plugins, failures = ::Jarvis::Travis::Watchdog.execute
         return if total_failures == 0
 
         messages = [ "Oops, We have currently have *#{total_failures}* plugins jobs failing :sadbazpanda: (#{total_plugins} plugins checked)" ]
