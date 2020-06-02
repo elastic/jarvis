@@ -14,7 +14,7 @@ require "jarvis/fetch"
 require "jarvis/defer"
 require "mbox"
 
-module Jarvis module Command class OldMerge < Clamp::Command
+module Jarvis module Command class Backport < Clamp::Command
   include ::Jarvis::Github
 
   Encoding.default_external = Encoding::UTF_8
@@ -23,14 +23,14 @@ module Jarvis module Command class OldMerge < Clamp::Command
   class PushFailure < ::Jarvis::Error; end
   class Bug < ::Jarvis::Error; end
 
-  banner "Merge a pull request into one or more branches. Uses 'git am' on all branches."
+  banner "Backport a pull request into one or more branches. Uses 'git am'."
 
   option "--committer-email", "EMAIL", "The git committer to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.email` and `git config --get user.email`)."
   option "--committer-name", "NAME", "The git committer name to set on all commits. If not set, the default is whatever your git defaults to (see `git config --get user.name` and `git config --get user.email`)."
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
 
-  parameter "PR", "The PR URL to merge" do |url|
+  parameter "PR", "The PR URL to backport" do |url|
     Jarvis::GitHub::PullRequest.parse(url)
   end
 
@@ -84,7 +84,7 @@ module Jarvis module Command class OldMerge < Clamp::Command
         ::Jarvis::Git.apply_mail(git, mail, logger) do |description|
           # Append the 'Fixes #1234' to the bottom of the commit message for
           # whatever PR this is..
-          description + "\nFixes \##{pr.number}"
+          description + "\nBackport of \##{pr.number} to #{branch}"
         end
 
         # Verify the committer is set correctly.
@@ -101,7 +101,7 @@ module Jarvis module Command class OldMerge < Clamp::Command
       logger[:branch] = nil
     end
 
-    template = File.join(File.dirname(__FILE__), "..", "..", "..", "templates", "github_oldmerge_comment.mustache")
+    template = File.join(File.dirname(__FILE__), "..", "..", "..", "templates", "github_backport_comment.mustache")
     comment = Mustache.render(File.read(template),
                               :committer => committer_name,
                               :commits => commits.each { |v| v[:commits] = v[:commits].join(", ") })
