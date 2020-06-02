@@ -30,6 +30,8 @@ module Jarvis module Command class Merge < Clamp::Command
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
 
+  option "--[no-]allow-multiple-commits", :flag, "Allow the Pull Request to be merged with multiple commits.", :default => false
+
   parameter "PR", "The PR URL to merge" do |url|
     Jarvis::GitHub::PullRequest.parse(url)
   end
@@ -58,6 +60,9 @@ module Jarvis module Command class Merge < Clamp::Command
     # Download the patch
     logger.info("Fetching PR")
     pull = github.pull_request("#{pr.organization}/#{pr.project}", pr.number)
+    if pull.commits > 1 && !allow_multiple_commits?
+      raise "Pull request has more than 1 commit. Please consider squashing, or to override this check use: \"merge --allow-multiple-commits pr_url target_branch ..\""
+    end
 
     git.lib.send(:command, "fetch", ["origin", "pull/#{pr.number}/head"])
     git.checkout("FETCH_HEAD")
@@ -88,7 +93,7 @@ module Jarvis module Command class Merge < Clamp::Command
     commits = []
 
     unless pull.mergeable
-      raise "Pull request can't be merged to #{target_branch} according to Github. Mergeable: #{pull.mergeable}"
+      raise "Pull request can't be merged to #{target_branch} according to Github. Mergeable state: #{pull.mergeable_state}"
     end
 
     logger[:operation] = "git am"
