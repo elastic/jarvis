@@ -1,6 +1,6 @@
 require 'jarvis/github'
 require "jarvis/commands/merge"
-require "jarvis/commands/old_merge"
+require "jarvis/commands/backport"
 require "jarvis/commands/status"
 require "jarvis/commands/restart"
 require "jarvis/commands/slowcmd"
@@ -79,7 +79,7 @@ module Lita
         "--committer-email" => ->(request) { request.user.metadata["git-email"] || raise(::Jarvis::UserProfileError, "Missing user setting `git-email` for user #{request.user.name}") },
         "--committer-name" => ->(request) { request.user.name }
       })
-      fancy_route("oldmerge", ::Jarvis::Command::OldMerge, :command => true, :flags => {
+      fancy_route("backport", ::Jarvis::Command::Backport, :command => true, :flags => {
         "--committer-email" => ->(request) { request.user.metadata["git-email"] || raise(::Jarvis::UserProfileError, "Missing user setting `git-email` for user #{request.user.name}") },
         "--committer-name" => ->(request) { request.user.name }
       })
