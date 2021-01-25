@@ -84,10 +84,6 @@ module Jarvis module Command class Publish < Clamp::Command
             logger.info(":freddie: Successful Travis run detected!")
           end
         else
-          logger.warn("Cannot publish - no travis-ci.com check-run found for this commit!")
-        end
-
-        unless travis_check_run
           logger.warn("No travis status found for this commit! Will fall back to jenkins")
 
           build = build_report(project)
