@@ -76,20 +76,18 @@ module Jarvis module Command class Publish < Clamp::Command
         if travis_check_run = response.check_runs.find { |check_run| check_run.details_url.index('travis-ci.com') }
           if travis_check_run.status != 'completed'
             logger.error("Cannot publish - travis-ci check hasn't completed yet", status: travis_check_run.status)
-            travis_check_run = false
+            next
           elsif travis_check_run.conclusion != 'success'
             logger.error("Cannot publish - travis-ci hasn't completed with a 'success'", conclusion: travis_check_run.conclusion)
-            travis_check_run = false
+            next
+          else
+            logger.info(":freddie: Successful Travis run detected!")
           end
         else
           logger.warn("Cannot publish - no travis-ci.com check-run found for this commit!")
         end
 
-        if travis_check_run
-          logger.info(":freddie: Successful Travis run detected!")
-        elsif travis_check_run == false # do not try detecting Jenkins
-          next
-        else
+        unless travis_check_run
           logger.warn("No travis status found for this commit! Will fall back to jenkins")
 
           build = build_report(project)
