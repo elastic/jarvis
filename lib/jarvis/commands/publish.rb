@@ -71,22 +71,18 @@ module Jarvis module Command class Publish < Clamp::Command
         context[:sha1] = workdir_sha1
 
         travis_check_run = nil
-        response = Octokit.check_runs_for_ref(project.path, workdir_sha1, filter: 'latest') # status: 'completed'
-        if response.total_count > 0
-          # expect only one, even if check re-run, due `filter: 'latest'`
-          if travis_check_run = response.check_runs.find { |check_run| check_run.details_url.index('travis-ci.com') }
-            if travis_check_run.status != 'completed'
-              logger.error("Cannot publish - travis-ci check hasn't completed yet", status: travis_check_run.status)
-              travis_check_run = false
-            elsif travis_check_run.conclusion != 'success'
-              logger.error("Cannot publish - travis-ci hasn't completed with a 'success'", conclusion: travis_check_run.conclusion)
-              travis_check_run = false
-            end
-          else
-            logger.warn("Cannot publish - no travis-ci.com check-run found for this commit!")
+        response = Octokit.check_runs_for_ref(project.path, workdir_sha1, filter: 'latest')
+        # expect only one, even if check is re-run, due `filter: 'latest'`
+        if travis_check_run = response.check_runs.find { |check_run| check_run.details_url.index('travis-ci.com') }
+          if travis_check_run.status != 'completed'
+            logger.error("Cannot publish - travis-ci check hasn't completed yet", status: travis_check_run.status)
+            travis_check_run = false
+          elsif travis_check_run.conclusion != 'success'
+            logger.error("Cannot publish - travis-ci hasn't completed with a 'success'", conclusion: travis_check_run.conclusion)
+            travis_check_run = false
           end
         else
-          logger.warn("Cannot publish - no check-run(s) found for this commit!")
+          logger.warn("Cannot publish - no travis-ci.com check-run found for this commit!")
         end
 
         if travis_check_run
