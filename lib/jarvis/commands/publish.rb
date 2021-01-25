@@ -69,29 +69,36 @@ module Jarvis module Command class Publish < Clamp::Command
       if check_build?
         workdir_sha1 = git.revparse("HEAD")
         context[:sha1] = workdir_sha1
-        statuses = Octokit.statuses(project.path, workdir_sha1)
 
-        current_states = Hash[statuses.group_by(&:context).map do |ctx, info|
-           last_info = info.sort_by(&:created_at).last
-           [last_info.context, last_info.state]
-        end]
-
-        if current_states.any?
-          unsuccessful_statuses = Hash[current_states.select {|context,state| state != "success" }]
-          if unsuccessful_statuses.any?
-            logger.error("Cannot publish, some github commit hooks are not in a successful state.", :statuses => unsuccessful_statuses)
-            next
+        travis_check_run = nil
+        response = Octokit.check_runs_for_ref(project.path, workdir_sha1, filter: 'latest') # status: 'completed'
+        if response.total_count > 0
+          # expect only one, even if check re-run, due `filter: 'latest'`
+          if travis_check_run = response.check_runs.find { |check_run| check_run.details_url.index('travis-ci.com') }
+            if travis_check_run.status != 'completed'
+              logger.error("Cannot publish - travis-ci check hasn't completed yet", status: travis_check_run.status)
+              travis_check_run = false
+            elsif travis_check_run.conclusion != 'success'
+              logger.error("Cannot publish - travis-ci hasn't completed with a 'success'", conclusion: travis_check_run.conclusion)
+              travis_check_run = false
+            end
+          else
+            logger.warn("Cannot publish - no travis-ci.com check-run found for this commit!")
           end
+        else
+          logger.warn("Cannot publish - no check-run(s) found for this commit!")
         end
 
-        if current_states.keys.grep(/continuous-integration\/travis-ci\/.+/).any?
+        if travis_check_run
           logger.info(":freddie: Successful Travis run detected!")
+        elsif travis_check_run == false # do not try detecting Jenkins
+          next
         else
           logger.warn("No travis status found for this commit! Will fall back to jenkins")
 
           build = build_report(project)
 
-          if build.sha1 !=  workdir_sha1
+          if build.sha1 != workdir_sha1
             logger.error "Please make sure Jenkins has run the build, before trying to publish, workdir_sha1: #{workdir_sha1}, build_sha1: #{build.sha1}, latest build found build_url: #{build.url}"
             next
           end
@@ -139,7 +146,7 @@ module Jarvis module Command class Publish < Clamp::Command
     name, local_version = gem_specification
     published_gems = Gems.versions(name)
     # First version out
-    return if published_gems == NO_PREVIOUS_GEMS_PUBLISHED 
+    return if published_gems == NO_PREVIOUS_GEMS_PUBLISHED
     remote_versions = published_gems.collect { |v| v["number"] }
 
     if !remote_versions.include?(local_version)
@@ -150,7 +157,7 @@ module Jarvis module Command class Publish < Clamp::Command
   def gem_specification
     # HACK: if you are using the `real` bundler way of creating gem
     # You have to create a version.rb file containing the version number
-    # and require the file in the gemspec. 
+    # and require the file in the gemspec.
     # Ruby will cache this require and not reload it again in a long running
     # process like the bot.
     cmd = "ruby -e \"spec = Gem::Specification.load('#{gemspec}'); puts [spec.name, spec.version].join(',')\""
