@@ -57,6 +57,17 @@ Lita.configure do |config|
 end
 ```
 
+### Running with Docker
+
+1. Build the image `docker build -t jarvis:0.4.0 .`
+
+2. Running the image requires 3 environmental variables for full functionality.
+   - **GITHUB_TOKEN** access token (from https://github.com/settings/tokens)
+   - **SLACK_TOKEN** https://api.slack.com/authentication/token-types#legacy_bot 
+   - **GEM_HOST_API_KEY** the `rubygems_api_key` for pushing gems to rubygems.org
+
+   `docker run -d --env GITHUB_TOKEN=abcdef --env SLACK_TOKEN=ghijkl --env GEM_HOST_API_KEY=mnoprs jarvis:0.4.0`
+
 ## Contributing
 
 Patches, ideas, and bug reports welcome. :)
