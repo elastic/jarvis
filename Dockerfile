@@ -10,7 +10,7 @@ RUN set -x && \
 
 RUN echo 'gem: --no-document' >> /etc/gemrc
 
-RUN /usr/bin/ruby -S gem install bundler -v '~> 1.17.3'
+RUN /usr/bin/ruby -S gem install bundler -v '~> 2.1.4'
 
 # Create jarvis (non-root) user for running the Ruby process
 RUN addgroup --gid 1000 jarvis && \
