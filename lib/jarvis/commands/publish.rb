@@ -30,7 +30,7 @@ module Jarvis module Command class Publish < Clamp::Command
 
   ALWAYS_RUN = lambda { |workdir| true }
 
-  TASKS = { "bundle install" => ALWAYS_RUN,
+  TASKS = { "ruby -S bundle install" => ALWAYS_RUN,
             "ruby -rbundler/setup -S rake vendor" => ALWAYS_RUN,
             "ruby -rbundler/setup -S rake publish_gem" => ALWAYS_RUN }.freeze
 

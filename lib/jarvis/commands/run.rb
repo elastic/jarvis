@@ -47,7 +47,7 @@ module Jarvis module Command class Run < Clamp::Command
     context[:operation] = 'run'
     context[:branch] = branch
 
-    commands = [ "bundle install", ["ruby -rbundler/setup -S", *script] ]
+    commands = [ "ruby -S bundle install", ["ruby -rbundler/setup -S", *script] ]
 
     commands.each do |command|
       context[:command] = command
