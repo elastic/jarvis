@@ -24,13 +24,15 @@ RUN /usr/bin/ruby -S gem install bundler -v '~> 2.1.4'
 RUN addgroup --gid 1000 jarvis && \
     adduser --uid 1000 --gid 1000 --gecos "" --disabled-password jarvis
 
-COPY --chown=jarvis:jarvis * /usr/share/jarvis/
+COPY --chown=jarvis:jarvis Gemfile* *.gemspec /usr/share/jarvis/
 
 USER jarvis
 WORKDIR /usr/share/jarvis
 RUN /usr/bin/ruby -S bundle install --deployment
 
-# Restore system ruby being JRuby
+COPY --chown=jarvis:jarvis * /usr/share/jarvis/
+
+# Restore system ruby to JRuby
 USER root
 RUN update-alternatives --install /usr/local/bin/ruby ruby /opt/jruby/bin/jruby 1
 
@@ -55,3 +57,5 @@ USER jarvis
 # GEM_HOME=/usr/local/bundle
 # JAVA_HOME=/usr/local/openjdk-11
 # PWD=/usr/share/jarvis
+
+CMD /usr/bin/ruby -rbundler/setup -S lita start --config /usr/share/jarvis/lita_config.docker.rb
