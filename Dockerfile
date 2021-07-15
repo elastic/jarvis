@@ -30,13 +30,16 @@ USER jarvis
 WORKDIR /usr/share/jarvis
 RUN /usr/bin/ruby -S bundle install --deployment
 
-COPY --chown=jarvis:jarvis . /usr/share/jarvis/
-
 # Restore system ruby to JRuby
 USER root
 RUN update-alternatives --install /usr/local/bin/ruby ruby /opt/jruby/bin/jruby 1
 
 ENV JRUBY_OPTS="--dev -J-Xmx1g"
+
+# We also assume Bundler installed for commands run by Jarvis
+RUN /opt/jruby/bin/jruby -S gem install bundler -v '~> 2.1.4'
+
+COPY --chown=jarvis:jarvis . /usr/share/jarvis/
 
 USER jarvis
 
