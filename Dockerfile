@@ -58,4 +58,4 @@ USER jarvis
 # JAVA_HOME=/usr/local/openjdk-11
 # PWD=/usr/share/jarvis
 
-CMD /usr/bin/ruby -rbundler/setup -S lita start --config /usr/share/jarvis/lita_config.docker.rb
+CMD /usr/bin/ruby bin/lita start --config lita_config.docker.rb
