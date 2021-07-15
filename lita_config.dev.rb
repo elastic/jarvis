@@ -2,13 +2,17 @@
 
 require 'lita'
 
+# HACK around Lita trying to localize too much ...
+# I18n::MissingTranslation: translation missing: C.UTF-8.lita.config.type_error
+I18n.default_locale = Lita.default_locale = :en
+
 # Start the bot locally using:
 #
 #   bundle exec lita start -c lita_config.dev.rb
 #
 Lita.configure do |config|
   config.robot.name = "Jarvis"
-  config.robot.default_locale = :en
+  #config.robot.locale = :en
   config.robot.log_level = :info
 
   config.handlers.jarvis.cla_url = ""

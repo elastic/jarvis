@@ -3,11 +3,15 @@
 require 'lita'
 require 'lita-slack'
 
+# HACK around Lita trying to localize too much ...
+# I18n::MissingTranslation: translation missing: C.UTF-8.lita.config.type_error
+I18n.default_locale = Lita.default_locale = :en
+
 # Configuration template, usable for production.
 # @note used during the Docker image generation
 Lita.configure do |config|
   config.robot.name = "Jarvis"
-  config.robot.default_locale = :en
+  #config.robot.locale = :en
   config.robot.log_level = :info
 
   config.handlers.jarvis.cla_url = ""
