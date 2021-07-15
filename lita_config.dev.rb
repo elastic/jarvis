@@ -8,7 +8,7 @@ require 'lita'
 #
 Lita.configure do |config|
   config.robot.name = "Jarvis"
-  config.robot.locale = :en
+  config.robot.default_locale = :en
   config.robot.log_level = :info
 
   config.handlers.jarvis.cla_url = ""
