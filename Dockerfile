@@ -1,4 +1,4 @@
-FROM jruby:9.2.19.0-jre11
+FROM jruby:9.2.19.0-jdk11
 
 # JRuby available at /opt/jruby/bin/jruby
 
