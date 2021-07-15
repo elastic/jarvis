@@ -6,6 +6,14 @@ RUN set -x && \
     apt update && \
     apt install -y ruby ruby-dev build-essential git
 
+# Due (old) EventMachine we need to OpenSSL 1.0 bits
+WORKDIR /tmp
+RUN wget http://deb.debian.org/debian/pool/main/o/openssl1.0/libssl1.0.2_1.0.2u-1~deb9u1_amd64.deb
+RUN dpkg -i libssl1.0.2_1.0.2u-1~deb9u1_amd64.deb
+RUN wget http://deb.debian.org/debian/pool/main/o/openssl1.0/libssl1.0-dev_1.0.2u-1~deb9u1_amd64.deb
+RUN dpkg -i libssl1.0-dev_1.0.2u-1~deb9u1_amd64.deb
+RUN rm /tmp/*.deb
+
 # MRI symlinked to /usr/bin/ruby (-> ruby2.5)
 
 RUN echo 'gem: --no-document' >> /etc/gemrc
