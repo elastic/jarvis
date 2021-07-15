@@ -6,6 +6,14 @@ RUN set -x && \
     apt update && \
     apt install -y ruby ruby-dev build-essential git redis-server
 
+RUN sed -i 's/bind 127.0.0.1 ::1/#bind 127.0.0.1/g' /etc/redis/redis.conf
+#RUN cat /etc/redis/redis.conf
+# WiP
+RUN /etc/init.d/redis-server restart
+RUN sleep 1
+RUN /etc/init.d/redis-server status
+#RUN ss -an | grep 6379
+
 # Due (old) EventMachine we need to OpenSSL 1.0 bits
 WORKDIR /tmp
 RUN wget http://deb.debian.org/debian/pool/main/o/openssl1.0/libssl1.0.2_1.0.2u-1~deb9u1_amd64.deb
