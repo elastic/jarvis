@@ -4,7 +4,7 @@ FROM jruby:9.2.19.0-jre11
 
 RUN set -x && \
     apt update && \
-    apt install -y ruby ruby-dev build-essential git
+    apt install -y ruby ruby-dev build-essential git redis-server
 
 # Due (old) EventMachine we need to OpenSSL 1.0 bits
 WORKDIR /tmp
