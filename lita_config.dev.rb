@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'lita-slack'
+require 'lita'
 
 # Start the bot locally using:
 #
@@ -18,10 +18,11 @@ Lita.configure do |config|
   config.http.host = "127.0.0.1"
 
   if ENV["SLACK_TOKEN"]
+    require 'lita-slack'
     # Go to https://my.slack.com/services/new/bot and make a new bot
     # You will interact directly via slack
     config.robot.adapter = :slack
-    config.adapters.slack.token = ENV["SLACK_TOKEN"] || ''
+    config.adapters.slack.token = ENV["SLACK_TOKEN"]
   else
     config.robot.adapter = :shell
   end

@@ -1,5 +1,8 @@
 # encoding: utf-8
 
+require 'lita'
+require 'lita-slack'
+
 # Configuration template, usable for production.
 # @note used during the Docker image generation
 Lita.configure do |config|
