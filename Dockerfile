@@ -30,7 +30,7 @@ USER jarvis
 WORKDIR /usr/share/jarvis
 RUN /usr/bin/ruby -S bundle install --deployment
 
-COPY --chown=jarvis:jarvis * /usr/share/jarvis/
+COPY --chown=jarvis:jarvis . /usr/share/jarvis/
 
 # Restore system ruby to JRuby
 USER root
