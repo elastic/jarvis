@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  jarvis:
+    build:
+      context: .
+    tty: true
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - GEM_HOST_API_KEY=${GEM_HOST_API_KEY}
+    network_mode: host
+
+  redis:
+    image: docker.io/bitnami/redis:6.0
+    container_name: redis-server
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_AOF_ENABLED=no
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'

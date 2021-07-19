@@ -25,7 +25,7 @@ sufficient.
 
 You'll probably want a `lita_config.rb` if you want to have this connect to
 Slack. The following is an example lita configuration. Put this in a file
-called `lita_config.rb` in your git clone of this repo. You'll need to edit it to add github, slack, and other credential information. 
+called `lita_config.rb` in your git clone of this repo. You'll need to edit it to add github, slack, and other credential information.
 
 DO NOT ADD THIS FILE TO GIT. It is too easy to accidentally commit credentials to git, and public git is not the right place to store credentials ;)
 
@@ -59,14 +59,20 @@ end
 
 ### Running with Docker
 
-1. Build the image `docker build -t jarvis:0.4.0 .`
+0. Jarvis requires Redis (running on localhost:6379) as a pre-requisite!
+
+1. Build the image `docker build -t jarvis:0.X.0 .`
 
 2. Running the image requires 3 environmental variables for full functionality.
    - **GITHUB_TOKEN** access token (from https://github.com/settings/tokens)
    - **SLACK_TOKEN** https://api.slack.com/authentication/token-types#legacy_bot 
    - **GEM_HOST_API_KEY** the `rubygems_api_key` for pushing gems to rubygems.org
 
-   `docker run -d --env GITHUB_TOKEN=abcdef --env SLACK_TOKEN=ghijkl --env GEM_HOST_API_KEY=mnoprs jarvis:0.4.0`
+   `docker run -d --env GITHUB_TOKEN=abcdef --env SLACK_TOKEN=ghijkl --env GEM_HOST_API_KEY=mnoprs --net=host jarvis:0.X.0`
+
+Alternatively use the **docker-compose.yml** sample if Redis is not available locally:
+
+   e.g. `docker-compose --env-file ./.env.local up --build`
 
 ## Contributing
 
