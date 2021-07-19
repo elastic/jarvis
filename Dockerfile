@@ -4,15 +4,7 @@ FROM jruby:9.2.19.0-jdk11
 
 RUN set -x && \
     apt update && \
-    apt install -y ruby ruby-dev build-essential git redis-server
-
-RUN sed -i 's/bind 127.0.0.1 ::1/#bind 127.0.0.1/g' /etc/redis/redis.conf
-#RUN cat /etc/redis/redis.conf
-# WiP
-RUN /etc/init.d/redis-server restart
-RUN sleep 1
-RUN /etc/init.d/redis-server status
-#RUN ss -an | grep 6379
+    apt install -y ruby ruby-dev build-essential git
 
 # Due (old) EventMachine we need to OpenSSL 1.0 bits
 WORKDIR /tmp
