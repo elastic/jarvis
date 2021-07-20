@@ -20,7 +20,7 @@ module Jarvis module Command class Publish < Clamp::Command
   banner "Publish a logstash plugin"
 
   option "--workdir", "WORKDIR", "The place where this command will download temporary files and do stuff on disk to complete a given task."
-  option "--env", "ENV", "ENV variables passed to publish task.", :default => 'JARVIS=true LOGSTASH_SOURCE=1 LOGSTASH_PATH=RELEASE@6.8.0'
+  option "--env", "ENV", "ENV variables passed to publish task.", :default => 'JARVIS=true LOGSTASH_SOURCE=1 LOGSTASH_PATH=/usr/share/logstash'
   option "--[no-]check-build", :flag, "Don't check if the build pass on jenkins and try to publish anyway", :default => true
 
   parameter "PROJECT", "The project URL" do |url|

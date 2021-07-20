@@ -24,6 +24,13 @@ RUN /usr/bin/ruby -S gem install bundler -v '~> 2.1.4'
 RUN addgroup --gid 1000 jarvis && \
     adduser --uid 1000 --gid 1000 --gecos "" --disabled-password jarvis
 
+# Download Logstash to a known location to keep the image self-contained, instead of downloading on demand
+# e.g. plugin publishing will than reference LOGSTASH_PATH=/usr/share/logstash by default
+WORKDIR /usr/share
+RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-6.8.17.tar.gz
+RUN tar -xzf logstash-6.8.17.tar.gz && rm logstash-6.8.17.tar.gz
+RUN ln -s logstash-6.8.17 logstash
+
 COPY --chown=jarvis:jarvis Gemfile* *.gemspec /usr/share/jarvis/
 
 USER jarvis
@@ -40,8 +47,6 @@ ENV JRUBY_OPTS="--dev -J-Xmx1g"
 RUN /opt/jruby/bin/jruby -S gem install bundler -v '~> 2.1.4'
 
 COPY --chown=jarvis:jarvis . /usr/share/jarvis/
-
-USER jarvis
 
 #RUN ruby -v
 # jruby 9.2.19.0 (2.5.8) 2021-06-15 55810c552b OpenJDK 64-Bit Server VM 11.0.11+9 on 11.0.11+9 [linux-x86_64]
@@ -61,4 +66,6 @@ USER jarvis
 # JAVA_HOME=/usr/local/openjdk-11
 # PWD=/usr/share/jarvis
 
+USER jarvis
+WORKDIR /usr/share/jarvis
 CMD /usr/bin/ruby bin/lita start --config lita_config.docker.rb
