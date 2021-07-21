@@ -69,5 +69,9 @@ COPY --chown=jarvis:jarvis . /usr/share/jarvis/
 # PWD=/usr/share/jarvis
 
 USER jarvis
+
+# git (ssh) commands should be able to authenticate with github.com
+RUN mkdir ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
 WORKDIR /usr/share/jarvis
 CMD /usr/bin/ruby bin/lita start --config lita_config.docker.rb
