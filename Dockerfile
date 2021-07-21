@@ -33,9 +33,19 @@ RUN ln -s logstash-6.8.17 logstash
 RUN addgroup --gid 1000 jarvis && \
     adduser --uid 1000 --gid 1000 --gecos "" --disabled-password jarvis
 
+USER jarvis
+
+# git (ssh) commands should be able to authenticate with github.com
+RUN mkdir ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+# a ssh keypair to be used to authenticate with github on git push-es
+RUN ssh-keygen -t ed25519 -N "" -C "jarvis" -f ~/.ssh/id_ed25519
+RUN echo && echo && \
+    echo "Generated a new key pair to be used with the github.com/elasticsearch-bot account" && \
+    echo "Please add the public key to the user\'s account (https://git.io/JlUMu):" && \
+    echo && echo && cat ~/.ssh/id_ed25519.pub && echo && echo
+
 COPY --chown=jarvis:jarvis Gemfile* *.gemspec /usr/share/jarvis/
 
-USER jarvis
 WORKDIR /usr/share/jarvis
 RUN /usr/bin/ruby -S bundle install --deployment
 
@@ -69,9 +79,6 @@ COPY --chown=jarvis:jarvis . /usr/share/jarvis/
 # PWD=/usr/share/jarvis
 
 USER jarvis
-
-# git (ssh) commands should be able to authenticate with github.com
-RUN mkdir ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
 WORKDIR /usr/share/jarvis
 CMD /usr/bin/ruby bin/lita start --config lita_config.docker.rb
