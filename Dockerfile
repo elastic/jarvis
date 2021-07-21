@@ -6,6 +6,8 @@ RUN set -x && \
     apt update && \
     apt install -y ruby ruby-dev build-essential git
 
+# MRI symlinked to /usr/bin/ruby (-> ruby2.5)
+
 # Due (old) EventMachine we need to OpenSSL 1.0 bits
 WORKDIR /tmp
 RUN wget http://deb.debian.org/debian/pool/main/o/openssl1.0/libssl1.0.2_1.0.2u-1~deb9u1_amd64.deb
@@ -20,16 +22,16 @@ RUN echo 'gem: --no-document' >> /etc/gemrc
 
 RUN /usr/bin/ruby -S gem install bundler -v '~> 2.1.4'
 
-# Create jarvis (non-root) user for running the Ruby process
-RUN addgroup --gid 1000 jarvis && \
-    adduser --uid 1000 --gid 1000 --gecos "" --disabled-password jarvis
-
 # Download Logstash to a known location to keep the image self-contained, instead of downloading on demand
 # e.g. plugin publishing will than reference LOGSTASH_PATH=/usr/share/logstash by default
 WORKDIR /usr/share
 RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-6.8.17.tar.gz
 RUN tar -xzf logstash-6.8.17.tar.gz && rm logstash-6.8.17.tar.gz
 RUN ln -s logstash-6.8.17 logstash
+
+# Create jarvis (non-root) user for running the Ruby process
+RUN addgroup --gid 1000 jarvis && \
+    adduser --uid 1000 --gid 1000 --gecos "" --disabled-password jarvis
 
 COPY --chown=jarvis:jarvis Gemfile* *.gemspec /usr/share/jarvis/
 
